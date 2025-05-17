@@ -3,9 +3,9 @@ import React from "react";
 const Button = ({ children, className }) => {
     return (
         <button
-            className={`relative flex justify-center gap-2 items-center mx-auto shadow-xl text-lg text-black-50 bg-gray-50 backdrop-blur-md lg:font-semibold border-gray-50 border-2 rounded-full overflow-hidden group z-10
-      before:absolute before:w-full before:transition-all before:duration-700 before:-left-full before:bg-emerald-500 before:rounded-full before:aspect-square before:-z-10
-      hover:text-gray-50 hover:before:left-0 hover:before:scale-150 ${className}`}
+            className={`relative flex justify-center gap-2 items-center mx-auto shadow-xl  text-black-50  backdrop-blur-md lg:font-semibold border-gray-50 border-2 rounded-full overflow-hidden group z-10
+      before:absolute before:w-full before:transition-all before:duration-700 before:-left-full  before:rounded-full before:aspect-square before:-z-10
+      hover:text-gray-50 hover:before:left-0 hover:before:scale-150 hover:cursor-pointer ${className}`}
         >
             {children}
             <svg
