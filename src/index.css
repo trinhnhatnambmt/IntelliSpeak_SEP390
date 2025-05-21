@@ -11,6 +11,13 @@ body {
     font-family: "Mona Sans", sans-serif;
 }
 
+#hero,
+#benefit,
+#guide,
+#highlight {
+    scroll-margin-top: 100px;
+}
+
 @theme {
     --font-sans: "Mona Sans", sans-serif;
     --color-white-50: #d9ecff;

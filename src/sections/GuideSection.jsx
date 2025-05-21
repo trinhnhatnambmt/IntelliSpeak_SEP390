@@ -5,7 +5,10 @@ import Stepper, { Step } from "~/components/Stepper";
 
 const GuideSection = () => {
     return (
-        <section className="container mx-auto my-12 px-4 pt-20 md:pb-10">
+        <section
+            className="container mx-auto my-12 px-4 pt-20 md:pb-10"
+            id="guide"
+        >
             <Heading
                 tag="Trải nghiệm phỏng vấn ảo cực dễ"
                 title="Lộ trình luyện tập phỏng vấn với ItelliSpeak"

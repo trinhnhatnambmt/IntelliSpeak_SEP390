@@ -25,22 +25,30 @@ const Header = () => {
             )}
         >
             <div className="container mx-auto flex items-center justify-between">
-                <Link>
+                <a href="#hero">
                     <img src={logo} alt="logo" width={200} />
-                </Link>
+                </a>
                 <nav>
-                    <ul className="flex gap-6">
+                    <ul className="flex gap-10">
                         <li>
-                            <Link to="/">Home</Link>
+                            <a href="#hero" className="font-extrabold">
+                                Trang Chủ
+                            </a>
                         </li>
                         <li>
-                            <Link to="/about">About</Link>
+                            <a href="#benefit" className="font-extrabold">
+                                Tính năng
+                            </a>
                         </li>
                         <li>
-                            <Link to="/services">Services</Link>
+                            <a href="#guide" className="font-extrabold">
+                                Lộ trình
+                            </a>
                         </li>
                         <li>
-                            <Link to="/contact">Contact</Link>
+                            <a href="#highlight" className="font-extrabold">
+                                Kết Nối
+                            </a>
                         </li>
                     </ul>
                 </nav>

@@ -10,7 +10,10 @@ import LogoSection from "./LogoSection";
 
 const Hero = () => {
     return (
-        <section className="w-full flex flex-col items-center relative px-10 pt-38">
+        <section
+            className="w-full flex flex-col items-center relative px-10 pt-38"
+            id="hero"
+        >
             <div className="hero-text relative z-1 max-w-[62rem] text-center mb-[3.875rem]">
                 <h1>Thực hành phỏng vấn với AI </h1>
                 <h1>

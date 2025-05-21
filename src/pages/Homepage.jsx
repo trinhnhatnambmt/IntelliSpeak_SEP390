@@ -1,5 +1,7 @@
 import React from "react";
 import BenefitSection from "~/sections/BenefitSection";
+import DirectMeetSection from "~/sections/DirectMeetSection";
+import Footer from "~/sections/Footer";
 import GuideSection from "~/sections/GuideSection";
 import Header from "~/sections/Header";
 import Hero from "~/sections/Hero";
@@ -13,6 +15,8 @@ const Homepage = () => {
             <LogoSection />
             <BenefitSection />
             <GuideSection />
+            <DirectMeetSection />
+            <Footer />
         </div>
     );
 };
