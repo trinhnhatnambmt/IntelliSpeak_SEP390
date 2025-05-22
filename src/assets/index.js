@@ -25,8 +25,12 @@ import gradient from "./gradient.png";
 import loading1 from "./loading-01.svg";
 import howItWork1 from "./howitwork1.jpg";
 import howItWork2 from "./howitwork2.jpg";
+import check from "./check.svg";
+import lines from "./lines.svg";
 
 export {
+    lines,
+    check,
     howItWork2,
     logo,
     service1,

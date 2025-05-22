@@ -95,7 +95,55 @@ const roadmap = [
     },
 ];
 
+const pricing = [
+    {
+        id: "0",
+        title: "Cơ bản",
+        description:
+            "Trải nghiệm phỏng vấn ảo miễn phí và cải thiện CV ban đầu",
+        price: "0",
+        features: [
+            "Phỏng vấn ảo mẫu với câu hỏi giới hạn",
+            "Phân tích CV cơ bản & góp ý sơ bộ",
+            "Tài khoản miễn phí, không cần thẻ thanh toán",
+        ],
+    },
+    {
+        id: "1",
+        title: "Chuyên nghiệp",
+        description:
+            "Toàn quyền truy cập AI phỏng vấn và gợi ý cải thiện kỹ năng",
+        price: "9.99",
+        features: [
+            "Phỏng vấn ảo không giới hạn với đánh giá AI chi tiết",
+            "Phân tích CV nâng cao với gợi ý cải thiện cụ thể",
+            "Lưu lại lịch sử phỏng vấn & so sánh theo thời gian",
+            "Ưu tiên hỗ trợ người dùng",
+        ],
+    },
+    {
+        id: "2",
+        title: "Doanh nghiệp",
+        description:
+            "Công cụ tuyển dụng dành riêng cho nhà tuyển dụng & tổ chức",
+        price: null, // "Liên hệ"
+        features: [
+            "Tạo & quản lý bộ câu hỏi phỏng vấn riêng",
+            "Xem thông tin ứng viên tiềm năng từ hệ thống",
+            "Phân tích hiệu quả tuyển dụng qua dashboard",
+            "Hỗ trợ triển khai riêng cho doanh nghiệp",
+        ],
+    },
+];
+
 const heroIcons = [homeSmile, file02, searchMd, plusSquare];
 const notificationImages = [notification4, notification3, notification2];
 
-export { words, heroIcons, notificationImages, logoIconsList, roadmap };
+export {
+    words,
+    heroIcons,
+    notificationImages,
+    logoIconsList,
+    roadmap,
+    pricing,
+};

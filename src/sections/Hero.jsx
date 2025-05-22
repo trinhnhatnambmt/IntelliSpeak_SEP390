@@ -7,8 +7,10 @@ import GradientText from "~/components/GradientText";
 import Notification from "~/components/Notification";
 import { heroIcons, words } from "~/constants";
 import LogoSection from "./LogoSection";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+    const navigate = useNavigate();
     return (
         <section
             className="w-full flex flex-col items-center relative px-10 pt-38"
@@ -63,7 +65,10 @@ const Hero = () => {
                 </p>
             </div>
             <div className="flex items-center gap-4">
-                <Button className="px-4 py-2 bg-emerald-400 text-lg before:bg-emerald-500">
+                <Button
+                    className="px-4 py-2 bg-emerald-400 text-lg before:bg-emerald-500"
+                    onClick={() => navigate("/upgrade-plan")}
+                >
                     Xem Chi Tiết Gói
                 </Button>
                 <Button className="px-4 py-2 bg-white text-lg before:bg-emerald-500">
