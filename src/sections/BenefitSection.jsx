@@ -8,7 +8,7 @@ import { roadmap } from "~/constants";
 
 const BenefitSection = () => {
     return (
-        <div className="container mx-auto my-12 px-4 md:pb-10" id="benefit">
+        <div className="container mx-auto my-12 px-10 md:pb-10" id="benefit">
             <Heading
                 tag="Sẵn sàng để bắt đầu"
                 title="Những tính năng nổi bật"

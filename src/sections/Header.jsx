@@ -20,7 +20,7 @@ const Header = () => {
     return (
         <header
             className={clsx(
-                "fixed top-0 left-0 z-50  w-full px-5 py-5 transition-all duration-500 max-lg:py-4",
+                "fixed top-0 left-0 z-50 w-full px-5 py-5 transition-all duration-500 max-lg:py-4",
                 hasScrolled && "py-2 bg-[#0e0c15] backdrop-blur-[8px]"
             )}
         >
@@ -58,7 +58,9 @@ const Header = () => {
                             <Link to="/login">Đăng Nhập</Link>
                         </li>
                         <li>
-                            <GitHubButton>Đăng Ký</GitHubButton>
+                            <GitHubButton>
+                                <Link to="/register">Đăng Ký</Link>
+                            </GitHubButton>
                         </li>
                     </ul>
                 </div>
