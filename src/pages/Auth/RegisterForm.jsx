@@ -1,10 +1,11 @@
 import { Eye, EyeOffIcon } from "lucide-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { authThumb2, logo } from "~/assets";
+import { logo } from "~/assets";
 
 const RegisterForm = () => {
     const [isVisible, setIsVisible] = useState(false);
+    const [isVisible2, setIsVisible2] = useState(false);
     const navigate = useNavigate();
     return (
         <div className="relative mx-auto">
@@ -60,16 +61,16 @@ const RegisterForm = () => {
                         </label>
                         <div className="relative mt-1">
                             <input
-                                type={isVisible ? "text" : "password"}
+                                type={isVisible2 ? "text" : "password"}
                                 id="pass"
                                 placeholder="Confirm Password"
                                 className="w-full outline-none focus-within:border-white rounded-md p-2 border-[1px] border-gray-400"
                             />
                             <div
                                 className="absolute top-3 right-4 text-2xl text-gray-500 cursor-pointer"
-                                onClick={() => setIsVisible((prev) => !prev)}
+                                onClick={() => setIsVisible2((prev) => !prev)}
                             >
-                                {isVisible ? (
+                                {isVisible2 ? (
                                     <Eye size={22} />
                                 ) : (
                                     <EyeOffIcon size={22} />
@@ -127,7 +128,7 @@ const RegisterForm = () => {
                 </div>
                 <div className="w-1/2 relative">
                     <img
-                        src={authThumb2}
+                        // src={authThumb2}
                         alt="Authentication Background"
                         className="w-full h-screen object-cover"
                     />
