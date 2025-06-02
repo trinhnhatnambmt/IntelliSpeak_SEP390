@@ -28,12 +28,12 @@ import howItWork2 from "./howitwork2.jpg";
 import check from "./check.svg";
 import lines from "./lines.svg";
 import authVideo from "./videos/auth.mp4";
-// import authThumb from "./authThumbNail.jpg";
-// import authThumb2 from "./authThumbNail2.jpg";
+import authThumb from "./auth/authThumbnail.jpg";
+import authThumb2 from "./auth/authThumbnail2.jpg";
 
 export {
-    // authThumb,
-    // authThumb2,
+    authThumb,
+    authThumb2,
     authVideo,
     lines,
     check,

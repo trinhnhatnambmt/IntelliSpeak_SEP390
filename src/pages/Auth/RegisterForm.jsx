@@ -1,7 +1,7 @@
 import { Eye, EyeOffIcon } from "lucide-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { logo } from "~/assets";
+import { authThumb2, logo } from "~/assets";
 
 const RegisterForm = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -128,7 +128,7 @@ const RegisterForm = () => {
                 </div>
                 <div className="w-1/2 relative">
                     <img
-                        // src={authThumb2}
+                        src={authThumb2}
                         alt="Authentication Background"
                         className="w-full h-screen object-cover"
                     />
