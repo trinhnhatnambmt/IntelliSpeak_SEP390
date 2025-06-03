@@ -11,6 +11,7 @@ import notification2 from "./notification/image-2.png";
 import notification3 from "./notification/image-3.png";
 import notification4 from "./notification/image-4.png";
 import logo from "./LogoItelliSpeak.png";
+import squarelogo from "./SquareLogoItelliSpeak.png";
 import coins from "./roadmap/coins.png";
 import done from "./roadmap/done.svg";
 import hero from "./roadmap/hero.png";
@@ -39,6 +40,7 @@ export {
     check,
     howItWork2,
     logo,
+    squarelogo,
     service1,
     service2,
     service3,
