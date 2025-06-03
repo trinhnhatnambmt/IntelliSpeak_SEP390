@@ -4,7 +4,7 @@ import Earth from "~/components/Globe";
 const DirectMeetSection = () => {
     return (
         <section
-            className="container mx-auto my-12 px-4 py-20 md:py-10"
+            className="container mx-auto my-12 px-20 py-20 md:py-10"
             id="highlight"
         >
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">

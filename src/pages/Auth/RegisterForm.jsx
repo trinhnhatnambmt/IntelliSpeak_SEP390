@@ -132,7 +132,7 @@ const RegisterForm = () => {
                         alt="Authentication Background"
                         className="w-full h-screen object-cover"
                     />
-                    <div className="absolute bottom-10 left-10 flex flex-col text-white bg-n-9/40 backdrop-blur border border-n-1/10 rounded-2xl p-5">
+                    <div className="absolute bottom-10 left-5 flex flex-col text-white bg-n-9/40 backdrop-blur border border-n-1/10 rounded-2xl p-5">
                         <h2 className="text-3xl font-bold mb-2">
                             ✨Gia Nhập Nền Tảng Phỏng Vấn Tương Lai✨
                         </h2>
