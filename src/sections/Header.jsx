@@ -4,8 +4,9 @@ import { Link } from "react-router-dom";
 import { logo } from "~/assets";
 import Button from "~/components/Button/Button";
 import GitHubButton from "~/components/Button/RegisterButton";
+import WalletProfile from "~/components/ProfileDropdown";
 
-const Header = () => {
+const Header = ({ authenticated = false }) => {
     const [hasScrolled, setHasScrolled] = useState(false);
 
     useEffect(() => {
@@ -24,45 +25,51 @@ const Header = () => {
                 hasScrolled && "py-2 bg-[#0e0c15] backdrop-blur-[8px]"
             )}
         >
-            <div className="container mx-auto flex items-center justify-between">
-                <a href="#hero">
+            <div className="relative container mx-auto flex items-center justify-between">
+                <a href="/">
                     <img src={logo} alt="logo" width={200} />
                 </a>
-                <nav>
-                    <ul className="flex gap-10">
-                        <li>
-                            <a href="#hero" className="font-extrabold">
-                                Trang Chủ
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#benefit" className="font-extrabold">
-                                Tính năng
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#guide" className="font-extrabold">
-                                Lộ trình
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#highlight" className="font-extrabold">
-                                Kết Nối
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <div>
-                    <ul className="flex gap-4 items-center">
-                        <li>
-                            <Link to="/login">Đăng Nhập</Link>
-                        </li>
-                        <li>
-                            <GitHubButton>
-                                <Link to="/register">Đăng Ký</Link>
-                            </GitHubButton>
-                        </li>
-                    </ul>
+                {!authenticated && (
+                    <nav>
+                        <ul className="flex gap-10">
+                            <li>
+                                <a href="#hero" className="font-extrabold">
+                                    Trang Chủ
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#benefit" className="font-extrabold">
+                                    Tính năng
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#guide" className="font-extrabold">
+                                    Lộ trình
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#highlight" className="font-extrabold">
+                                    Kết Nối
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                )}
+
+                <div className="">
+                    {!authenticated && (
+                        <ul className="flex gap-4 items-center">
+                            <li>
+                                <Link to="/login">Đăng Nhập</Link>
+                            </li>
+                            <li>
+                                <GitHubButton>
+                                    <Link to="/register">Đăng Ký</Link>
+                                </GitHubButton>
+                            </li>
+                        </ul>
+                    )}
+                    {authenticated && <WalletProfile />}
                 </div>
             </div>
         </header>
