@@ -53,7 +53,7 @@ export default function WalletProfile() {
             >
                 {/* Profile Header */}
                 <motion.div
-                    className="py-2 px-6 border-b border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors duration-200"
+                    className="py-1 px-6 border-b border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors duration-200"
                     transition={{ duration: 0.2 }}
                 >
                     <div className="flex items-center">
@@ -84,7 +84,7 @@ export default function WalletProfile() {
                                     Arihant Jain
                                 </h2>
                                 <motion.div
-                                    className="ml-2 flex items-center justify-center w-5 h-5 bg-emerald-400 rounded-full"
+                                    className="ml-2 flex items-center justify-center w-5 h-5 bg-blue-500 rounded-full"
                                     whileHover={{ scale: 1.1 }}
                                     transition={{
                                         type: "spring",
@@ -121,11 +121,11 @@ export default function WalletProfile() {
                             transition={{ duration: 0.3 }}
                         >
                             {/* Menu Items */}
-                            <div className="p-4 space-y-2 border-b border-neutral-200 dark:border-neutral-700 cursor-pointer">
+                            <div className="p-4 space-y-2 border-b border-neutral-200 dark:border-neutral-700 ">
                                 {menuItems.map((item, index) => (
                                     <motion.div
                                         key={index}
-                                        className={`flex items-center justify-between p-2 rounded-lg transition-all duration-200 ${
+                                        className={`flex items-center justify-between p-2 rounded-lg transition-all duration-200 cursor-pointer ${
                                             item.danger
                                                 ? "text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:pl-6"
                                                 : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 hover:pl-6"

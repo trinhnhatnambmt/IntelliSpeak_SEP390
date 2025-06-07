@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { logo } from "~/assets";
 import Button from "~/components/Button/Button";
 import GitHubButton from "~/components/Button/RegisterButton";
+import GooeyNav from "~/components/GooeyNav";
 import WalletProfile from "~/components/ProfileDropdown";
 
 const Header = ({ authenticated = false }) => {
@@ -18,6 +19,12 @@ const Header = ({ authenticated = false }) => {
             window.removeEventListener("scroll", handleScroll);
         };
     });
+
+    const items = [
+        { label: "Luyện tập phỏng vấn", href: "/main/interview" },
+        { label: "About", href: "/main/about" },
+        { label: "Contact", href: "#" },
+    ];
     return (
         <header
             className={clsx(
@@ -26,9 +33,17 @@ const Header = ({ authenticated = false }) => {
             )}
         >
             <div className="relative container mx-auto flex items-center justify-between">
-                <a href="/">
-                    <img src={logo} alt="logo" width={200} />
-                </a>
+                {!authenticated && (
+                    <a href="/">
+                        <img src={logo} alt="logo" width={200} />
+                    </a>
+                )}
+                {authenticated && (
+                    <a href="/main" className="mr-15">
+                        <img src={logo} alt="logo" width={200} />
+                    </a>
+                )}
+
                 {!authenticated && (
                     <nav>
                         <ul className="flex gap-10">
@@ -54,6 +69,20 @@ const Header = ({ authenticated = false }) => {
                             </li>
                         </ul>
                     </nav>
+                )}
+                {authenticated && (
+                    <div className="mr-auto">
+                        <GooeyNav
+                            items={items}
+                            particleCount={15}
+                            particleDistances={[90, 10]}
+                            particleR={100}
+                            initialActiveIndex={0}
+                            animationTime={600}
+                            timeVariance={300}
+                            colors={[1, 2, 3, 1, 2, 3, 1, 4]}
+                        />
+                    </div>
                 )}
 
                 <div className="">

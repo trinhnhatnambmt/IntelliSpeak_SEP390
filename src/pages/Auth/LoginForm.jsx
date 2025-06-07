@@ -1,7 +1,7 @@
 import { Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {  authThumb, logo } from "~/assets";
+import { authThumb, logo } from "~/assets";
 
 const LoginForm = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -55,7 +55,10 @@ const LoginForm = () => {
                         </div>
                     </div>
                     <div className="w-96 mx-auto mt-4">
-                        <button className="w-full bg-white text-black border border-gray-400 py-2 rounded-md font-medium hover:bg-zinc-300 transition duration-500 cursor-pointer">
+                        <button
+                            onClick={() => navigate("/main")}
+                            className="w-full bg-white text-black border border-gray-400 py-2 rounded-md font-medium hover:bg-zinc-300 transition duration-500 cursor-pointer"
+                        >
                             Đăng Nhập
                         </button>
                     </div>
