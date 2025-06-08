@@ -10,8 +10,9 @@ import { Reports } from "./pages/Admin/Reports";
 import { Settings } from "./pages/Admin/Settings";
 import { Users } from "./pages/Admin/Users";
 import MainPage from "./pages/main/MainPage";
-import InterviewPractice from "./pages/main/mainContent/InterviewPractice";
-import InterviewPage from "./pages/main/mainContent/InterviewPage";
+import InterviewPractice from "./pages/main/interview/InterviewPractice";
+import InterviewPage from "./pages/main/interview/InterviewPage";
+import Topic from "./pages/main/topic/Topic";
 
 const App = () => {
     return (
@@ -21,6 +22,7 @@ const App = () => {
             <Route path="/main" element={<MainPage />}>
                 <Route index element={<InterviewPractice />} />
                 <Route path="interviewPage" element={<InterviewPage />} />
+                <Route path="topic" element={<Topic />} />
             </Route>
 
             {/* Authentication */}
