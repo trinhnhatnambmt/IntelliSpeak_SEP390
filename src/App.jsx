@@ -11,6 +11,7 @@ import { Settings } from "./pages/Admin/Settings";
 import { Users } from "./pages/Admin/Users";
 import MainPage from "./pages/main/MainPage";
 import InterviewPractice from "./pages/main/mainContent/InterviewPractice";
+import InterviewPage from "./pages/main/mainContent/InterviewPage";
 
 const App = () => {
     return (
@@ -19,12 +20,13 @@ const App = () => {
             <Route path="/upgrade-plan" element={<UpgradePlan />} />
             <Route path="/main" element={<MainPage />}>
                 <Route index element={<InterviewPractice />} />
-                <Route path="interview" element={<InterviewPractice />} />
+                <Route path="interviewPage" element={<InterviewPage />} />
             </Route>
 
             {/* Authentication */}
             <Route path="/login" element={<Auth />} />
             <Route path="/register" element={<Auth />} />
+
             {/* Admin routes - wrapped in AdminLayout */}
             <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<Dashboard />} />

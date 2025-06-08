@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import { robot } from "~/assets";
 import Button from "~/components/Button/Button";
-import ModalInterview from "./InterviewModal";
-import InterviewCard from "./InterviewCard";
+import ModalInterview from "../../../components/InterviewModal";
+import InterviewCard from "../../../components/InterviewCard";
+import { useNavigate } from "react-router-dom";
 
 const InterviewPractice = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
     const showModal = () => {
         setIsModalOpen(true);
     };
     const handleOk = () => {
+        navigate("interviewPage");
         setIsModalOpen(false);
     };
     const handleCancel = () => {
@@ -18,7 +21,7 @@ const InterviewPractice = () => {
 
     return (
         <div className="h-full w-full bg-[#0e0c15]">
-            <div className="fixed top-0 left-0 w-full min-h-screen z-0 bg-[linear-gradient(to_right,#6262622e_1px,transparent_1px),linear-gradient(to_bottom,#6262622e_1px,transparent_1px)] bg-[size:38px_42px] [mask-image:radial-gradient(ellipse_120%_85%_at_50%_100%,#000_70%,transparent_110%)] pointer-events-none"></div>
+            {/* <div className="fixed top-0 left-0 w-full min-h-screen z-0 bg-[linear-gradient(to_right,#6262622e_1px,transparent_1px),linear-gradient(to_bottom,#6262622e_1px,transparent_1px)] bg-[size:38px_42px] [mask-image:radial-gradient(ellipse_120%_85%_at_50%_100%,#000_70%,transparent_110%)] pointer-events-none"></div> */}
 
             <div className="container mx-auto px-5 relative z-10">
                 <div className="w-full h-[330px] ">

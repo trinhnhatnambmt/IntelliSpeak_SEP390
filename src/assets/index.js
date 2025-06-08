@@ -32,8 +32,10 @@ import authVideo from "./videos/auth.mp4";
 import authThumb from "./auth/authThumbnail.jpg";
 import authThumb2 from "./auth/authThumbnail2.jpg";
 import robot from "./robot.png";
+import robot_assistant from "./robot-assistant.png";
 
 export {
+    robot_assistant,
     robot,
     authThumb,
     authThumb2,

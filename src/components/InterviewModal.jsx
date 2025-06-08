@@ -1,6 +1,6 @@
 import { Form, Modal, Select } from "antd";
 
-const ModalInterview = ({ open, onOK, onCancel }) => {
+const ModalInterview = ({ open, onOk, onCancel }) => {
     const handleChange = (value) => {
         console.log(`selected ${value}`);
     };
@@ -8,7 +8,7 @@ const ModalInterview = ({ open, onOK, onCancel }) => {
         <Modal
             title="Bắt đầu phỏng vấn"
             open={open}
-            onOk={onOK}
+            onOk={onOk}
             onCancel={onCancel}
             okText="Bắt đầu phỏng vấn"
             cancelText="Hủy"
