@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import Header from "./sections/Header";
 import Homepage from "./pages/Homepage";
 import UpgradePlan from "./pages/UpgradePlan";
 import Auth from "./pages/Auth/Auth";
@@ -14,6 +13,7 @@ import InterviewPractice from "./pages/main/interview/InterviewPractice";
 import InterviewPage from "./pages/main/interview/InterviewPage";
 import Topic from "./pages/main/topic/Topic";
 import TopicDetail from "./pages/main/topic/TopicDetail";
+import Profile from "./pages/main/personal/Profile";
 
 const App = () => {
     return (
@@ -25,6 +25,7 @@ const App = () => {
                 <Route path="interviewPage" element={<InterviewPage />} />
                 <Route path="topic" element={<Topic />} />
                 <Route path="topicDetail" element={<TopicDetail />} />
+                <Route path="profile" element={<Profile />} />
             </Route>
 
             {/* Authentication */}

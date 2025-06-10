@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { service1 } from "~/assets";
+import { Link } from "react-router-dom";
 
 export default function WalletProfile() {
     const [mounted, setMounted] = useState(false);
@@ -28,18 +29,22 @@ export default function WalletProfile() {
     }
 
     const menuItems = [
-        { icon: <BarChart3 className="w-5 h-5" />, label: "Activity log" },
-        { icon: <Settings className="w-5 h-5" />, label: "Settings" },
-        { icon: <Grid3X3 className="w-5 h-5" />, label: "Integrations" },
+        {
+            icon: <BarChart3 className="w-5 h-5" />,
+            label: "Trang cá nhân",
+            href: "/main/profile",
+        },
+        { icon: <Settings className="w-5 h-5" />, label: "Cài đặt" },
+        // { icon: <Grid3X3 className="w-5 h-5" />, label: "Integrations" },
         {
             icon: <Crown className="w-5 h-5" />,
-            label: "Upgrade to Pro",
+            label: "Nâng cấp pro",
             action: true,
-            actionLabel: "Upgrade",
+            actionLabel: "Nâng cấp",
         },
         {
             icon: <DoorOpen className="w-5 h-5" />,
-            label: "Sign out",
+            label: "Đăng xuất",
             danger: true,
         },
     ];
@@ -137,12 +142,15 @@ export default function WalletProfile() {
                                             damping: 17,
                                         }}
                                     >
-                                        <div className="flex items-center">
+                                        <Link
+                                            to={item.href}
+                                            className="flex items-center"
+                                        >
                                             <span className="mr-3">
                                                 {item.icon}
                                             </span>
                                             <span>{item.label}</span>
-                                        </div>
+                                        </Link>
                                         {item.action && (
                                             <motion.button
                                                 className="px-4 py-1 rounded-md bg-gradient-to-r from-blue-200 via-pink-200 to-yellow-200 dark:bg-[linear-gradient(to_right,_#B2D0F9,_#F08878,_#FDC3B6,_#FFDB9A)] text-black  font-medium text-sm"
