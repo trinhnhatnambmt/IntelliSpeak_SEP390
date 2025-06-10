@@ -280,7 +280,7 @@ const GooeyNav = ({
                 >
                     <ul
                         ref={navRef}
-                        className="flex gap-8 list-none p-0 px-4 m-0 relative z-[3]"
+                        className="flex gap-5 list-none p-0 px-4 m-0 relative z-[3]"
                         style={{
                             color: "white",
                             textShadow: "0 1px 1px hsl(205deg 30% 10% / 0.2)",
@@ -289,7 +289,7 @@ const GooeyNav = ({
                         {items.map((item, index) => (
                             <li
                                 key={index}
-                                className={`py-[0.6em] px-[1em] rounded-full relative cursor-pointer transition-[background-color_color_box-shadow] duration-300 ease shadow-[0_0_0.5px_1.5px_transparent] text-white ${
+                                className={`py-[0.6em] rounded-full relative cursor-pointer transition-[background-color_color_box-shadow] duration-300 ease shadow-[0_0_0.5px_1.5px_transparent] text-white ${
                                     activeIndex === index ? "active" : ""
                                 }`}
                                 onClick={(e) => handleClick(e, index)}
@@ -297,7 +297,7 @@ const GooeyNav = ({
                                 <Link
                                     to={item.href}
                                     onKeyDown={(e) => handleKeyDown(e, index)}
-                                    className="outline-none"
+                                    className="outline-none py-[0.6em] px-[1em]"
                                 >
                                     {item.label}
                                 </Link>
