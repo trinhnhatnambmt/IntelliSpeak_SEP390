@@ -32,13 +32,13 @@ const InterviewPractice = () => {
                                 <h1 className="text-4xl font-bold text-white mb-4">
                                     Rèn Luyện Phỏng Vấn – Tự Tin Ghi Điểm
                                 </h1>
-                                <p className="text-lg text-gray-300">
+                                <p className="text-lg text-gray-300 mb-10">
                                     Mô phỏng buổi phỏng vấn thực tế với AI, nhận
                                     phản hồi chi tiết và cải thiện kỹ năng giao
                                     tiếp để chinh phục nhà tuyển dụng.
                                 </p>
                                 <Button
-                                    className="py-2 px-4 text-black bg-[#CAC5FE] before:bg-purple-400 mr-[470px] mt-5"
+                                    className="absolute bottom-5 left-15 py-2 px-4 text-black bg-[#CAC5FE] before:bg-purple-400 mt-5"
                                     onClick={showModal}
                                 >
                                     Bắt đầu luyện tập
