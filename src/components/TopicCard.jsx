@@ -1,5 +1,6 @@
 import React from "react";
 import { ChevronRight, ChevronsRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const TopicCard = () => {
     return (
@@ -26,8 +27,8 @@ const TopicCard = () => {
                         lộ trình phỏng vấn để trở thành lập trình viên Front-end
                         nhé.
                     </span>
-                    <a
-                        href="#"
+                    <Link
+                        to="/main/topicDetail"
                         className="bg-green-400 w-fit text-base text-white rounded-md  font-normal p-2 flex justify-center mt-5"
                     >
                         Xem chi tiết
@@ -35,7 +36,7 @@ const TopicCard = () => {
                             <ChevronRight className="group-hover:opacity-0 opacity-100 translate-y-0 group-hover:translate-y-2 transition-all duration-300 " />
                             <ChevronsRight className="absolute top-0 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 transition-all duration-300 " />
                         </span>
-                    </a>
+                    </Link>
                 </div>
             </div>
         </>

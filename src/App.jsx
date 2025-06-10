@@ -13,6 +13,7 @@ import MainPage from "./pages/main/MainPage";
 import InterviewPractice from "./pages/main/interview/InterviewPractice";
 import InterviewPage from "./pages/main/interview/InterviewPage";
 import Topic from "./pages/main/topic/Topic";
+import TopicDetail from "./pages/main/topic/TopicDetail";
 
 const App = () => {
     return (
@@ -23,6 +24,7 @@ const App = () => {
                 <Route index element={<InterviewPractice />} />
                 <Route path="interviewPage" element={<InterviewPage />} />
                 <Route path="topic" element={<Topic />} />
+                <Route path="topicDetail" element={<TopicDetail />} />
             </Route>
 
             {/* Authentication */}
