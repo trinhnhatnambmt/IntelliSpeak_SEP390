@@ -4,7 +4,7 @@ import { logo } from "~/assets";
 
 const Footer = () => {
     return (
-        <footer className="w-full mx-auto bg-[#0e0c15] text-white py-12 px-5">
+        <footer className="w-full mx-auto bg-[#0e0c15] text-white py-12 px-5 relative z-10">
             <div className="container mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
                 {/* Logo và Mô tả */}
                 <div className="flex flex-col items-start gap-4 md:w-1/3">

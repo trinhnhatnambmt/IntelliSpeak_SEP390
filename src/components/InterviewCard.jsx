@@ -1,9 +1,10 @@
+/* eslint-disable no-undef */
 import React from "react";
 import { ChevronRight } from "lucide-react";
 import { service2 } from "~/assets";
 import { Link } from "react-router-dom";
 
-const InterviewCard = () => {
+const InterviewCard = ({ type = main }) => {
     return (
         <>
             <div className="w-[90%]] h-[480px] group mx-auto  bg-[#252525] p-2  border-0  overflow-hidden rounded-md text-white ">
@@ -25,7 +26,7 @@ const InterviewCard = () => {
                 </figure>
                 <article className="p-4 space-y-2">
                     <div className="h-8 w-40 bg-[#4393fc] rounded-md flex items-center justify-center mb-2">
-                        Non - Technical 
+                        Non - Technical
                     </div>
                     <h1 className="text-xl font-semibold capitalize">
                         Incorporate your company
@@ -34,15 +35,40 @@ const InterviewCard = () => {
                         Form a legal entity, issue stock, and start accepting
                         payments.
                     </p>
-                    <Link
-                        to="#"
-                        className=" text-base text-white  font-normal  group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 pt-2 flex gap-1  transition-all duration-300  "
-                    >
-                        View Interview
-                        <span>
-                            <ChevronRight />
-                        </span>
-                    </Link>
+                    {type === "main" && (
+                        <Link
+                            to="#"
+                            className=" text-base text-white font-normal group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 pt-2 flex gap-1 transition-all duration-300 "
+                        >
+                            View Interview
+                            <span>
+                                <ChevronRight />
+                            </span>
+                        </Link>
+                    )}
+
+                    {type === "profile" && (
+                        <div className="flex flex-col sm:flex-row gap-2 pt-2">
+                            <Link
+                                to="#"
+                                className="text-base text-white font-normal group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 flex gap-1 transition-all duration-300"
+                            >
+                                Retake Interview
+                                <span>
+                                    <ChevronRight />
+                                </span>
+                            </Link>
+                            <Link
+                                to="/main/feedback"
+                                className="text-base text-white font-normal group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 flex gap-1 transition-all duration-300"
+                            >
+                                View Feedback
+                                <span>
+                                    <ChevronRight />
+                                </span>
+                            </Link>
+                        </div>
+                    )}
                 </article>
             </div>
         </>

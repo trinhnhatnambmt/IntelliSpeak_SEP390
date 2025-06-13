@@ -14,6 +14,7 @@ import InterviewPage from "./pages/main/interview/InterviewPage";
 import Topic from "./pages/main/topic/Topic";
 import TopicDetail from "./pages/main/topic/TopicDetail";
 import Profile from "./pages/main/personal/Profile";
+import FeedBack from "./pages/main/personal/feedback/FeedBack";
 
 const App = () => {
     return (
@@ -26,6 +27,7 @@ const App = () => {
                 <Route path="topic" element={<Topic />} />
                 <Route path="topicDetail" element={<TopicDetail />} />
                 <Route path="profile" element={<Profile />} />
+                <Route path="feedback" element={<FeedBack />} />
             </Route>
 
             {/* Authentication */}

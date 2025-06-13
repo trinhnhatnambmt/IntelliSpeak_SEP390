@@ -64,28 +64,10 @@ const InterviewPractice = () => {
 
                 <div className="w-full py-10 ">
                     <h2 className="font-extrabold text-3xl">
-                        Lịch sử phỏng vấn của bạn
+                        Chọn một đề tài phỏng vấn
                     </h2>
                     <div className="mt-5 grid grid-cols-3 gap-5">
-                        <InterviewCard />
-                        <InterviewCard />
-                        <InterviewCard />
-                        <InterviewCard />
-                        <InterviewCard />
-                        <InterviewCard />
-                    </div>
-                </div>
-                <div className="w-full py-10 ">
-                    <h2 className="font-extrabold text-3xl">
-                        Chọn một chủ đề phỏng vấn
-                    </h2>
-                    <div className="mt-5 grid grid-cols-3 gap-5">
-                        <InterviewCard />
-                        <InterviewCard />
-                        <InterviewCard />
-                        <InterviewCard />
-                        <InterviewCard />
-                        <InterviewCard />
+                        <InterviewCard type="main" />
                     </div>
                 </div>
             </div>
