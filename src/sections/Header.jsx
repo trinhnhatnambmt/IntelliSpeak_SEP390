@@ -23,7 +23,7 @@ const Header = ({ authenticated = false }) => {
     const items = [
         { label: "Luyện tập phỏng vấn", href: "/main" },
         { label: "Chủ đề", href: "/main/topic" },
-        { label: "Phân tích", href: "#" },
+        { label: "Phân tích", href: "/main/analyze" },
         { label: "Kết nối", href: "#" },
     ];
     return (
