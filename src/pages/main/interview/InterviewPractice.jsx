@@ -20,10 +20,10 @@ const InterviewPractice = () => {
     };
 
     return (
-        <div className="h-full w-full bg-[#0e0c15]">
+        <div className="min-h-screen bg-white text-black dark:bg-[#0e0c15] dark:text-white transition-colors duration-300">
             {/* <div className="fixed top-0 left-0 w-full min-h-screen z-0 bg-[linear-gradient(to_right,#6262622e_1px,transparent_1px),linear-gradient(to_bottom,#6262622e_1px,transparent_1px)] bg-[size:38px_42px] [mask-image:radial-gradient(ellipse_120%_85%_at_50%_100%,#000_70%,transparent_110%)] pointer-events-none"></div> */}
 
-            <div className="container mx-auto px-5 relative z-10">
+            <div className="container mx-auto px-5 relative z-10 pt-5">
                 <div className="w-full h-[330px] ">
                     <div className="relative h-full w-full bg-[#171532] rounded-3xl">
                         <div className="absolute rounded-3xl bottom-0 left-0 right-0 top-0 bg-[radial-gradient(125%_125%_at_50%_10%,rgba(255,255,255,0)_40%,rgba(102,51,238,1)_100%)]"></div>

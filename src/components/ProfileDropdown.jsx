@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import {
     Check,
@@ -15,8 +13,10 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { service1 } from "~/assets";
 import { Link } from "react-router-dom";
+import { useTheme } from "~/utils/ThemeContext";
 
 export default function WalletProfile() {
+    const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -57,6 +57,7 @@ export default function WalletProfile() {
                 className="absolute right-0 top-0 w-80 overflow-hidden rounded-3xl bg-white shadow-lg dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 z-50"
             >
                 {/* Profile Header */}
+
                 <motion.div
                     className="py-1 px-6 border-b border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors duration-200"
                     transition={{ duration: 0.2 }}
@@ -162,6 +163,79 @@ export default function WalletProfile() {
                                         )}
                                     </motion.div>
                                 ))}
+                            </div>
+                            {/* Theme Toggle */}
+                            <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
+                                <div className="flex bg-neutral-100 dark:bg-neutral-700 rounded-lg p-1">
+                                    <motion.button
+                                        className={`flex-1 flex items-center justify-center py-2 px-4 rounded-md ${
+                                            theme === "light"
+                                                ? "bg-white dark:bg-neutral-600 shadow-sm"
+                                                : ""
+                                        }`}
+                                        onClick={() => setTheme("light")}
+                                        whileHover={{
+                                            scale: theme !== "light" ? 1.03 : 1,
+                                        }}
+                                        whileTap={{ scale: 0.97 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 400,
+                                            damping: 17,
+                                        }}
+                                    >
+                                        <Sun
+                                            className={`w-4 h-4 mr-2 ${
+                                                theme === "light"
+                                                    ? "text-amber-500"
+                                                    : "text-neutral-500 dark:text-neutral-400"
+                                            }`}
+                                        />
+                                        <span
+                                            className={
+                                                theme === "light"
+                                                    ? "text-neutral-900 dark:text-white font-medium"
+                                                    : "text-neutral-500 dark:text-neutral-400"
+                                            }
+                                        >
+                                            Light
+                                        </span>
+                                    </motion.button>
+                                    <motion.button
+                                        className={`flex-1 flex items-center justify-center py-2 px-4 rounded-md ${
+                                            theme === "dark"
+                                                ? "bg-neutral-600 shadow-sm"
+                                                : ""
+                                        }`}
+                                        onClick={() => setTheme("dark")}
+                                        whileHover={{
+                                            scale: theme !== "dark" ? 1.03 : 1,
+                                        }}
+                                        whileTap={{ scale: 0.97 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 400,
+                                            damping: 17,
+                                        }}
+                                    >
+                                        <Moon
+                                            className={`w-4 h-4 mr-2 ${
+                                                theme === "dark"
+                                                    ? "text-indigo-300"
+                                                    : "text-neutral-500 dark:text-neutral-400"
+                                            }`}
+                                        />
+                                        <span
+                                            className={
+                                                theme === "dark"
+                                                    ? "text-white font-medium"
+                                                    : "text-neutral-500 dark:text-neutral-400"
+                                            }
+                                        >
+                                            Dark
+                                        </span>
+                                    </motion.button>
+                                </div>
                             </div>
 
                             {/* Footer */}

@@ -15,49 +15,58 @@ const Profile = () => {
     ];
 
     return (
-        <div>
-            <div className="container mx-auto px-5 flex mt-10 relative z-10">
-                <div className="w-1/3">
-                    <div className="w-[380px] h-[179px] bg-[#252525] rounded-2xl p-6">
+        <div className="bg-white dark:bg-[#0e0e0e] text-black dark:text-white transition-colors duration-300 min-h-screen pt-3">
+            <div className="container mx-auto px-5 mt-10 flex gap-6 flex-col lg:flex-row relative z-10">
+                {/* Left Info Panel */}
+                <div className="w-full lg:w-1/3 space-y-6">
+                    {/* User card */}
+                    <div className="bg-[#252525] dark:bg-[#1f1f1f] rounded-2xl p-6 shadow-lg">
                         <Avatar
-                            size={64}
+                            size={72}
                             src="https://files.fullstack.edu.vn/f8-prod/user_photos/245178/6319b21466789.jpg"
                         />
-                        <h2 className="font-extrabold text-2xl mt-3 text-white">
+                        <h2 className="font-bold text-2xl mt-4 text-white">
                             Trinh Nhat Huy
                         </h2>
-                        <p className="mt-2 text-neutral-400">@trinhnhathuy3</p>
+                        <p className="text-neutral-400 mt-1">@trinhnhathuy3</p>
                     </div>
-                    <div className="w-[380px] h-[198px] bg-[#252525] rounded-2xl p-6 mt-6">
-                        <h2 className="font-extrabold text-2xl text-white">
+
+                    {/* Info card */}
+                    <div className="bg-[#252525] dark:bg-[#1f1f1f] rounded-2xl p-6 shadow-lg">
+                        <h2 className="font-bold text-xl mb-4 text-white">
                             Thông tin cá nhân
                         </h2>
-                        {personalInfo.map((item) => (
-                            <div
-                                className="flex items-center mt-3 text-neutral-300"
-                                key={item.label}
-                            >
-                                <span className="mr-3 text-neutral-400">
-                                    {item.icon}
-                                </span>
-                                <span>{item.label}</span>
-                            </div>
-                        ))}
+                        <div className="space-y-3">
+                            {personalInfo.map((item) => (
+                                <div
+                                    className="flex items-center text-neutral-300"
+                                    key={item.label}
+                                >
+                                    <span className="mr-3 text-neutral-400">
+                                        {item.icon}
+                                    </span>
+                                    <span>{item.label}</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
-                <div className="w-2/3">
-                    <div className="w-full bg-[#252525] rounded-2xl p-6">
+
+                {/* Right Content */}
+                <div className="w-full lg:w-2/3 space-y-10">
+                    {/* Stats */}
+                    <div className="bg-[#252525] dark:bg-[#1f1f1f] rounded-2xl p-6 shadow-lg">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5 }}
-                            className="text-white"
                         >
-                            <h2 className="text-2xl font-bold mb-4">
+                            <h2 className="text-2xl font-bold mb-6 text-white">
                                 Thống kê luyện phỏng vấn
                             </h2>
-                            <div className="grid grid-cols-3 gap-4">
-                                <div className="bg-[#333] rounded-xl p-4 shadow-md hover:shadow-lg transition duration-300">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                {/* Buổi luyện tập */}
+                                <div className="bg-[#333] dark:bg-[#2a2a2a] rounded-xl p-4 transition shadow hover:shadow-lg">
                                     <p className="text-sm text-neutral-400">
                                         Số buổi luyện tập
                                     </p>
@@ -68,7 +77,9 @@ const Profile = () => {
                                         +3 buổi trong tuần
                                     </p>
                                 </div>
-                                <div className="bg-[#333] rounded-xl p-4 shadow-md hover:shadow-lg transition duration-300">
+
+                                {/* Câu hỏi */}
+                                <div className="bg-[#333] dark:bg-[#2a2a2a] rounded-xl p-4 transition shadow hover:shadow-lg">
                                     <p className="text-sm text-neutral-400">
                                         Câu hỏi đã trả lời
                                     </p>
@@ -79,7 +90,9 @@ const Profile = () => {
                                         +25% so với tuần trước
                                     </p>
                                 </div>
-                                <div className="bg-[#333] rounded-xl p-4 shadow-md hover:shadow-lg transition duration-300">
+
+                                {/* Điểm số */}
+                                <div className="bg-[#333] dark:bg-[#2a2a2a] rounded-xl p-4 transition shadow hover:shadow-lg">
                                     <p className="text-sm text-neutral-400">
                                         Điểm trung bình
                                     </p>
@@ -93,11 +106,13 @@ const Profile = () => {
                             </div>
                         </motion.div>
                     </div>
-                    <div className="w-full py-10 ">
-                        <h2 className="font-extrabold text-3xl">
+
+                    {/* Interview History */}
+                    <div>
+                        <h2 className="font-extrabold text-3xl mb-6">
                             Lịch sử phỏng vấn của bạn
                         </h2>
-                        <div className="mt-5 grid grid-cols-2 gap-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <InterviewCard type="profile" />
                             <InterviewCard type="profile" />
                             <InterviewCard type="profile" />

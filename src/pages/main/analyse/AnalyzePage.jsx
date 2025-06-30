@@ -23,61 +23,60 @@ const UploadCVPage = () => {
     };
 
     return (
-        <div className="container mx-auto px-5 mt-20 relative z-10">
-            <div className="bg-[#1e1e1e] rounded-2xl p-10 text-white shadow-2xl">
-                <h2 className="text-3xl font-extrabold mb-8 text-center">
+        <section className=" min-h-screen py-20 px-4 bg-gradient-to-br from-white via-neutral-100 to-white dark:from-[#0e0e0e] dark:via-[#111] dark:to-[#0e0e0e] transition-colors duration-300">
+            <div className="max-w-4xl mx-auto bg-white dark:bg-[#1b1b1b] rounded-3xl shadow-2xl p-10 relative z-10">
+                <h1 className="text-4xl font-bold text-center text-neutral-900 dark:text-white mb-10">
                     Phân tích hồ sơ ứng tuyển
-                </h2>
+                </h1>
 
-                <div className="flex justify-center space-x-6 mb-10">
+                {/* Buttons */}
+                <div className="flex justify-center gap-4 mb-8">
                     <button
                         onClick={() => setUploadType("cv")}
-                        className={`px-6 py-3 rounded-full font-semibold transition duration-300 ${
+                        className={`px-6 py-2 rounded-full font-medium border-2 transition-all duration-300 ${
                             uploadType === "cv"
-                                ? "bg-white text-black shadow-lg"
-                                : "bg-[#333] text-white hover:bg-[#444]"
+                                ? "bg-green-500 text-white border-green-500 shadow-lg"
+                                : "bg-transparent dark:bg-[#2a2a2a] text-neutral-700 dark:text-white border-neutral-300 dark:border-[#444] hover:bg-neutral-100 dark:hover:bg-[#333]"
                         }`}
                     >
                         📄 Tải lên CV
                     </button>
                     <button
                         onClick={() => setUploadType("jd")}
-                        className={`px-6 py-3 rounded-full font-semibold transition duration-300 ${
+                        className={`px-6 py-2 rounded-full font-medium border-2 transition-all duration-300 ${
                             uploadType === "jd"
-                                ? "bg-white text-black shadow-lg"
-                                : "bg-[#333] text-white hover:bg-[#444]"
+                                ? "bg-blue-500 text-white border-blue-500 shadow-lg"
+                                : "bg-transparent dark:bg-[#2a2a2a] text-neutral-700 dark:text-white border-neutral-300 dark:border-[#444] hover:bg-neutral-100 dark:hover:bg-[#333]"
                         }`}
                     >
                         🧾 Tải lên JD
                     </button>
                 </div>
 
-                <div className="max-w-2xl mx-auto">
-                    <div className="bg-[#2b2b2b] rounded-xl p-8">
-                        <h3 className="text-xl font-semibold mb-4 text-center">
-                            {uploadType === "cv"
-                                ? "Chọn tệp CV để phân tích"
-                                : "Chọn JD để phân tích"}
-                        </h3>
-
-                        <Dragger
-                            {...props}
-                            className="!bg-[#1e1e1e] !border-dashed !border-2 !border-[#444] rounded-xl hover:!border-white transition duration-300"
-                        >
-                            <p className="ant-upload-drag-icon text-white">
-                                <InboxOutlined style={{ fontSize: "48px" }} />
-                            </p>
-                            <p className="text-white text-lg font-medium">
-                                Kéo & thả tệp vào đây hoặc nhấn để chọn
-                            </p>
-                            <p className="text-sm text-neutral-400">
-                                Chấp nhận: .pdf, .doc, .docx
-                            </p>
-                        </Dragger>
-                    </div>
+                {/* Upload area */}
+                <div className="bg-neutral-50 dark:bg-[#252525] border border-dashed border-neutral-300 dark:border-neutral-600 rounded-xl px-6 py-10 text-center shadow-inner transition-all duration-300">
+                    <h3 className="text-xl font-semibold mb-4 text-neutral-800 dark:text-white">
+                        {uploadType === "cv"
+                            ? "Chọn tệp CV để phân tích"
+                            : "Chọn JD để phân tích"}
+                    </h3>
+                    <Dragger
+                        {...props}
+                        className="!bg-transparent !border-none dark:!text-white"
+                    >
+                        <InboxOutlined
+                            style={{ fontSize: "48px", color: "#888" }}
+                        />
+                        <p className="mt-4 text-lg font-medium text-neutral-700 dark:text-white">
+                            Kéo & thả tệp vào đây hoặc nhấn để chọn
+                        </p>
+                        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                            Định dạng: .pdf, .doc, .docx
+                        </p>
+                    </Dragger>
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 
