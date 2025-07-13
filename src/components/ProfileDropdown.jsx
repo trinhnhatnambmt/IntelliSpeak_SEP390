@@ -34,7 +34,11 @@ export default function WalletProfile() {
             label: "Trang cá nhân",
             href: "/main/profile",
         },
-        { icon: <Settings className="w-5 h-5" />, label: "Cài đặt" },
+        {
+            icon: <Settings className="w-5 h-5" />,
+            label: "Cài đặt",
+            href: "/main/settings",
+        },
         // { icon: <Grid3X3 className="w-5 h-5" />, label: "Integrations" },
         {
             icon: <Crown className="w-5 h-5" />,

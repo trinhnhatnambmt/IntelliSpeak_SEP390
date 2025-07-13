@@ -70,10 +70,10 @@ const Profile = () => {
                                     <p className="text-sm text-neutral-400">
                                         Số buổi luyện tập
                                     </p>
-                                    <p className="text-xl font-semibold mt-1">
+                                    <p className="text-xl text-white-50 font-semibold mt-1">
                                         12 buổi
                                     </p>
-                                    <p className="text-green-400 text-sm mt-1">
+                                    <p className="text-green-400 text-sm mt-1 ">
                                         +3 buổi trong tuần
                                     </p>
                                 </div>
@@ -83,7 +83,7 @@ const Profile = () => {
                                     <p className="text-sm text-neutral-400">
                                         Câu hỏi đã trả lời
                                     </p>
-                                    <p className="text-xl font-semibold mt-1">
+                                    <p className="text-xl text-white-50 font-semibold mt-1">
                                         134 câu
                                     </p>
                                     <p className="text-green-400 text-sm mt-1">
@@ -96,7 +96,7 @@ const Profile = () => {
                                     <p className="text-sm text-neutral-400">
                                         Điểm trung bình
                                     </p>
-                                    <p className="text-xl font-semibold mt-1">
+                                    <p className="text-xl text-white-50 font-semibold mt-1">
                                         8.4 / 10
                                     </p>
                                     <p className="text-yellow-400 text-sm mt-1">
