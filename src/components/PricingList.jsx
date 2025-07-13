@@ -3,8 +3,10 @@ import { check } from "~/assets";
 import { pricing } from "~/constants";
 import Button from "./Button/Button";
 import clsx from "clsx";
+import { useNavigate } from "react-router-dom";
 
 const PricingList = () => {
+    const navigate = useNavigate();
     return (
         <div className="flex gap-[1rem] max-lg:flex-wrap">
             {pricing.map((item) => (
@@ -40,6 +42,7 @@ const PricingList = () => {
                     </div>
 
                     <Button
+                        onClick={() => navigate("/main/payment")}
                         className={clsx(
                             "w-full mb-6 py-3",
                             item.price === "0" &&

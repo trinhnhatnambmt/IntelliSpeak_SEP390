@@ -41,6 +41,7 @@ export default function WalletProfile() {
             label: "Nâng cấp pro",
             action: true,
             actionLabel: "Nâng cấp",
+            href: "/upgrade-plan",
         },
         {
             icon: <DoorOpen className="w-5 h-5" />,

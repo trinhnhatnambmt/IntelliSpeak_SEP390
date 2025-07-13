@@ -16,12 +16,18 @@ import TopicDetail from "./pages/main/topic/TopicDetail";
 import Profile from "./pages/main/personal/Profile";
 import FeedBack from "./pages/main/personal/feedback/FeedBack";
 import AnalyzePage from "./pages/main/analyse/AnalyzePage";
+import Payment from "./pages/Payment/Payment";
+import PaymentSuccess from "./pages/Payment/PaymentSuccess";
+import PaymentFailed from "./pages/Payment/PaymentFailed";
 
 const App = () => {
     return (
         <Routes>
             <Route path="/" element={<Homepage />} />
             <Route path="/upgrade-plan" element={<UpgradePlan />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-failed" element={<PaymentFailed />} />
+
             <Route path="/main" element={<MainPage />}>
                 <Route index element={<InterviewPractice />} />
                 <Route path="interviewPage" element={<InterviewPage />} />
@@ -30,6 +36,7 @@ const App = () => {
                 <Route path="profile" element={<Profile />} />
                 <Route path="feedback" element={<FeedBack />} />
                 <Route path="analyze" element={<AnalyzePage />} />
+                <Route path="payment" element={<Payment />} />
             </Route>
 
             {/* Authentication */}
