@@ -52,7 +52,7 @@ export default function WalletProfile() {
         {
             icon: <BookOpenText className="w-5 h-5" />,
             label: "Tạo bài viết",
-            href: "/upgrade-plan",
+            href: "/main/newPostPage",
         },
         {
             icon: <Crown className="w-5 h-5" />,

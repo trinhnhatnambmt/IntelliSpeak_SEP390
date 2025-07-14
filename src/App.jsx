@@ -18,6 +18,7 @@ import Settings from "./pages/main/settings/Settings";
 import Forum from "./pages/main/forum/Forum";
 import ForumDetail from "./pages/main/forum/SinglePostPage/SinglePostPage";
 import SinglePostPage from "./pages/main/forum/SinglePostPage/SinglePostPage";
+import NewPostPage from "./pages/main/forum/NewPostPage/NewPostPage";
 
 const App = () => {
     return (
@@ -39,6 +40,7 @@ const App = () => {
                 <Route path="settings" element={<Settings />} />
                 <Route path="forum" element={<Forum />} />
                 <Route path="singlePostPage" element={<SinglePostPage />} />
+                <Route path="newPostPage" element={<NewPostPage />} />
             </Route>
 
             {/* Authentication */}
