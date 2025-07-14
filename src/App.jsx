@@ -15,6 +15,9 @@ import Payment from "./pages/Payment/Payment";
 import PaymentSuccess from "./pages/Payment/PaymentSuccess";
 import PaymentFailed from "./pages/Payment/PaymentFailed";
 import Settings from "./pages/main/settings/Settings";
+import Forum from "./pages/main/forum/Forum";
+import ForumDetail from "./pages/main/forum/SinglePostPage/SinglePostPage";
+import SinglePostPage from "./pages/main/forum/SinglePostPage/SinglePostPage";
 
 const App = () => {
     return (
@@ -34,6 +37,8 @@ const App = () => {
                 <Route path="analyze" element={<AnalyzePage />} />
                 <Route path="payment" element={<Payment />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="forum" element={<Forum />} />
+                <Route path="singlePostPage" element={<SinglePostPage />} />
             </Route>
 
             {/* Authentication */}

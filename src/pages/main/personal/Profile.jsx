@@ -15,7 +15,7 @@ const Profile = () => {
     ];
 
     return (
-        <div className="bg-white dark:bg-[#0e0e0e] text-black dark:text-white transition-colors duration-300 min-h-screen pt-3">
+        <div className="bg-white dark:bg-[#0e0c15] text-black dark:text-white transition-colors duration-300 min-h-screen pt-3">
             <div className="container mx-auto px-5 mt-10 flex gap-6 flex-col lg:flex-row relative z-10">
                 {/* Left Info Panel */}
                 <div className="w-full lg:w-1/3 space-y-6">
@@ -108,7 +108,7 @@ const Profile = () => {
                     </div>
 
                     {/* Interview History */}
-                    <div>
+                    <div className="pb-10">
                         <h2 className="font-extrabold text-3xl mb-6">
                             Lịch sử phỏng vấn của bạn
                         </h2>

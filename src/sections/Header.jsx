@@ -24,7 +24,7 @@ const Header = ({ authenticated = false }) => {
         { label: "Luyện tập phỏng vấn", href: "/main" },
         { label: "Chủ đề", href: "/main/topic" },
         { label: "Phân tích", href: "/main/analyze" },
-        { label: "Kết nối", href: "#" },
+        { label: "Kết nối", href: "/main/forum" },
     ];
     return (
         <header

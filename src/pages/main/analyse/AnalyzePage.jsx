@@ -23,7 +23,7 @@ const UploadCVPage = () => {
     };
 
     return (
-        <section className=" min-h-screen py-20 px-4 bg-gradient-to-br from-white via-neutral-100 to-white dark:from-[#0e0e0e] dark:via-[#111] dark:to-[#0e0e0e] transition-colors duration-300">
+        <section className=" min-h-screen py-20 px-4 bg-gradient-to-br from-white via-neutral-100 to-white dark:from-[#0e0c15] dark:via-[#0e0c15] dark:to-[#0e0c15] transition-colors duration-300">
             <div className="max-w-4xl mx-auto bg-white dark:bg-[#1b1b1b] rounded-3xl shadow-2xl p-10 relative z-10">
                 <h1 className="text-4xl font-bold text-center text-neutral-900 dark:text-white mb-10">
                     Phân tích hồ sơ ứng tuyển

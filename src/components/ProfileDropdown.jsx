@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     Check,
     ChevronUp,
     BarChart3,
     Settings,
-    Grid3X3,
     Crown,
     DoorOpen,
     Sun,
     Moon,
+    BookOpenText,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { service1 } from "~/assets";
@@ -19,9 +19,23 @@ export default function WalletProfile() {
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const menuRef = useRef(null);
 
     useEffect(() => {
         setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
     }, []);
 
     if (!mounted) {
@@ -34,12 +48,12 @@ export default function WalletProfile() {
             label: "Trang cá nhân",
             href: "/main/profile",
         },
+
         {
-            icon: <Settings className="w-5 h-5" />,
-            label: "Cài đặt",
-            href: "/main/settings",
+            icon: <BookOpenText className="w-5 h-5" />,
+            label: "Tạo bài viết",
+            href: "/upgrade-plan",
         },
-        // { icon: <Grid3X3 className="w-5 h-5" />, label: "Integrations" },
         {
             icon: <Crown className="w-5 h-5" />,
             label: "Nâng cấp pro",
@@ -48,6 +62,12 @@ export default function WalletProfile() {
             href: "/upgrade-plan",
         },
         {
+            icon: <Settings className="w-5 h-5" />,
+            label: "Cài đặt",
+            href: "/main/settings",
+        },
+
+        {
             icon: <DoorOpen className="w-5 h-5" />,
             label: "Đăng xuất",
             danger: true,
@@ -55,14 +75,14 @@ export default function WalletProfile() {
     ];
 
     return (
-        <div className="">
+        <div>
             <motion.div
+                ref={menuRef}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="absolute right-0 top-0 w-80 overflow-hidden rounded-3xl bg-white shadow-lg dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 z-50"
             >
                 {/* Profile Header */}
-
                 <motion.div
                     className="py-1 px-6 border-b border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors duration-200"
                     transition={{ duration: 0.2 }}
@@ -151,6 +171,7 @@ export default function WalletProfile() {
                                         <Link
                                             to={item.href}
                                             className="flex items-center"
+                                            onClick={() => setIsOpen(false)}
                                         >
                                             <span className="mr-3">
                                                 {item.icon}
@@ -169,6 +190,7 @@ export default function WalletProfile() {
                                     </motion.div>
                                 ))}
                             </div>
+
                             {/* Theme Toggle */}
                             <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
                                 <div className="flex bg-neutral-100 dark:bg-neutral-700 rounded-lg p-1">
