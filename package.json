@@ -10,6 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.2.0",
+    "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.6",
     "antd": "^5.25.4",
     "chart.js": "^4.4.9",
@@ -22,8 +26,10 @@
     "react": "^19.1.0",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.60.0",
     "react-just-parallax": "^3.1.16",
     "react-quill-new": "^3.4.6",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^6.30.0",
     "tailwindcss": "^4.1.6"
   },

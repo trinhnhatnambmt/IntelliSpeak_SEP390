@@ -2,15 +2,40 @@ import { Eye, EyeOffIcon } from "lucide-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authThumb2, logo } from "~/assets";
+import {
+    EMAIL_RULE,
+    EMAIL_RULE_MESSAGE,
+    FIELD_REQUIRED_MESSAGE,
+    PASSWORD_CONFIRMATION_MESSAGE,
+    PASSWORD_RULE,
+    PASSWORD_RULE_MESSAGE,
+} from "~/utils/validators";
+import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
+import { useForm } from "react-hook-form";
 
 const RegisterForm = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [isVisible2, setIsVisible2] = useState(false);
     const navigate = useNavigate();
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        watch,
+    } = useForm();
+
+    const submitRegister = (data) => {
+        console.log("submit login:", data);
+    };
+
     return (
         <div className="relative mx-auto">
             <div className="flex justify-between">
-                <div className="relative flex flex-col gap-5 justify-center items-center w-1/2">
+                <form
+                    onSubmit={handleSubmit(submitRegister)}
+                    className="relative flex flex-col gap-5 justify-center items-center w-1/2"
+                >
                     <img
                         src={logo}
                         alt="logo"
@@ -29,6 +54,17 @@ const RegisterForm = () => {
                                 id="email"
                                 placeholder="Email"
                                 className="w-full outline-none focus-within:border-white rounded-md p-2 border-[1px] border-gray-400"
+                                {...register("email", {
+                                    required: FIELD_REQUIRED_MESSAGE,
+                                    pattern: {
+                                        value: EMAIL_RULE,
+                                        message: EMAIL_RULE_MESSAGE,
+                                    },
+                                })}
+                            />
+                            <FieldErrorAlert
+                                errors={errors}
+                                fieldName={"email"}
                             />
                         </div>
                     </div>
@@ -42,6 +78,13 @@ const RegisterForm = () => {
                                 id="pass"
                                 placeholder="Password"
                                 className="w-full outline-none focus-within:border-white rounded-md p-2 border-[1px] border-gray-400"
+                                {...register("password", {
+                                    required: FIELD_REQUIRED_MESSAGE,
+                                    pattern: {
+                                        value: PASSWORD_RULE,
+                                        message: PASSWORD_RULE_MESSAGE,
+                                    },
+                                })}
                             />
                             <div
                                 className="absolute top-3 right-4 text-2xl text-gray-500 cursor-pointer"
@@ -53,6 +96,10 @@ const RegisterForm = () => {
                                     <EyeOffIcon size={22} />
                                 )}
                             </div>
+                            <FieldErrorAlert
+                                errors={errors}
+                                fieldName={"password"}
+                            />
                         </div>
                     </div>
                     <div className="w-96 mx-auto">
@@ -65,6 +112,14 @@ const RegisterForm = () => {
                                 id="pass"
                                 placeholder="Confirm Password"
                                 className="w-full outline-none focus-within:border-white rounded-md p-2 border-[1px] border-gray-400"
+                                {...register("password_Confirmation", {
+                                    validate: (value) => {
+                                        if (value === watch("password")) {
+                                            return true;
+                                        }
+                                        return PASSWORD_CONFIRMATION_MESSAGE;
+                                    },
+                                })}
                             />
                             <div
                                 className="absolute top-3 right-4 text-2xl text-gray-500 cursor-pointer"
@@ -76,6 +131,10 @@ const RegisterForm = () => {
                                     <EyeOffIcon size={22} />
                                 )}
                             </div>
+                            <FieldErrorAlert
+                                errors={errors}
+                                fieldName={"password_Confirmation"}
+                            />
                         </div>
                     </div>
                     <div className="w-96 mx-auto mt-4">
@@ -125,7 +184,8 @@ const RegisterForm = () => {
                             </Link>
                         </span>
                     </div>
-                </div>
+                </form>
+
                 <div className="w-1/2 relative">
                     <img
                         src={authThumb2}
