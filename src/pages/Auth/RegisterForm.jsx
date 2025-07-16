@@ -12,6 +12,8 @@ import {
 } from "~/utils/validators";
 import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { registerUserAPI } from "~/apis";
 
 const RegisterForm = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -26,7 +28,19 @@ const RegisterForm = () => {
     } = useForm();
 
     const submitRegister = (data) => {
-        console.log("submit login:", data);
+        const { email, password, password_Confirmation } = data;
+        toast
+            .promise(
+                registerUserAPI({
+                    email,
+                    password,
+                    confirmPassword: password_Confirmation,
+                }),
+                {
+                    pending: "Đang đăng ký tài khoản...",
+                }
+            )
+            .then(() => navigate("/login"));
     };
 
     return (
@@ -138,7 +152,10 @@ const RegisterForm = () => {
                         </div>
                     </div>
                     <div className="w-96 mx-auto mt-4">
-                        <button className="w-full bg-white text-black border border-gray-400 py-2 rounded-md font-medium hover:bg-zinc-300 transition duration-500 cursor-pointer">
+                        <button
+                            type="submit"
+                            className="interceptor-loading w-full bg-white text-black border border-gray-400 py-2 rounded-md font-medium hover:bg-zinc-300 transition duration-500 cursor-pointer"
+                        >
                             Đăng Ký
                         </button>
                     </div>

@@ -11,10 +11,14 @@ import {
     PASSWORD_RULE_MESSAGE,
 } from "~/utils/validators";
 import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { loginUserAPI } from "~/redux/user/userSlice";
 
 const LoginForm = () => {
     const [isVisible, setIsVisible] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const {
         register,
@@ -23,7 +27,27 @@ const LoginForm = () => {
     } = useForm();
 
     const submitLogin = (data) => {
-        console.log("submit login:", data);
+        // console.log("submit login:", data);
+        const { email, password } = data;
+        toast
+            .promise(
+                dispatch(
+                    loginUserAPI({
+                        email,
+                        password,
+                    })
+                ),
+                {
+                    pending: "Đang đăng nhập tài khoản...",
+                }
+            )
+            .then((res) => {
+                console.log(res);
+                // Đoạn này kiểm tra ko có lỗi thì redirect về route
+                if (!res.error) {
+                    navigate("/main");
+                }
+            });
     };
 
     return (
@@ -76,10 +100,10 @@ const LoginForm = () => {
                                 className="w-full outline-none focus-within:border-white rounded-md p-2 border-[1px] border-gray-400"
                                 {...register("password", {
                                     required: FIELD_REQUIRED_MESSAGE,
-                                    pattern: {
-                                        value: PASSWORD_RULE,
-                                        message: PASSWORD_RULE_MESSAGE,
-                                    },
+                                    // pattern: {
+                                    //     value: PASSWORD_RULE,
+                                    //     message: PASSWORD_RULE_MESSAGE,
+                                    // },
                                 })}
                             />
                             <div
@@ -100,9 +124,8 @@ const LoginForm = () => {
                     </div>
                     <div className="w-96 mx-auto mt-4">
                         <button
-                            // onClick={() => navigate("!#")}
                             type="submit"
-                            className="w-full bg-white text-black border border-gray-400 py-2 rounded-md font-medium hover:bg-zinc-300 transition duration-500 cursor-pointer"
+                            className="interceptor-loading w-full bg-white text-black border border-gray-400 py-2 rounded-md font-medium hover:bg-zinc-300 transition duration-500 cursor-pointer"
                         >
                             Đăng Nhập
                         </button>

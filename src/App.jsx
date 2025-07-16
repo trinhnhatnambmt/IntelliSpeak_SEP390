@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Homepage from "./pages/Homepage";
 import UpgradePlan from "./pages/UpgradePlan";
 import Auth from "./pages/Auth/Auth";
@@ -19,8 +19,17 @@ import Forum from "./pages/main/forum/Forum";
 import ForumDetail from "./pages/main/forum/SinglePostPage/SinglePostPage";
 import SinglePostPage from "./pages/main/forum/SinglePostPage/SinglePostPage";
 import NewPostPage from "./pages/main/forum/NewPostPage/NewPostPage";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "./redux/user/userSlice";
+
+const ProtectedRoutes = ({ user }) => {
+    if (!user) return <Navigate to="/" replace={true} />;
+    return <Outlet />;
+};
 
 const App = () => {
+    const currentUser = useSelector(selectCurrentUser);
+
     return (
         <Routes>
             <Route path="/" element={<Homepage />} />
@@ -28,19 +37,21 @@ const App = () => {
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/payment-failed" element={<PaymentFailed />} />
 
-            <Route path="/main" element={<MainPage />}>
-                <Route index element={<InterviewPractice />} />
-                <Route path="interviewPage" element={<InterviewPage />} />
-                <Route path="topic" element={<Topic />} />
-                <Route path="topicDetail" element={<TopicDetail />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="feedback" element={<FeedBack />} />
-                <Route path="analyze" element={<AnalyzePage />} />
-                <Route path="payment" element={<Payment />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="forum" element={<Forum />} />
-                <Route path="singlePostPage" element={<SinglePostPage />} />
-                <Route path="newPostPage" element={<NewPostPage />} />
+            <Route element={<ProtectedRoutes user={currentUser} />}>
+                <Route path="/main" element={<MainPage />}>
+                    <Route index element={<InterviewPractice />} />
+                    <Route path="interviewPage" element={<InterviewPage />} />
+                    <Route path="topic" element={<Topic />} />
+                    <Route path="topicDetail" element={<TopicDetail />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="feedback" element={<FeedBack />} />
+                    <Route path="analyze" element={<AnalyzePage />} />
+                    <Route path="payment" element={<Payment />} />
+                    <Route path="settings" element={<Settings />} />
+                    <Route path="forum" element={<Forum />} />
+                    <Route path="singlePostPage" element={<SinglePostPage />} />
+                    <Route path="newPostPage" element={<NewPostPage />} />
+                </Route>
             </Route>
 
             {/* Authentication */}

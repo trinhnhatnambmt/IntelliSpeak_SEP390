@@ -11,15 +11,18 @@ import {
     BookOpenText,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { service1 } from "~/assets";
 import { Link } from "react-router-dom";
 import { useTheme } from "~/utils/ThemeContext";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUserAPI, selectCurrentUser } from "~/redux/user/userSlice";
 
 export default function WalletProfile() {
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
 
     useEffect(() => {
         setMounted(true);
@@ -41,6 +44,10 @@ export default function WalletProfile() {
     if (!mounted) {
         return null;
     }
+
+    const handleLogout = () => {
+        dispatch(logoutUserAPI());
+    };
 
     const menuItems = [
         {
@@ -70,6 +77,7 @@ export default function WalletProfile() {
         {
             icon: <DoorOpen className="w-5 h-5" />,
             label: "Đăng xuất",
+            onClick: handleLogout,
             danger: true,
         },
     ];
@@ -104,7 +112,7 @@ export default function WalletProfile() {
                                         alt="Profile Picture"
                                         width={40}
                                         height={40}
-                                        src={service1}
+                                        src={currentUser?.user?.avatar}
                                     />
                                 </div>
                             </div>
@@ -171,7 +179,13 @@ export default function WalletProfile() {
                                         <Link
                                             to={item.href}
                                             className="flex items-center"
-                                            onClick={() => setIsOpen(false)}
+                                            onClick={(e) => {
+                                                setIsOpen(false);
+                                                if (item.onClick) {
+                                                    e.preventDefault(); // Ngăn điều hướng nếu có onClick (ví dụ logout)
+                                                    item.onClick();
+                                                }
+                                            }}
                                         >
                                             <span className="mr-3">
                                                 {item.icon}
