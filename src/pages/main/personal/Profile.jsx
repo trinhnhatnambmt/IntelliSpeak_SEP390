@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import InterviewCard from "~/components/InterviewCard";
 import Footer from "~/sections/Footer";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getUserProfileAPI } from "~/apis";
 
 const Profile = () => {
     const personalInfo = [
@@ -17,6 +19,15 @@ const Profile = () => {
     ];
 
     const navigate = useNavigate();
+
+    const [userProfile, setUserProfile] = useState(null);
+
+    useEffect(() => {
+        getUserProfileAPI().then((data) => {
+            setUserProfile(data);
+            console.log(data);
+        });
+    }, []);
 
     return (
         <div className="bg-white dark:bg-[#0e0c15] text-black dark:text-white transition-colors duration-300 min-h-screen pt-3">

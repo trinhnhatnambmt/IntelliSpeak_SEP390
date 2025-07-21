@@ -13,3 +13,8 @@ export const registerUserAPI = async (data) => {
     );
     return response.data;
 };
+
+export const getUserProfileAPI = async () => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/profile`);
+    return response.data;
+};

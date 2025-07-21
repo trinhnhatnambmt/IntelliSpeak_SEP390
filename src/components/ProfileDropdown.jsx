@@ -24,6 +24,8 @@ export default function WalletProfile() {
     const dispatch = useDispatch();
     const currentUser = useSelector(selectCurrentUser);
 
+    // console.log(currentUser);
+
     useEffect(() => {
         setMounted(true);
     }, []);
