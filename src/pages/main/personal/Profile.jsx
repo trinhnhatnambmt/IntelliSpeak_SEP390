@@ -1,8 +1,9 @@
-import { Avatar } from "antd";
-import { Mail, MapIcon, Phone } from "lucide-react";
+import { Avatar, Button } from "antd";
+import { Glasses, Mail, MapIcon, Phone, TicketCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import InterviewCard from "~/components/InterviewCard";
 import Footer from "~/sections/Footer";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
     const personalInfo = [
@@ -12,7 +13,10 @@ const Profile = () => {
         },
         { icon: <Phone className="w-5 h-5" />, label: "094353454" },
         { icon: <MapIcon className="w-5 h-5" />, label: "Vietnam" },
+        { icon: <TicketCheck className="w-5 h-5" />, label: "Ứng viên" },
     ];
+
+    const navigate = useNavigate();
 
     return (
         <div className="bg-white dark:bg-[#0e0c15] text-black dark:text-white transition-colors duration-300 min-h-screen pt-3">
@@ -49,6 +53,14 @@ const Profile = () => {
                                 </div>
                             ))}
                         </div>
+                        <button
+                            className="flex items-center cursor-pointer gap-2 mt-4 px-4 py-2 rounded-lg font-semibold transition-colors duration-300
+             bg-blue-600 text-white hover:bg-blue-700 
+             dark:bg-blue-500 dark:hover:bg-blue-600"
+                            onClick={() => navigate("/main/updateHR")}
+                        >
+                            <Glasses /> <p>Trở thành người đánh giá</p>
+                        </button>
                     </div>
                 </div>
 

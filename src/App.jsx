@@ -21,6 +21,7 @@ import SinglePostPage from "./pages/main/forum/SinglePostPage/SinglePostPage";
 import NewPostPage from "./pages/main/forum/NewPostPage/NewPostPage";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "./redux/user/userSlice";
+import UpdateHR from "./pages/main/update/UpdateHR";
 
 const ProtectedRoutes = ({ user }) => {
     if (!user) return <Navigate to="/" replace={true} />;
@@ -51,6 +52,7 @@ const App = () => {
                     <Route path="forum" element={<Forum />} />
                     <Route path="singlePostPage" element={<SinglePostPage />} />
                     <Route path="newPostPage" element={<NewPostPage />} />
+                    <Route path="updateHR" element={<UpdateHR />} />
                 </Route>
             </Route>
 
