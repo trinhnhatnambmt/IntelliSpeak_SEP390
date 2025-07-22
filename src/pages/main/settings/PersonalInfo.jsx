@@ -1,7 +1,12 @@
 import { Avatar } from "antd";
 import React from "react";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "~/redux/user/userSlice";
 
 const PersonalInfo = () => {
+    const currentUser = useSelector(selectCurrentUser);
+    console.log("🚀 ~ PersonalInfo ~ currentUser:", currentUser);
+
     return (
         <div>
             {" "}
@@ -13,13 +18,28 @@ const PersonalInfo = () => {
                     Thông tin cơ bản
                 </h3>
                 <div className="space-y-3">
-                    <InfoRow label="Họ và tên" value="Nhat Huy Trinh" />
+                    <InfoRow
+                        label="Họ"
+                        value={currentUser?.user?.firstName || "Chưa cập nhật"}
+                    />
+                    <InfoRow
+                        label="Tên"
+                        value={currentUser?.user?.lastName || "Chưa cập nhật"}
+                    />
                     <InfoRow
                         label="Tên người dùng"
-                        value="trinhnhathuyk17hcm"
+                        value={currentUser?.user?.userName || "Chưa cập nhật"}
                     />
-                    <InfoRow label="Giới thiệu" value="Chưa cập nhật" />
-                    <InfoRow label="Ảnh đại diện" value={<AvatarInitial />} />
+                    <InfoRow
+                        label="Số điện thoại"
+                        value={currentUser?.user?.phone || "Chưa cập nhật"}
+                    />
+                    <InfoRow
+                        label="Ảnh đại diện"
+                        value={
+                            <Avatar size={45} src={currentUser?.user?.avatar} />
+                        }
+                    />
                 </div>
             </section>
             <section>
@@ -27,11 +47,26 @@ const PersonalInfo = () => {
                     Thông tin mạng xã hội
                 </h3>
                 <div className="space-y-3">
-                    <InfoRow label="Trang web cá nhân" value="Chưa cập nhật" />
-                    <InfoRow label="GitHub" value="Chưa cập nhật" />
-                    <InfoRow label="LinkedIn" value="Chưa cập nhật" />
-                    <InfoRow label="Facebook" value="Chưa cập nhật" />
-                    <InfoRow label="YouTube" value="Chưa cập nhật" />
+                    <InfoRow
+                        label="Trang web cá nhân"
+                        value={currentUser?.user?.website || "Chưa cập nhật"}
+                    />
+                    <InfoRow
+                        label="GitHub"
+                        value={currentUser?.user?.github || "Chưa cập nhật"}
+                    />
+                    <InfoRow
+                        label="LinkedIn"
+                        value={currentUser?.user?.linkedin || "Chưa cập nhật"}
+                    />
+                    <InfoRow
+                        label="Facebook"
+                        value={currentUser?.user?.facebook || "Chưa cập nhật"}
+                    />
+                    <InfoRow
+                        label="YouTube"
+                        value={currentUser?.user?.youtube || "Chưa cập nhật"}
+                    />
                 </div>
             </section>
         </div>

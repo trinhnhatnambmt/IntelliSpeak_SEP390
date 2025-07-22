@@ -122,7 +122,7 @@ export default function WalletProfile() {
                         <div className="flex-1">
                             <div className="flex items-center">
                                 <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
-                                    Arihant Jain
+                                    {currentUser?.user?.userName}
                                 </h2>
                                 <motion.div
                                     className="ml-2 flex items-center justify-center w-5 h-5 bg-blue-500 rounded-full"

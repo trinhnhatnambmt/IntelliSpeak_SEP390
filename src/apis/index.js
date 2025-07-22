@@ -15,6 +15,8 @@ export const registerUserAPI = async (data) => {
 };
 
 export const getUserProfileAPI = async () => {
-    const response = await authorizedAxiosInstance.get(`${API_ROOT}/profile`);
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/auth/profile`
+    );
     return response.data;
 };

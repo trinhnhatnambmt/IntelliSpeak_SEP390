@@ -8,24 +8,32 @@ import { useEffect, useState } from "react";
 import { getUserProfileAPI } from "~/apis";
 
 const Profile = () => {
+    const [userProfile, setUserProfile] = useState(null);
+
     const personalInfo = [
         {
             icon: <Mail className="w-5 h-5" />,
-            label: "trinhnhathuy3@gmail.com",
+            label: userProfile ? userProfile?.email : "Email chưa cập nhật",
         },
-        { icon: <Phone className="w-5 h-5" />, label: "094353454" },
+        {
+            icon: <Phone className="w-5 h-5" />,
+            label: userProfile?.phone
+                ? userProfile?.phone
+                : "Số điện thoại chưa cập nhật",
+        },
         { icon: <MapIcon className="w-5 h-5" />, label: "Vietnam" },
-        { icon: <TicketCheck className="w-5 h-5" />, label: "Ứng viên" },
+        {
+            icon: <TicketCheck className="w-5 h-5" />,
+            label: userProfile?.role ? userProfile?.role : "Chưa cập nhật",
+        },
     ];
 
     const navigate = useNavigate();
 
-    const [userProfile, setUserProfile] = useState(null);
-
     useEffect(() => {
         getUserProfileAPI().then((data) => {
-            setUserProfile(data);
-            console.log(data);
+            setUserProfile(data.data);
+            console.log(data.data);
         });
     }, []);
 
@@ -36,14 +44,13 @@ const Profile = () => {
                 <div className="w-full lg:w-1/3 space-y-6">
                     {/* User card */}
                     <div className="bg-[#252525] dark:bg-[#1f1f1f] rounded-2xl p-6 shadow-lg">
-                        <Avatar
-                            size={72}
-                            src="https://files.fullstack.edu.vn/f8-prod/user_photos/245178/6319b21466789.jpg"
-                        />
+                        <Avatar size={72} src={userProfile?.avatar} />
                         <h2 className="font-bold text-2xl mt-4 text-white">
-                            Trinh Nhat Huy
+                            @{userProfile?.userName}
                         </h2>
-                        <p className="text-neutral-400 mt-1">@trinhnhathuy3</p>
+                        <p className="text-neutral-400 mt-1">
+                            {userProfile?.firstName} {userProfile?.lastName}
+                        </p>
                     </div>
 
                     {/* Info card */}
