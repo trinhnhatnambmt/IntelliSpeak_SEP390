@@ -33,7 +33,7 @@ const Profile = () => {
     useEffect(() => {
         getUserProfileAPI().then((data) => {
             setUserProfile(data.data);
-            console.log(data.data);
+            // console.log(data.data);
         });
     }, []);
 
@@ -49,7 +49,9 @@ const Profile = () => {
                             @{userProfile?.userName}
                         </h2>
                         <p className="text-neutral-400 mt-1">
-                            {userProfile?.firstName} {userProfile?.lastName}
+                            {userProfile?.firstName && userProfile?.lastName
+                                ? userProfile?.firstName + userProfile?.lastName
+                                : "Chưa cập nhật tên đầy đủ"}
                         </p>
                     </div>
 

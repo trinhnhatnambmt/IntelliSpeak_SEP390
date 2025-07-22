@@ -16,7 +16,7 @@ export const loginUserAPI = createAsyncThunk(
             `${API_ROOT}/auth/login`,
             data
         );
-        return response.data;
+        return response.data.user;
     }
 );
 
@@ -29,6 +29,27 @@ export const logoutUserAPI = createAsyncThunk(
         if (showSuccessMessage) {
             toast.success("Đăng xuất thành công!");
         }
+        return response.data;
+    }
+);
+
+export const getUserProfileAPI = createAsyncThunk(
+    "user/getUserProfileAPI",
+    async () => {
+        const response = await authorizedAxiosInstance.get(
+            `${API_ROOT}/auth/profile`
+        );
+        return response.data.data;
+    }
+);
+
+export const updateUserAPI = createAsyncThunk(
+    "user/updateUserAPI",
+    async (data) => {
+        const response = await authorizedAxiosInstance.put(
+            `${API_ROOT}/auth/profile`,
+            data
+        );
         return response.data;
     }
 );
@@ -53,6 +74,14 @@ export const userSlice = createSlice({
             // API logout sau khi gọi thành công thì sẽ clear thông tin currentUser về null ở đây
             // Kết hợp ProtectedRoute đã làm ở App.js => code sẽ điều hướng chuẩn về trang "/"
             state.currentUser = null;
+        });
+        builder.addCase(updateUserAPI.fulfilled, (state, action) => {
+            const user = action.payload;
+            state.currentUser = user;
+        });
+        builder.addCase(getUserProfileAPI.fulfilled, (state, action) => {
+            const user = action.payload;
+            state.currentUser = user;
         });
     },
 });
