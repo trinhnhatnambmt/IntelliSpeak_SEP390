@@ -15,6 +15,7 @@ const NewPostPage = () => {
     const [coverImageFile, setCoverImageFile] = useState(null);
     const [topics, setTopics] = useState([]);
     const [selectedTopicId, setSelectedTopicId] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchTopics = async () => {
@@ -25,6 +26,7 @@ const NewPostPage = () => {
                     setSelectedTopicId(Number(data[0].id));
                 }
             } catch (err) {
+                toast.error("Lỗi khi tải danh sách chủ đề.");
             }
         };
         fetchTopics();
@@ -64,55 +66,82 @@ const NewPostPage = () => {
         return new File([u8arr], filename, { type: mime });
     };
 
-const handlePublish = async () => {
-    try {
-        if (!title.trim() || !content.trim()) {
-            toast.error("Tiêu đề và nội dung không được để trống!");
-            return;
+    const handlePublish = async () => {
+        let loadingToastId = null;
+        try {
+            setIsLoading(true);
+            loadingToastId = toast.loading("⏳ Đang đăng bài viết...");
+
+            if (!title.trim() || !content.trim()) {
+                toast.update(loadingToastId, {
+                    render: "❌ Tiêu đề và nội dung không được để trống!",
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 3000,
+                });
+                return;
+            }
+
+            if (!selectedTopicId || isNaN(selectedTopicId)) {
+                toast.update(loadingToastId, {
+                    render: "❌ Bạn phải chọn một chủ đề hợp lệ!",
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 3000,
+                });
+                return;
+            }
+
+            const { div, imgTags, base64Images } = extractBase64ImagesFromHTML();
+
+            const allImages = [];
+            if (coverImageFile) allImages.push(coverImageFile);
+            const contentImagesAsFiles = base64Images.map((base64, i) =>
+                convertBase64ToFile(base64, `content_img_${i}.png`)
+            );
+            allImages.push(...contentImagesAsFiles);
+
+            let uploadedUrls = [];
+            if (allImages.length > 0) {
+                uploadedUrls = await uploadImageAPI(allImages);
+            }
+
+            imgTags.forEach((img) => img.remove());
+            const newContent = div.innerHTML;
+
+            const payload = {
+                title,
+                content: newContent,
+                images: uploadedUrls,
+                forumTopicTypeId: Number(selectedTopicId),
+            };
+
+            await postForumAPI(payload);
+
+            toast.update(loadingToastId, {
+                render: "✅ Bài viết đã được đăng thành công!",
+                type: "success",
+                isLoading: false,
+                autoClose: 3000,
+            });
+
+            setTitle("");
+            setContent("");
+            setCoverImagePreview(null);
+            setCoverImageFile(null);
+            setSelectedTopicId(topics.length > 0 ? Number(topics[0].id) : null);
+        } catch (err) {
+            console.error(err);
+            toast.update(loadingToastId, {
+                render: "❌ Đăng bài thất bại. Vui lòng thử lại.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+        } finally {
+            setIsLoading(false);
         }
-
-        if (!selectedTopicId || isNaN(selectedTopicId)) {
-            toast.error("Bạn phải chọn một chủ đề hợp lệ!");
-            return;
-        }
-
-        const { div, imgTags, base64Images } = extractBase64ImagesFromHTML();
-
-        const allImages = [];
-        if (coverImageFile) allImages.push(coverImageFile);
-        const contentImagesAsFiles = base64Images.map((base64, i) =>
-            convertBase64ToFile(base64, `content_img_${i}.png`)
-        );
-        allImages.push(...contentImagesAsFiles);
-
-        let uploadedUrls = [];
-        if (allImages.length > 0) {
-            uploadedUrls = await uploadImageAPI(allImages);
-        }
-
-        imgTags.forEach((img) => img.remove());
-        const newContent = div.innerHTML;
-
-        const payload = {
-            title,
-            content: newContent, 
-            images: uploadedUrls, 
-            forumTopicTypeId: Number(selectedTopicId),
-        };
-
-        await postForumAPI(payload);
-
-        setTitle("");
-        setContent("");
-        setCoverImagePreview(null);
-        setCoverImageFile(null);
-        setSelectedTopicId(topics.length > 0 ? Number(topics[0].id) : null);
-    } catch (err) {
-        toast.error("Đăng bài thất bại. Vui lòng thử lại.");
-        console.error(err);
-    }
-};
-
+    };
 
     return (
         <div className="container mx-auto px-4 py-7">
@@ -185,12 +214,42 @@ const handlePublish = async () => {
                     }}
                 />
 
+                {/* Nút đăng */}
                 <div className="flex justify-between items-center mt-10">
                     <button
                         onClick={handlePublish}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-all"
+                        disabled={isLoading}
+                        className={`flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-all ${
+                            isLoading ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
                     >
-                        🚀 Đăng bài
+                        {isLoading ? (
+                            <>
+                                <svg
+                                    className="animate-spin h-5 w-5 text-white"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                    ></path>
+                                </svg>
+                                <span>Đang đăng...</span>
+                            </>
+                        ) : (
+                            <span>🚀 Đăng bài</span>
+                        )}
                     </button>
                 </div>
             </div>
