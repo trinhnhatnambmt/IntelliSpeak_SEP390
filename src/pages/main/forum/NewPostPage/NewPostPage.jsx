@@ -64,56 +64,55 @@ const NewPostPage = () => {
         return new File([u8arr], filename, { type: mime });
     };
 
-    const handlePublish = async () => {
-        try {
-            if (!title.trim() || !content.trim()) {
-                toast.error("Tiêu đề và nội dung không được để trống!");
-                return;
-            }
-
-            if (!selectedTopicId || isNaN(selectedTopicId)) {
-                toast.error("Bạn phải chọn một chủ đề hợp lệ!");
-                return;
-            }
-
-            const { div, imgTags, base64Images } = extractBase64ImagesFromHTML();
-
-            const allImages = [];
-            if (coverImageFile) allImages.push(coverImageFile);
-            const contentImagesAsFiles = base64Images.map((base64, i) =>
-                convertBase64ToFile(base64, `content_img_${i}.png`)
-            );
-            allImages.push(...contentImagesAsFiles);
-
-            let uploadedUrls = [];
-            if (allImages.length > 0) {
-                uploadedUrls = await uploadImageAPI(allImages);
-            }
-
-
-            let urlIndex = coverImageFile ? 1 : 0;
-            base64Images.forEach((_, idx) => {
-                imgTags[idx].src = uploadedUrls[urlIndex + idx];
-            });
-            const newContent = div.innerHTML;
-
-            const payload = {
-                title,
-                content: newContent,
-                images: uploadedUrls, 
-                forumTopicTypeId: Number(selectedTopicId),
-            };
-
-            await postForumAPI(payload);
-
-            setTitle("");
-            setContent("");
-            setCoverImagePreview(null);
-            setCoverImageFile(null);
-            setSelectedTopicId(topics.length > 0 ? Number(topics[0].id) : null);
-        } catch (err) {
+const handlePublish = async () => {
+    try {
+        if (!title.trim() || !content.trim()) {
+            toast.error("Tiêu đề và nội dung không được để trống!");
+            return;
         }
-    };
+
+        if (!selectedTopicId || isNaN(selectedTopicId)) {
+            toast.error("Bạn phải chọn một chủ đề hợp lệ!");
+            return;
+        }
+
+        const { div, imgTags, base64Images } = extractBase64ImagesFromHTML();
+
+        const allImages = [];
+        if (coverImageFile) allImages.push(coverImageFile);
+        const contentImagesAsFiles = base64Images.map((base64, i) =>
+            convertBase64ToFile(base64, `content_img_${i}.png`)
+        );
+        allImages.push(...contentImagesAsFiles);
+
+        let uploadedUrls = [];
+        if (allImages.length > 0) {
+            uploadedUrls = await uploadImageAPI(allImages);
+        }
+
+        imgTags.forEach((img) => img.remove());
+        const newContent = div.innerHTML;
+
+        const payload = {
+            title,
+            content: newContent, 
+            images: uploadedUrls, 
+            forumTopicTypeId: Number(selectedTopicId),
+        };
+
+        await postForumAPI(payload);
+
+        setTitle("");
+        setContent("");
+        setCoverImagePreview(null);
+        setCoverImageFile(null);
+        setSelectedTopicId(topics.length > 0 ? Number(topics[0].id) : null);
+    } catch (err) {
+        toast.error("Đăng bài thất bại. Vui lòng thử lại.");
+        console.error(err);
+    }
+};
+
 
     return (
         <div className="container mx-auto px-4 py-7">
