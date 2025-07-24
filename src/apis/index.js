@@ -2,125 +2,171 @@ import { toast } from "react-toastify";
 import authorizedAxiosInstance from "~/utils/authorizeAxios";
 import { API_ROOT } from "~/utils/constant";
 
-// Users
+// ==== AUTH / USER ====
+
 export const registerUserAPI = async (data) => {
-    const response = await authorizedAxiosInstance.post(
-        `${API_ROOT}/auth/register`,
-        data
-    );
-    toast.success(
-        "Đăng ký thành công! Vui lòng check email để kích hoạt tài khoản."
-    );
-    return response.data;
+  const response = await authorizedAxiosInstance.post(
+    `${API_ROOT}/auth/register`,
+    data
+  );
+  toast.success(
+    "Đăng ký thành công! Vui lòng check email để kích hoạt tài khoản."
+  );
+  return response.data;
 };
 
 export const getUserProfileAPI = async () => {
-    const response = await authorizedAxiosInstance.get(
-        `${API_ROOT}/auth/profile`
-    );
-    return response.data;
+  const response = await authorizedAxiosInstance.get(
+    `${API_ROOT}/auth/profile`
+  );
+  return response.data;
 };
+
+// ==== TOPIC ====
 
 export const getAllForumTopicsAPI = async () => {
-    const res = await authorizedAxiosInstance.get(`${API_ROOT}/topic-type`);
-    return res.data;
+
+  const res = await authorizedAxiosInstance.get(`${API_ROOT}/topic-type`);
+  return res.data;
 };
 
+// ==== FORUM POST ====
+
 export const postForumAPI = async ({
-    title,
-    content,
-    images,
-    forumTopicTypeId,
-    tags,
+  title,
+  content,
+  images,
+  forumTopicTypeId,
+  tags,
 }) => {
-    try {
-        const response = await authorizedAxiosInstance.post(
-            `${API_ROOT}/forum-post`,
-            {
-                title,
-                content,
-                images,
-                forumTopicTypeId,
-            }
-        );
-        return response.data;
-    } catch (error) {
-        throw error;
+  const response = await authorizedAxiosInstance.post(
+    `${API_ROOT}/forum-post`,
+    {
+      title,
+      content,
+      images,
+      forumTopicTypeId,
+      tags,
     }
+  );
+  return response.data;
 };
 
 export const getAllForumPostAPI = async () => {
-    try {
-        const res = await authorizedAxiosInstance.get(`${API_ROOT}/forum-post`);
-        return res.data;
-    } catch (error) {
-        console.error("Lỗi khi lấy danh sách bài viết:", error);
-        throw error;
-    }
+  const res = await authorizedAxiosInstance.get(`${API_ROOT}/forum-post`);
+  return res.data;
 };
 
 export const getForumPostByIdAPI = async (postId) => {
-    try {
-        const res = await authorizedAxiosInstance.get(
-            `${API_ROOT}/forum-post/${postId}`
-        );
-        return res.data;
-    } catch (error) {
-        console.error(`Lỗi khi lấy bài viết với id ${postId}:`, error);
-        throw error;
-    }
+
+  const res = await authorizedAxiosInstance.get(
+    `${API_ROOT}/forum-post/${postId}`
+  );
+  return res.data;
 };
 
-export const uploadImageAPI = async (filesOrBase64Array) => {
-    if (!filesOrBase64Array || filesOrBase64Array.length === 0) return [];
+// ==== LIKE / UNLIKE ====
 
-    const formData = new FormData();
-
-    filesOrBase64Array.forEach((item, index) => {
-        if (item instanceof File) {
-            formData.append("images", item);
-        } else if (typeof item === "string" && item.startsWith("data:image")) {
-            const base64Data = item.split(",")[1];
-            const contentType = item
-                .substring(item.indexOf(":"), item.indexOf(";"))
-                .replace(":", "");
-
-            const byteCharacters = atob(base64Data);
-            const byteArrays = [];
-
-            for (
-                let offset = 0;
-                offset < byteCharacters.length;
-                offset += 512
-            ) {
-                const slice = byteCharacters.slice(offset, offset + 512);
-
-                const byteNumbers = new Array(slice.length);
-                for (let i = 0; i < slice.length; i++) {
-                    byteNumbers[i] = slice.charCodeAt(i);
-                }
-
-                const byteArray = new Uint8Array(byteNumbers);
-                byteArrays.push(byteArray);
-            }
-
-            const blob = new Blob(byteArrays, { type: contentType });
-            const filename = `image_${Date.now()}_${index}`;
-            formData.append("images", blob, filename);
-        }
-    });
-
-    const res = await authorizedAxiosInstance.post(
-        `${API_ROOT}/image/upload`,
-        formData,
-        {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        }
+export const likeOrUnlikePostAPI = async ({ postId, liked }) => {
+  try {
+    const response = await authorizedAxiosInstance.post(
+      `${API_ROOT}/forum-post/${postId}/like?liked=${liked}`
     );
+    toast.success(response.data.message);
+    return response.data;
+  } catch (error) {
+    toast.error("Thao tác thất bại");
+    console.error("Lỗi like/unlike bài viết:", error);
+    throw error;
+  }
+};
 
-    return res.data; // => list url
+// ==== SAVE / UNSAVE ====
+
+export const savePostAPI = async (postId) => {
+  try {
+    const response = await authorizedAxiosInstance.post(
+      `${API_ROOT}/saved-post/${postId}`
+    );
+    toast.success(response.data.message || "Đã lưu bài viết");
+    return response.data;
+  } catch (error) {
+    toast.error("Không thể lưu bài viết");
+    console.error("Lỗi khi lưu bài viết:", error);
+    throw error;
+  }
+};
+
+export const unsavePostAPI = async (postId) => {
+  try {
+    const response = await authorizedAxiosInstance.delete(
+      `${API_ROOT}/saved-post/${postId}`
+    );
+    toast.success(response.data.message || "Đã bỏ lưu bài viết");
+    return response.data;
+  } catch (error) {
+    toast.error("Không thể bỏ lưu bài viết");
+    console.error("Lỗi khi bỏ lưu bài viết:", error);
+    throw error;
+  }
+};
+
+export const getSavedPostsAPI = async () => {
+  try {
+    const response = await authorizedAxiosInstance.get(
+      `${API_ROOT}/saved-post`
+    );
+    return response.data;
+  } catch (error) {
+    toast.error("Không thể lấy danh sách bài viết đã lưu");
+    console.error("Lỗi khi lấy bài viết đã lưu:", error);
+    throw error;
+  }
+};
+
+// ==== UPLOAD IMAGE ====
+
+export const uploadImageAPI = async (filesOrBase64Array) => {
+  if (!filesOrBase64Array || filesOrBase64Array.length === 0) return [];
+
+  const formData = new FormData();
+
+  filesOrBase64Array.forEach((item, index) => {
+    if (item instanceof File) {
+      formData.append("images", item);
+    } else if (typeof item === "string" && item.startsWith("data:image")) {
+      const base64Data = item.split(",")[1];
+      const contentType = item.substring(
+        item.indexOf(":") + 1,
+        item.indexOf(";")
+      );
+
+      const byteCharacters = atob(base64Data);
+      const byteArrays = [];
+
+      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+        const byteNumbers = Array.from(slice).map((char) => char.charCodeAt(0));
+        byteArrays.push(new Uint8Array(byteNumbers));
+      }
+
+      const blob = new Blob(byteArrays, { type: contentType });
+      const filename = `image_${Date.now()}_${index}`;
+      formData.append("images", blob, filename);
+    }
+  });
+
+  const res = await authorizedAxiosInstance.post(
+    `${API_ROOT}/image/upload`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  return res.data; // Trả về list url
 };
 
 // Upload CV
