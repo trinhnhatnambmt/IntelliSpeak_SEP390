@@ -16,6 +16,7 @@ import PaymentSuccess from "./pages/Payment/PaymentSuccess";
 import PaymentFailed from "./pages/Payment/PaymentFailed";
 import Settings from "./pages/main/settings/Settings";
 import Forum from "./pages/main/forum/Forum";
+import SavedForum from "./pages/main/forum/SavedForum";
 import ForumDetail from "./pages/main/forum/SinglePostPage/SinglePostPage";
 import SinglePostPage from "./pages/main/forum/SinglePostPage/SinglePostPage";
 import NewPostPage from "./pages/main/forum/NewPostPage/NewPostPage";
@@ -26,49 +27,46 @@ import UploadPage from "./pages/main/analyse/UploadPage";
 import Resume from "./pages/main/analyse/Resume";
 
 const ProtectedRoutes = ({ user }) => {
-    if (!user) return <Navigate to="/" replace={true} />;
-    return <Outlet />;
+  if (!user) return <Navigate to="/" replace={true} />;
+  return <Outlet />;
 };
 
 const App = () => {
-    const currentUser = useSelector(selectCurrentUser);
+  const currentUser = useSelector(selectCurrentUser);
 
-    return (
-        <Routes>
-            <Route path="/" element={<Homepage />} />
-            <Route path="/upgrade-plan" element={<UpgradePlan />} />
-            <Route path="/payment-success" element={<PaymentSuccess />} />
-            <Route path="/payment-failed" element={<PaymentFailed />} />
-            <Route path="/resume/:id" element={<Resume />} />
+  return (
+    <Routes>
+      <Route path="/" element={<Homepage />} />
+      <Route path="/upgrade-plan" element={<UpgradePlan />} />
+      <Route path="/payment-success" element={<PaymentSuccess />} />
+      <Route path="/payment-failed" element={<PaymentFailed />} />
+      <Route path="/resume/:id" element={<Resume />} />
 
+      {/* <Route element={<ProtectedRoutes user={currentUser} />}> */}
+      <Route path="/main" element={<MainPage />}>
+        <Route index element={<InterviewPractice />} />
+        <Route path="interviewPage" element={<InterviewPage />} />
+        <Route path="topic" element={<Topic />} />
+        <Route path="topicDetail" element={<TopicDetail />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="feedback" element={<FeedBack />} />
+        <Route path="analyze" element={<AnalyzePage />} />
+        <Route path="upload" element={<UploadPage />} />
+        <Route path="payment" element={<Payment />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="forum" element={<Forum />} />
+        <Route path="saved-forum" element={<SavedForum />} />
+        <Route path="singlePostPage/:postId" element={<SinglePostPage />} />
+        <Route path="newPostPage" element={<NewPostPage />} />
+        <Route path="updateHR" element={<UpdateHR />} />
+      </Route>
+      {/* </Route> */}
 
-            
-
-            {/* <Route element={<ProtectedRoutes user={currentUser} />}> */}
-            <Route path="/main" element={<MainPage />}>
-                <Route index element={<InterviewPractice />} />
-                <Route path="interviewPage" element={<InterviewPage />} />
-                <Route path="topic" element={<Topic />} />
-                <Route path="topicDetail" element={<TopicDetail />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="feedback" element={<FeedBack />} />
-                <Route path="analyze" element={<AnalyzePage />} />
-                <Route path="upload" element={<UploadPage />} />
-                <Route path="payment" element={<Payment />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="forum" element={<Forum />} />
-               <Route path="singlePostPage/:postId" element={<SinglePostPage />} />
-                <Route path="newPostPage" element={<NewPostPage />} />
-                <Route path="updateHR" element={<UpdateHR />} />
-
-            </Route>
-            {/* </Route> */}
-
-            {/* Authentication */}
-            <Route path="/login" element={<Auth />} />
-            <Route path="/register" element={<Auth />} />
-        </Routes>
-    );
+      {/* Authentication */}
+      <Route path="/login" element={<Auth />} />
+      <Route path="/register" element={<Auth />} />
+    </Routes>
+  );
 };
 
 export default App;
