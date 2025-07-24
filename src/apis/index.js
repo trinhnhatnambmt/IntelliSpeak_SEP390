@@ -25,6 +25,7 @@ export const getUserProfileAPI = async () => {
 // ==== TOPIC ====
 
 export const getAllForumTopicsAPI = async () => {
+
   const res = await authorizedAxiosInstance.get(`${API_ROOT}/topic-type`);
   return res.data;
 };
@@ -57,6 +58,7 @@ export const getAllForumPostAPI = async () => {
 };
 
 export const getForumPostByIdAPI = async (postId) => {
+
   const res = await authorizedAxiosInstance.get(
     `${API_ROOT}/forum-post/${postId}`
   );
@@ -165,4 +167,20 @@ export const uploadImageAPI = async (filesOrBase64Array) => {
   );
 
   return res.data; // Trả về list url
+};
+
+// Upload CV
+export const uploadResumeAPI = async (file) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/api/cv/upload`,
+        file
+    );
+    return response.data.data;
+};
+
+export const getResumeFeedbackAPI = async (resumeId) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/cv/${resumeId}`
+    );
+    return response.data.data;
 };

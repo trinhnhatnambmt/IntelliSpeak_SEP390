@@ -42,6 +42,7 @@ const App = () => {
       <Route path="/payment-failed" element={<PaymentFailed />} />
       <Route path="/resume/:id" element={<Resume />} />
 
+
       {/* <Route element={<ProtectedRoutes user={currentUser} />}> */}
       <Route path="/main" element={<MainPage />}>
         <Route index element={<InterviewPractice />} />

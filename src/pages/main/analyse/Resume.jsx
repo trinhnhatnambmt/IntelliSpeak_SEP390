@@ -1,16 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import ATS from "~/components/ATS";
-import Details from "~/components/Detail";
-import Summary from "~/components/Summary";
+import { getResumeFeedbackAPI } from "~/apis";
+import ATS from "~/components/Resume/ATS";
+import Details from "~/components/Resume/Detail";
+import Summary from "~/components/Resume/Summary";
 import mockFeedback from "~/constants/mockdata";
 
 const Resume = () => {
     const { id } = useParams();
     const [imageUrl, setImageUrl] = useState("");
-    const [resumeUrl, setResumeUrl] = useState("");
     const [feedback, setFeedback] = useState(null);
-    const navigate = useNavigate();
+
+    useEffect(() => {
+        getResumeFeedbackAPI(id).then((res) => {
+            // console.log(res);
+            setFeedback(res);
+        });
+    }, [id]);
+
+    const atsScore = feedback?.categories?.find(
+        (cat) => cat.categoryName === "ATS"
+    )?.score;
+
+    const atsSuggestions = feedback?.categories?.find(
+        (cat) => cat.categoryName === "ATS"
+    )?.tips;
+
     return (
         <main className="!pt-0">
             <nav className="resume-nav">
@@ -27,10 +42,10 @@ const Resume = () => {
             </nav>
             <div className="flex flex-row w-full max-lg:flex-col-reverse">
                 <section className="feedback-section bg-[url('/images/bg-small.svg') bg-cover h-[100vh] sticky top-0 items-center justify-center">
-                    {imageUrl && resumeUrl && (
+                    {imageUrl && (
                         <div className="animate-in fade-in duration-1000 gradient-border max-sm:m-0 h-[90%] max-wxl:h-fit w-fit">
                             <a
-                                href={resumeUrl}
+                                href={imageUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
@@ -47,26 +62,24 @@ const Resume = () => {
                     <h2 className="text-4xl text-white font-bold">
                         Đánh giá tổng quan
                     </h2>
-                    {/* {feedback ? ( */}
-                    <div className="flex flex-col gap-8 animate-in fade-in duration-1000">
-                        <Summary feedback={feedback || mockFeedback} />
-                        <ATS
-                            score={
-                                feedback?.ats?.score ?? mockFeedback.ats.score
-                            }
-                            suggestions={
-                                feedback?.ats?.suggestions ??
-                                mockFeedback.ats.suggestions
-                            }
-                        />
-                        <Details feedback={feedback || mockFeedback} />
-                    </div>
-                    {/* ) : (
+                    {feedback ? (
+                        <div className="flex flex-col gap-8 animate-in fade-in duration-1000">
+                            <Summary feedback={feedback || mockFeedback} />
+                            <ATS
+                                score={atsScore ?? mockFeedback.ats.score}
+                                suggestions={
+                                    atsSuggestions ??
+                                    mockFeedback.ats.suggestions
+                                }
+                            />
+                            <Details feedback={feedback || mockFeedback} />
+                        </div>
+                    ) : (
                         <img
                             src="/images/resume-scan-2.gif"
                             className="w-full"
                         />
-                    )} */}
+                    )}
                 </section>
             </div>
         </main>

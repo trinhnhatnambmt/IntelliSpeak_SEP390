@@ -1,9 +1,9 @@
 import { SquareChartGantt } from "lucide-react";
 import React, { useState } from "react";
-import { set } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { uploadResumeAPI } from "~/apis";
 import FileUploader from "~/components/FileUploader";
-import { generateUUID } from "~/lib/utils";
 
 const UploadPage = () => {
     const navigate = useNavigate();
@@ -17,37 +17,46 @@ const UploadPage = () => {
 
     const handleAnalyze = async ({ file }) => {
         setIsProcessing(true);
+
+        const reqData = new FormData();
+        reqData.append("file", file);
+        // console.log("🚀 ~ handleAnalyze ~ reqData:", reqData);
+        // for (const value of reqData.values()) {
+        //     console.log("reqData Value: ", value);
+        // }
+
+        //Gọi API
+        uploadResumeAPI(reqData).then((res) => {
+            // console.log("🚀 ~ handleAnalyze ~ res:", res);
+            if (!res.error) {
+                toast.success("Phân tích thành công");
+            }
+            navigate(`/resume/${res?.evaluation?.id}`);
+        });
         setStatusText("Đang phân tích CV của bạn...");
-        // Gọi API để phân tích CV
-        setStatusText("Chuẩn bị dữ liệu...");
-        const uuid = generateUUID();
-        setStatusText("Phân tích thành công, chuyển hướng đến kết quả...");
-        navigate(`/resume/${uuid}`);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const form = e.currentTarget.closest("form");
         if (!form) return;
-        // const formData = new FormData(form);
         if (!file) return;
-        console.log("🚀 ~ handleSubmit ~ file:", file);
         handleAnalyze({ file });
     };
 
     return (
         <div>
             <section className="main-section">
-                <div className="page-heading py-16">
+                <div className="page-heading py-5">
                     <h1 className="text-6xl font-semibold">
                         Phản hồi thông minh cho công việc mơ ước của bạn
                     </h1>
                     {isProcessing ? (
                         <>
-                            <h2>{statusText}</h2>
+                            <h2 className="text-2xl">{statusText}</h2>
                             <img
                                 src="/images/resume-scan.gif"
-                                className="w-full"
+                                className="mt-[-100px] w-[500px] relative z-10"
                             />
                         </>
                     ) : (
