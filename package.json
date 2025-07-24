@@ -22,6 +22,7 @@
         "cobe": "^0.6.3",
         "cross-env": "^7.0.3",
         "framer-motion": "^12.12.1",
+        "html-react-parser": "^5.2.6",
         "lucide-react": "^0.511.0",
         "material-ui-confirm": "^4.0.0",
         "motion": "^12.12.1",

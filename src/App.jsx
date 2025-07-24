@@ -41,6 +41,9 @@ const App = () => {
             <Route path="/payment-failed" element={<PaymentFailed />} />
             <Route path="/resume/:id" element={<Resume />} />
 
+
+            
+
             {/* <Route element={<ProtectedRoutes user={currentUser} />}> */}
             <Route path="/main" element={<MainPage />}>
                 <Route index element={<InterviewPractice />} />
@@ -54,9 +57,10 @@ const App = () => {
                 <Route path="payment" element={<Payment />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="forum" element={<Forum />} />
-                <Route path="singlePostPage" element={<SinglePostPage />} />
+               <Route path="singlePostPage/:postId" element={<SinglePostPage />} />
                 <Route path="newPostPage" element={<NewPostPage />} />
                 <Route path="updateHR" element={<UpdateHR />} />
+
             </Route>
             {/* </Route> */}
 

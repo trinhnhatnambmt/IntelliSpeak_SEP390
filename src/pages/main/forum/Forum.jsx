@@ -1,39 +1,57 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
 import SideBar from "./SideBar";
 import RightSidebar from "./RightSidebar";
 import { Link } from "react-router-dom";
+import { getAllForumPostAPI } from "~/apis";
 
 const Forum = () => {
-    const PostCard = () => (
-        <div className="bg-white dark:bg-[#1e1e2f] shadow rounded-lg overflow-hidden mb-10">
-            <Link to="/main/singlePostPage">
-                <img
-                    src="https://media2.dev.to/dynamic/image/width=1000,height=420,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fbfhtzqpvgsutqycom5oa.png"
-                    alt="Post banner"
-                    className="w-full h-56 object-cover"
-                />
-                <div className="p-4">
-                    <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                        Pratham naik • Jul 14 (4h ago)
-                    </div>
-                    <h2 className="text-xl font-bold mb-2">
-                        Why Your Development Team Is 40% Slower Than Your
-                        Competitors
-                    </h2>
-                    <div className="text-sm text-gray-500 dark:text-gray-400 space-x-2 mb-2">
-                        <span>#webdev</span>
-                        <span>#productivity</span>
-                        <span>#opensource</span>
-                    </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-300 flex items-center justify-between">
-                        <span>❤️ 39 Reactions</span>
-                        <span>🕓 5 min read</span>
-                    </div>
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const res = await getAllForumPostAPI();
+                setPosts(res.data); 
+            } catch (error) {
+                console.error("Lỗi khi lấy bài viết:", error);
+            }
+        };
+        fetchPosts();
+    }, []);
+
+const PostCard = ({ post }) => (
+    <div className="bg-white dark:bg-[#1e1e2f] shadow rounded-lg overflow-hidden mb-10">
+        <Link to={`/main/singlePostPage/${post.postId}`}>
+            <img
+                src={post.image?.[0] || "https://placehold.co/800x300?text=No+Image"}
+                alt="Post banner"
+                className="w-full h-56 object-cover"
+            />
+            <div className="p-4">
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+{post.userName} • {new Date(post.createAt).toLocaleString("vi-VN", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+})}
+
                 </div>
-            </Link>
-        </div>
-    );
+                <h2 className="text-xl font-bold mb-2">{post.title}</h2>
+                <div className="text-sm text-gray-500 dark:text-gray-400 space-x-2 mb-2">
+                    <span>#{post.forumTopicType?.title || "chủ đề"}</span>
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-300 flex items-center justify-between">
+                    <span>❤️ {post.reactionCount || 0} Lượt thích</span>
+                    <span>🕓 {post.readTimeEstimate || 3} phút đọc</span>
+                </div>
+            </div>
+        </Link>
+    </div>
+);
+
 
     return (
         <div className="flex bg-gray-100 dark:bg-[#0e0c15] text-gray-900 dark:text-white transition-colors duration-300 pt-5">
@@ -52,10 +70,13 @@ const Forum = () => {
                         </button>
                     </div>
 
-                    <PostCard />
-                    <PostCard />
-                    <PostCard />
-                    <PostCard />
+                    {posts.length === 0 ? (
+                        <div className="text-center text-gray-500 dark:text-gray-400">
+                            Chưa có bài viết nào.
+                        </div>
+                    ) : (
+                        posts.map((post) => <PostCard key={post.id} post={post} />)
+                    )}
                 </main>
 
                 {/* Right Sidebar */}

@@ -34,12 +34,33 @@ export const postForumAPI = async ({ title, content, images, forumTopicTypeId, t
             images, 
             forumTopicTypeId,
         });
-        toast.success("Đăng bài viết thành công!");
         return response.data;
     } catch (error) {
         throw error;
     }
 };
+
+export const getAllForumPostAPI = async () => {
+    try {
+        const res = await authorizedAxiosInstance.get(`${API_ROOT}/forum-post`);
+        return res.data;
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách bài viết:", error);
+        throw error;
+    }
+};
+
+export const getForumPostByIdAPI = async (postId) => {
+    try {
+        const res = await authorizedAxiosInstance.get(`${API_ROOT}/forum-post/${postId}`);
+        return res.data;
+    } catch (error) {
+        console.error(`Lỗi khi lấy bài viết với id ${postId}:`, error);
+        throw error;
+    }
+};
+
+
 
 export const uploadImageAPI = async (filesOrBase64Array) => {
     if (!filesOrBase64Array || filesOrBase64Array.length === 0) return [];
