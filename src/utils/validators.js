@@ -7,17 +7,24 @@ export const PASSWORD_RULE_MESSAGE =
 export const PASSWORD_CONFIRMATION_MESSAGE = "Mật khẩu không trùng khớp!";
 
 // Liên quan đến Validate File
-export const LIMIT_COMMON_FILE_SIZE = 10485760; // byte = 10 MB
-export const ALLOW_COMMON_FILE_TYPES = ["image/jpg", "image/jpeg", "image/png"];
+export const LIMIT_COMMON_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+export const ALLOW_COMMON_FILE_TYPES = ["application/pdf"];
+
 export const singleFileValidator = (file) => {
     if (!file || !file.name || !file.size || !file.type) {
-        return "File cannot be blank.";
+        return { code: "file-empty", message: "File cannot be blank." };
     }
     if (file.size > LIMIT_COMMON_FILE_SIZE) {
-        return "Maximum file size exceeded. (10MB)";
+        return {
+            code: "file-too-large",
+            message: "Maximum file size exceeded. (20MB)",
+        };
     }
     if (!ALLOW_COMMON_FILE_TYPES.includes(file.type)) {
-        return "File type is invalid. Only accept jpg, jpeg and png";
+        return {
+            code: "invalid-type",
+            message: "File type is invalid. Only accept PDF files.",
+        };
     }
-    return null;
+    return null; // valid
 };

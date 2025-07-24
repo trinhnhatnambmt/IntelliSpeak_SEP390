@@ -41,28 +41,27 @@ const App = () => {
             <Route path="/payment-failed" element={<PaymentFailed />} />
             <Route path="/resume/:id" element={<Resume />} />
 
-
-            
-
-            {/* <Route element={<ProtectedRoutes user={currentUser} />}> */}
-            <Route path="/main" element={<MainPage />}>
-                <Route index element={<InterviewPractice />} />
-                <Route path="interviewPage" element={<InterviewPage />} />
-                <Route path="topic" element={<Topic />} />
-                <Route path="topicDetail" element={<TopicDetail />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="feedback" element={<FeedBack />} />
-                <Route path="analyze" element={<AnalyzePage />} />
-                <Route path="upload" element={<UploadPage />} />
-                <Route path="payment" element={<Payment />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="forum" element={<Forum />} />
-               <Route path="singlePostPage/:postId" element={<SinglePostPage />} />
-                <Route path="newPostPage" element={<NewPostPage />} />
-                <Route path="updateHR" element={<UpdateHR />} />
-
+            <Route element={<ProtectedRoutes user={currentUser} />}>
+                <Route path="/main" element={<MainPage />}>
+                    <Route index element={<InterviewPractice />} />
+                    <Route path="interviewPage" element={<InterviewPage />} />
+                    <Route path="topic" element={<Topic />} />
+                    <Route path="topicDetail" element={<TopicDetail />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="feedback" element={<FeedBack />} />
+                    <Route path="analyze" element={<AnalyzePage />} />
+                    <Route path="upload" element={<UploadPage />} />
+                    <Route path="payment" element={<Payment />} />
+                    <Route path="settings" element={<Settings />} />
+                    <Route path="forum" element={<Forum />} />
+                    <Route
+                        path="singlePostPage/:postId"
+                        element={<SinglePostPage />}
+                    />
+                    <Route path="newPostPage" element={<NewPostPage />} />
+                    <Route path="updateHR" element={<UpdateHR />} />
+                </Route>
             </Route>
-            {/* </Route> */}
 
             {/* Authentication */}
             <Route path="/login" element={<Auth />} />
