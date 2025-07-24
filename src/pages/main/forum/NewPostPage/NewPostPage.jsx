@@ -74,7 +74,7 @@ const NewPostPage = () => {
 
             if (!title.trim() || !content.trim()) {
                 toast.update(loadingToastId, {
-                    render: "❌ Tiêu đề và nội dung không được để trống!",
+                    render: "Tiêu đề và nội dung không được để trống!",
                     type: "error",
                     isLoading: false,
                     autoClose: 3000,
@@ -84,7 +84,7 @@ const NewPostPage = () => {
 
             if (!selectedTopicId || isNaN(selectedTopicId)) {
                 toast.update(loadingToastId, {
-                    render: "❌ Bạn phải chọn một chủ đề hợp lệ!",
+                    render: "Bạn phải chọn một chủ đề hợp lệ!",
                     type: "error",
                     isLoading: false,
                     autoClose: 3000,
@@ -119,7 +119,7 @@ const NewPostPage = () => {
             await postForumAPI(payload);
 
             toast.update(loadingToastId, {
-                render: "✅ Bài viết đã được đăng thành công!",
+                render: "Bài viết đã được đăng thành công!",
                 type: "success",
                 isLoading: false,
                 autoClose: 3000,
@@ -133,7 +133,7 @@ const NewPostPage = () => {
         } catch (err) {
             console.error(err);
             toast.update(loadingToastId, {
-                render: "❌ Đăng bài thất bại. Vui lòng thử lại.",
+                render: "Đăng bài thất bại. Vui lòng thử lại.",
                 type: "error",
                 isLoading: false,
                 autoClose: 3000,
