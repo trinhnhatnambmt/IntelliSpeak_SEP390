@@ -52,7 +52,7 @@ const CategoryContent = ({ tips }) => {
     return (
         <div className="flex flex-col gap-4 items-center w-full">
             <div className="bg-gray-50 w-full rounded-lg px-5 py-4 grid grid-cols-2 gap-4">
-                {tips.map((tip, index) => (
+                {tips?.map((tip, index) => (
                     <div
                         className="flex flex-row gap-2 items-center"
                         key={index}
@@ -71,7 +71,7 @@ const CategoryContent = ({ tips }) => {
                 ))}
             </div>
             <div className="flex flex-col gap-4 w-full">
-                {tips.map((tip, index) => (
+                {tips?.map((tip, index) => (
                     <div
                         key={index + tip.tip}
                         className={cn(
@@ -102,6 +102,38 @@ const CategoryContent = ({ tips }) => {
 };
 
 const Details = ({ feedback }) => {
+    //toneAndStyle
+    const toneAndStyleScore = feedback?.categories?.find(
+        (cat) => cat.categoryName === "toneAndStyle"
+    )?.score;
+    const toneAndStyleTips = feedback?.categories?.find(
+        (cat) => cat.categoryName === "toneAndStyle"
+    )?.tips;
+
+    //content
+    const contentScore = feedback?.categories?.find(
+        (cat) => cat.categoryName === "content"
+    )?.score;
+    const contentTips = feedback?.categories?.find(
+        (cat) => cat.categoryName === "content"
+    )?.tips;
+
+    //structure
+    const structureScore = feedback?.categories?.find(
+        (cat) => cat.categoryName === "structure"
+    )?.score;
+    const structureTips = feedback?.categories?.find(
+        (cat) => cat.categoryName === "structure"
+    )?.tips;
+
+    //skills
+    const skillsScore = feedback?.categories?.find(
+        (cat) => cat.categoryName === "skills"
+    )?.score;
+    const skillsTips = feedback?.categories?.find(
+        (cat) => cat.categoryName === "skills"
+    )?.tips;
+
     return (
         <div className="flex flex-col gap-4 w-full">
             <Accordion>
@@ -109,44 +141,44 @@ const Details = ({ feedback }) => {
                     <AccordionHeader itemId="tone-style">
                         <CategoryHeader
                             title="Tone & Style"
-                            categoryScore={feedback.toneAndStyle.score}
+                            categoryScore={toneAndStyleScore}
                         />
                     </AccordionHeader>
                     <AccordionContent itemId="tone-style">
-                        <CategoryContent tips={feedback.toneAndStyle.tips} />
+                        <CategoryContent tips={toneAndStyleTips} />
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem id="content">
                     <AccordionHeader itemId="content">
                         <CategoryHeader
                             title="Content"
-                            categoryScore={feedback.content.score}
+                            categoryScore={contentScore}
                         />
                     </AccordionHeader>
                     <AccordionContent itemId="content">
-                        <CategoryContent tips={feedback.content.tips} />
+                        <CategoryContent tips={contentTips} />
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem id="structure">
                     <AccordionHeader itemId="structure">
                         <CategoryHeader
                             title="Structure"
-                            categoryScore={feedback.structure.score}
+                            categoryScore={structureScore}
                         />
                     </AccordionHeader>
                     <AccordionContent itemId="structure">
-                        <CategoryContent tips={feedback.structure.tips} />
+                        <CategoryContent tips={structureTips} />
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem id="skills">
                     <AccordionHeader itemId="skills">
                         <CategoryHeader
                             title="Skills"
-                            categoryScore={feedback.skills.score}
+                            categoryScore={skillsScore}
                         />
                     </AccordionHeader>
                     <AccordionContent itemId="skills">
-                        <CategoryContent tips={feedback.skills.tips} />
+                        <CategoryContent tips={skillsTips} />
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>

@@ -22,18 +22,27 @@ export const getUserProfileAPI = async () => {
 };
 
 export const getAllForumTopicsAPI = async () => {
-  const res = await authorizedAxiosInstance.get(`${API_ROOT}/topic-type`);
-  return res.data; 
+    const res = await authorizedAxiosInstance.get(`${API_ROOT}/topic-type`);
+    return res.data;
 };
 
-export const postForumAPI = async ({ title, content, images, forumTopicTypeId, tags }) => {
+export const postForumAPI = async ({
+    title,
+    content,
+    images,
+    forumTopicTypeId,
+    tags,
+}) => {
     try {
-        const response = await authorizedAxiosInstance.post(`${API_ROOT}/forum-post`, {
-            title,
-            content,
-            images, 
-            forumTopicTypeId,
-        });
+        const response = await authorizedAxiosInstance.post(
+            `${API_ROOT}/forum-post`,
+            {
+                title,
+                content,
+                images,
+                forumTopicTypeId,
+            }
+        );
         return response.data;
     } catch (error) {
         throw error;
@@ -52,15 +61,15 @@ export const getAllForumPostAPI = async () => {
 
 export const getForumPostByIdAPI = async (postId) => {
     try {
-        const res = await authorizedAxiosInstance.get(`${API_ROOT}/forum-post/${postId}`);
+        const res = await authorizedAxiosInstance.get(
+            `${API_ROOT}/forum-post/${postId}`
+        );
         return res.data;
     } catch (error) {
         console.error(`Lỗi khi lấy bài viết với id ${postId}:`, error);
         throw error;
     }
 };
-
-
 
 export const uploadImageAPI = async (filesOrBase64Array) => {
     if (!filesOrBase64Array || filesOrBase64Array.length === 0) return [];
@@ -72,15 +81,18 @@ export const uploadImageAPI = async (filesOrBase64Array) => {
             formData.append("images", item);
         } else if (typeof item === "string" && item.startsWith("data:image")) {
             const base64Data = item.split(",")[1];
-            const contentType = item.substring(
-                item.indexOf(":"),
-                item.indexOf(";")
-            ).replace(":", "");
+            const contentType = item
+                .substring(item.indexOf(":"), item.indexOf(";"))
+                .replace(":", "");
 
             const byteCharacters = atob(base64Data);
             const byteArrays = [];
 
-            for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+            for (
+                let offset = 0;
+                offset < byteCharacters.length;
+                offset += 512
+            ) {
                 const slice = byteCharacters.slice(offset, offset + 512);
 
                 const byteNumbers = new Array(slice.length);
@@ -98,11 +110,31 @@ export const uploadImageAPI = async (filesOrBase64Array) => {
         }
     });
 
-    const res = await authorizedAxiosInstance.post(`${API_ROOT}/image/upload`, formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    });
+    const res = await authorizedAxiosInstance.post(
+        `${API_ROOT}/image/upload`,
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
+    );
 
     return res.data; // => list url
+};
+
+// Upload CV
+export const uploadResumeAPI = async (file) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/api/cv/upload`,
+        file
+    );
+    return response.data.data;
+};
+
+export const getResumeFeedbackAPI = async (resumeId) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/cv/${resumeId}`
+    );
+    return response.data.data;
 };

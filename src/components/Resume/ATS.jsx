@@ -20,10 +20,10 @@ const ATS = ({ score, suggestions }) => {
     // Determine subtitle based on score
     const subtitle =
         score > 69
-            ? "Great Job!"
+            ? "Bạn đã làm rất tốt"
             : score > 49
-            ? "Good Start"
-            : "Needs Improvement";
+            ? "Khởi đầu không tệ"
+            : "Cần cải thiện thêm";
 
     return (
         <div
@@ -45,8 +45,8 @@ const ATS = ({ score, suggestions }) => {
                     {subtitle}
                 </h3>
                 <p className="text-gray-600 mb-4">
-                    This score represents how well your resume is likely to
-                    perform in Applicant Tracking Systems used by employers.
+                    Điểm số này thể hiện mức độ hiệu quả của CV của bạn khi được
+                    hệ thống lọc hồ sơ (ATS) của nhà tuyển dụng đánh giá.
                 </p>
 
                 {/* Suggestions list */}
@@ -82,8 +82,8 @@ const ATS = ({ score, suggestions }) => {
 
             {/* Closing encouragement */}
             <p className="text-gray-700 italic">
-                Keep refining your resume to improve your chances of getting
-                past ATS filters and into the hands of recruiters.
+                Hãy tiếp tục hoàn thiện CV của bạn để tăng cơ hội vượt qua hệ
+                thống lọc ATS và tiếp cận nhà tuyển dụng.
             </p>
         </div>
     );

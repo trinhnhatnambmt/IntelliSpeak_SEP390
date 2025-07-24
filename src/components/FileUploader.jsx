@@ -1,7 +1,9 @@
 import { Upload } from "lucide-react";
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import { toast } from "react-toastify";
 import { formatSize } from "~/lib/utils";
+import { singleFileValidator } from "~/utils/validators";
 
 const FileUploader = ({ onFileSelect, file }) => {
     const onDrop = useCallback(
@@ -17,8 +19,16 @@ const FileUploader = ({ onFileSelect, file }) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         multiple: false,
+        onDropRejected: (fileRejections) => {
+            fileRejections.forEach(({ file, errors }) => {
+                errors.forEach((e) => {
+                    toast.error(e.message); // hoặc alert, hoặc hiển thị dưới UI
+                });
+            });
+        },
         accept: { "application/pdf": [".pdf"] },
         maxSize: maxFileSize,
+        validator: singleFileValidator,
     });
 
     // const file = acceptedFiles[0] || null;
