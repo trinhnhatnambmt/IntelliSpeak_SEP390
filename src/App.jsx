@@ -15,6 +15,7 @@ import PaymentSuccess from "./pages/Payment/PaymentSuccess";
 import PaymentFailed from "./pages/Payment/PaymentFailed";
 import Settings from "./pages/main/settings/Settings";
 import Forum from "./pages/main/forum/Forum";
+import SavedForum from "./pages/main/forum/SavedForum";
 import ForumDetail from "./pages/main/forum/SinglePostPage/SinglePostPage";
 import SinglePostPage from "./pages/main/forum/SinglePostPage/SinglePostPage";
 import NewPostPage from "./pages/main/forum/NewPostPage/NewPostPage";
@@ -29,12 +30,12 @@ import UploadJDPage from "./pages/main/analyse/UploadJDPage";
 import JobDescription from "./pages/main/analyse/JobDescription";
 
 const ProtectedRoutes = ({ user }) => {
-    if (!user) return <Navigate to="/" replace={true} />;
-    return <Outlet />;
+  if (!user) return <Navigate to="/" replace={true} />;
+  return <Outlet />;
 };
 
 const App = () => {
-    const currentUser = useSelector(selectCurrentUser);
+  const currentUser = useSelector(selectCurrentUser);
 
     return (
         <Routes>
@@ -43,7 +44,7 @@ const App = () => {
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/payment-failed" element={<PaymentFailed />} />
 
-            {/* After analyze */}
+           {/* After analyze */}
             <Route path="/resume/:id" element={<Resume />} />
             <Route path="/jd/:id" element={<JobDescription />} />
 
@@ -76,11 +77,11 @@ const App = () => {
                 </Route>
             </Route>
 
-            {/* Authentication */}
-            <Route path="/login" element={<Auth />} />
-            <Route path="/register" element={<Auth />} />
-        </Routes>
-    );
+      {/* Authentication */}
+      <Route path="/login" element={<Auth />} />
+      <Route path="/register" element={<Auth />} />
+    </Routes>
+  );
 };
 
 export default App;

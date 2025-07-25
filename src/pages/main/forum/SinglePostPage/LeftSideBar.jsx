@@ -1,19 +1,80 @@
-import React from "react";
-import { Heart, ThumbsUp, ThumbsDown, MessageCircle, Save } from "lucide-react";
+import React, { useState } from "react";
+import { Heart, MessageCircle, Save, XCircle } from "lucide-react";
+import { likeOrUnlikePostAPI, savePostAPI, unsavePostAPI } from "~/apis/index";
 
-const LeftSideBar = ({ scrollToComment }) => {
-    return (
-        <div className="fixed hidden lg:flex flex-col items-center space-y-5 col-span-1 pt-10 text-gray-500 dark:text-gray-400">
-            <Heart className="cursor-pointer hover:text-red-500" />
-            <ThumbsUp className="cursor-pointer hover:text-green-500" />
-            <ThumbsDown className="cursor-pointer hover:text-red-400" />
-            <Save className="cursor-pointer hover:text-yellow-400" />
-            <MessageCircle
-                className="cursor-pointer hover:text-blue-500"
-                onClick={scrollToComment}
-            />
-        </div>
-    );
+const LeftSideBar = ({ postId, scrollToComment }) => {
+  const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  const handleLike = async () => {
+    try {
+      const newLikedState = !isLiked;
+      await likeOrUnlikePostAPI({ postId, liked: newLikedState });
+      setIsLiked(newLikedState);
+    } catch (error) {
+      console.error("Lỗi khi like/unlike:", error);
+    }
+  };
+
+  const handleSave = async () => {
+    if (isSaved) return;
+    try {
+      await savePostAPI(postId);
+      setIsSaved(true);
+    } catch (error) {
+      console.error("Lỗi khi lưu bài viết:", error);
+    }
+  };
+
+  const handleUnsave = async () => {
+    if (!isSaved) return;
+    try {
+      await unsavePostAPI(postId);
+      setIsSaved(false);
+    } catch (error) {
+      console.error("Lỗi khi bỏ lưu bài viết:", error);
+    }
+  };
+
+  return (
+    <div className="fixed hidden lg:flex flex-col items-center space-y-5 col-span-1 pt-10 text-gray-500 dark:text-gray-400">
+      {/* Like */}
+      <Heart
+        onClick={handleLike}
+        className={`cursor-pointer transition-all duration-200 ${
+          isLiked
+            ? "fill-red-500 text-red-500"
+            : "hover:text-red-500 text-red-500"
+        }`}
+        size={28}
+      />
+
+      {/* Save */}
+      <Save
+        onClick={handleSave}
+        className={`cursor-pointer transition-all duration-200 ${
+          isSaved ? "fill-yellow-400 text-yellow-400" : "hover:text-yellow-400"
+        }`}
+        size={28}
+      />
+
+      {/* Unsave */}
+      <XCircle
+        onClick={handleUnsave}
+        className={`cursor-pointer transition-all duration-200 ${
+          isSaved ? "fill-red-500 text-red-500" : "hover:text-red-500"
+        }`}
+        size={28}
+      />
+
+      {/* Comment */}
+      <MessageCircle
+        className="cursor-pointer hover:text-blue-500"
+        onClick={scrollToComment}
+        size={28}
+      />
+    </div>
+  );
 };
 
 export default LeftSideBar;

@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "./SideBar";
 import RightSidebar from "./RightSidebar";
-import { Link, useLocation } from "react-router-dom";
-import { getAllForumPostAPI } from "~/apis";
+import { Link } from "react-router-dom";
+import { getSavedPostsAPI } from "~/apis";
 
-const Forum = () => {
+const SavedForum = () => {
   const [posts, setPosts] = useState([]);
-  const location = useLocation();
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchSavedPosts = async () => {
       try {
-        const res = await getAllForumPostAPI();
+        const res = await getSavedPostsAPI();
         setPosts(res.data);
       } catch (error) {
-        console.error("Lỗi khi lấy bài viết:", error);
+        console.error("Lỗi khi lấy bài viết đã lưu:", error);
       }
     };
-    fetchPosts();
-  }, [location.pathname]);
+    fetchSavedPosts();
+  }, []);
 
   const PostCard = ({ post }) => (
     <div className="bg-white dark:bg-[#1e1e2f] shadow rounded-lg overflow-hidden mb-10">
@@ -53,8 +52,6 @@ const Forum = () => {
     </div>
   );
 
-  const isForumPage = location.pathname === "/main/forum";
-
   return (
     <div className="flex bg-gray-100 dark:bg-[#0e0c15] text-gray-900 dark:text-white transition-colors duration-300 pt-5">
       <div className="mx-auto flex container px-5">
@@ -64,29 +61,16 @@ const Forum = () => {
         {/* Main content */}
         <main className="flex-1 max-w-[800px] mx-auto p-6 relative z-10">
           <div className="flex space-x-4 mb-4">
-            <Link to="/main/forum">
-              <button
-                className={`px-4 py-1 rounded-md ${
-                  isForumPage
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-600 dark:text-gray-300 hover:underline"
-                }`}
-              >
-                Khám phá
-              </button>
+            <Link
+              to="/main/forum"
+              className="px-4 py-1 text-gray-600 dark:text-gray-300 hover:underline"
+            >
+              Khám phá
             </Link>
 
-            <Link to="/main/saved-forum">
-              <button
-                className={`px-4 py-1 rounded-md ${
-                  !isForumPage
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-600 dark:text-gray-300 hover:underline"
-                }`}
-              >
-                Đã lưu
-              </button>
-            </Link>
+            <button className="px-4 py-1 bg-blue-600 text-white rounded-md">
+              Đã lưu
+            </button>
           </div>
 
           {posts.length === 0 ? (
@@ -94,7 +78,7 @@ const Forum = () => {
               Chưa có bài viết nào.
             </div>
           ) : (
-            posts.map((post) => <PostCard key={post.postId} post={post} />)
+            posts.map((post) => <PostCard key={post.id} post={post} />)
           )}
         </main>
 
@@ -105,4 +89,4 @@ const Forum = () => {
   );
 };
 
-export default Forum;
+export default SavedForum;
