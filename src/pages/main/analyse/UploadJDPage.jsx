@@ -2,38 +2,34 @@ import { SquareChartGantt } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { uploadResumeAPI } from "~/apis";
+import { uploadJdAPI } from "~/apis";
 import FileUploader from "~/components/FileUploader";
 
-const UploadPage = () => {
+const UploadJDPage = () => {
     const navigate = useNavigate();
     const [isProcessing, setIsProcessing] = useState(false);
     const [statusText, setStatusText] = useState("");
     const [file, setFile] = useState(null);
-    const [title, setTitle] = useState("");
 
     const handleFileSelect = (file) => {
         setFile(file);
     };
 
-    const handleAnalyze = async ({ file, title }) => {
+    const handleAnalyze = async ({ file }) => {
         setIsProcessing(true);
 
         const reqData = new FormData();
         reqData.append("file", file);
-        // console.log("🚀 ~ handleAnalyze ~ reqData:", reqData);
-        // for (const value of reqData.values()) {
-        //     console.log("reqData Value: ", value);
-        // }
 
         //Gọi API
-        uploadResumeAPI(reqData, title).then((res) => {
+        uploadJdAPI(reqData).then((res) => {
+            console.log("🚀 ~ handleAnalyze JD ~ res:", res);
             if (!res.error) {
                 toast.success("Phân tích thành công");
             }
-            navigate(`/resume/${res?.evaluation?.id}`);
+            navigate(`/jd/${res?.jdId}`);
         });
-        setStatusText("Đang phân tích CV của bạn...");
+        setStatusText("Đang phân tích JD của bạn...");
     };
 
     const handleSubmit = (e) => {
@@ -41,7 +37,7 @@ const UploadPage = () => {
         const form = e.currentTarget.closest("form");
         if (!form) return;
         if (!file) return;
-        handleAnalyze({ file, title });
+        handleAnalyze({ file });
     };
 
     return (
@@ -49,7 +45,7 @@ const UploadPage = () => {
             <section className="main-section">
                 <div className="page-heading py-5">
                     <h1 className="text-6xl font-semibold">
-                        Phản hồi thông minh cho công việc mơ ước của bạn
+                        Phân tích JD để khám phá công việc phù hợp nhất với bạn
                     </h1>
                     {isProcessing ? (
                         <>
@@ -61,8 +57,8 @@ const UploadPage = () => {
                         </>
                     ) : (
                         <h2 className="text-2xl font-medium text-shadow-gray-50">
-                            Tải CV của bạn để xem điểm ATS và nhận các mẹo cải
-                            thiện
+                            Tải mô tả công việc (JD) để nhận phân tích chi tiết
+                            và đề xuất phù hợp
                         </h2>
                     )}
                     {!isProcessing && (
@@ -72,21 +68,6 @@ const UploadPage = () => {
                             className="flex flex-col gap-4 mt-8"
                         >
                             <div className="form-div">
-                                <label
-                                    htmlFor="title"
-                                    className="block text-white font-medium mb-1"
-                                >
-                                    Tiêu đề CV:
-                                </label>
-                                <input
-                                    type="text"
-                                    id="title"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="VD: CV Frontend Developer"
-                                    required
-                                    className="relative z-10 w-full bg-[#0e0c15] border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
                                 <FileUploader
                                     onFileSelect={handleFileSelect}
                                     file={file}
@@ -98,7 +79,7 @@ const UploadPage = () => {
                                 className="relative z-10 cursor-pointer flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
                             >
                                 <SquareChartGantt className="w-5 h-5" />
-                                Phân tích CV
+                                Phân tích JD
                             </button>
                         </form>
                     )}
@@ -108,4 +89,4 @@ const UploadPage = () => {
     );
 };
 
-export default UploadPage;
+export default UploadJDPage;

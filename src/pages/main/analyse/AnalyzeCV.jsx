@@ -1,11 +1,19 @@
 import { Upload } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAllCvAPI } from "~/apis";
 import ResumeCard from "~/components/ResumeCard";
-import { resumes } from "~/constants";
+// import { resumes } from "~/constants";
 
-const AnalyzePage = () => {
+const AnalyzeCV = () => {
     const navigate = useNavigate();
+    const [resumes, setResumes] = useState();
+    useEffect(() => {
+        getAllCvAPI().then((res) => {
+            setResumes(res);
+            console.log("🚀 ~ AnalyzeCV ~ res:", res);
+        });
+    }, []);
     return (
         <div>
             <section className="main-section">
@@ -25,16 +33,14 @@ const AnalyzePage = () => {
                     </button>
                 </div>
 
-                {resumes && (
-                    <div className="resumes-section">
-                        {resumes.map((resume) => (
-                            <ResumeCard key={resume.id} resume={resume} />
-                        ))}
-                    </div>
-                )}
+                <div className="resumes-section">
+                    {resumes?.map((resume) => (
+                        <ResumeCard key={resume.id} resume={resume} />
+                    ))}
+                </div>
             </section>
         </div>
     );
 };
 
-export default AnalyzePage;
+export default AnalyzeCV;
