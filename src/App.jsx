@@ -10,7 +10,6 @@ import Topic from "./pages/main/topic/Topic";
 import TopicDetail from "./pages/main/topic/TopicDetail";
 import Profile from "./pages/main/personal/Profile";
 import FeedBack from "./pages/main/personal/feedback/FeedBack";
-import AnalyzePage from "./pages/main/analyse/AnalyzePage";
 import Payment from "./pages/Payment/Payment";
 import PaymentSuccess from "./pages/Payment/PaymentSuccess";
 import PaymentFailed from "./pages/Payment/PaymentFailed";
@@ -25,6 +24,10 @@ import { selectCurrentUser } from "./redux/user/userSlice";
 import UpdateHR from "./pages/main/update/UpdateHR";
 import UploadPage from "./pages/main/analyse/UploadPage";
 import Resume from "./pages/main/analyse/Resume";
+import AnalyzeCV from "./pages/main/analyse/AnalyzeCV";
+import Analyze from "./pages/main/analyse/Analyze";
+import UploadJDPage from "./pages/main/analyse/UploadJDPage";
+import JobDescription from "./pages/main/analyse/JobDescription";
 
 const ProtectedRoutes = ({ user }) => {
   if (!user) return <Navigate to="/" replace={true} />;
@@ -34,34 +37,45 @@ const ProtectedRoutes = ({ user }) => {
 const App = () => {
   const currentUser = useSelector(selectCurrentUser);
 
-  return (
-    <Routes>
-      <Route path="/" element={<Homepage />} />
-      <Route path="/upgrade-plan" element={<UpgradePlan />} />
-      <Route path="/payment-success" element={<PaymentSuccess />} />
-      <Route path="/payment-failed" element={<PaymentFailed />} />
-      <Route path="/resume/:id" element={<Resume />} />
+    return (
+        <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/upgrade-plan" element={<UpgradePlan />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-failed" element={<PaymentFailed />} />
 
+           {/* After analyze */}
+            <Route path="/resume/:id" element={<Resume />} />
+            <Route path="/jd/:id" element={<JobDescription />} />
 
-      {/* <Route element={<ProtectedRoutes user={currentUser} />}> */}
-      <Route path="/main" element={<MainPage />}>
-        <Route index element={<InterviewPractice />} />
-        <Route path="interviewPage" element={<InterviewPage />} />
-        <Route path="topic" element={<Topic />} />
-        <Route path="topicDetail" element={<TopicDetail />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="feedback" element={<FeedBack />} />
-        <Route path="analyze" element={<AnalyzePage />} />
-        <Route path="upload" element={<UploadPage />} />
-        <Route path="payment" element={<Payment />} />
-        <Route path="settings" element={<Settings />} />
-        <Route path="forum" element={<Forum />} />
-        <Route path="saved-forum" element={<SavedForum />} />
-        <Route path="singlePostPage/:postId" element={<SinglePostPage />} />
-        <Route path="newPostPage" element={<NewPostPage />} />
-        <Route path="updateHR" element={<UpdateHR />} />
-      </Route>
-      {/* </Route> */}
+            <Route element={<ProtectedRoutes user={currentUser} />}>
+                <Route path="/main" element={<MainPage />}>
+                    <Route index element={<InterviewPractice />} />
+                    <Route path="interviewPage" element={<InterviewPage />} />
+                    <Route path="topic" element={<Topic />} />
+                    <Route path="topicDetail" element={<TopicDetail />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="feedback" element={<FeedBack />} />
+
+                    {/* Analyze  */}
+                    <Route path="analyze/CV" element={<Analyze />} />
+                    <Route path="analyze/JD" element={<Analyze />} />
+
+                    {/* Upload cv/jd */}
+                    <Route path="upload" element={<UploadPage />} />
+                    <Route path="uploadJD" element={<UploadJDPage />} />
+
+                    <Route path="payment" element={<Payment />} />
+                    <Route path="settings" element={<Settings />} />
+                    <Route path="forum" element={<Forum />} />
+                    <Route
+                        path="singlePostPage/:postId"
+                        element={<SinglePostPage />}
+                    />
+                    <Route path="newPostPage" element={<NewPostPage />} />
+                    <Route path="updateHR" element={<UpdateHR />} />
+                </Route>
+            </Route>
 
       {/* Authentication */}
       <Route path="/login" element={<Auth />} />

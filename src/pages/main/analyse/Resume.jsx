@@ -8,12 +8,11 @@ import mockFeedback from "~/constants/mockdata";
 
 const Resume = () => {
     const { id } = useParams();
-    const [imageUrl, setImageUrl] = useState("");
     const [feedback, setFeedback] = useState(null);
 
     useEffect(() => {
         getResumeFeedbackAPI(id).then((res) => {
-            // console.log(res);
+            console.log("🚀 ~ Resume ~ res:", res);
             setFeedback(res);
         });
     }, [id]);
@@ -29,7 +28,7 @@ const Resume = () => {
     return (
         <main className="!pt-0">
             <nav className="resume-nav">
-                <Link to="/main" className="back-button bg-white">
+                <Link to="/main/analyze/CV" className="back-button bg-white">
                     <img
                         src="/icons/back.svg"
                         alt="logo"
@@ -42,21 +41,29 @@ const Resume = () => {
             </nav>
             <div className="flex flex-row w-full max-lg:flex-col-reverse">
                 <section className="feedback-section bg-[url('/images/bg-small.svg') bg-cover h-[100vh] sticky top-0 items-center justify-center">
-                    {imageUrl && (
-                        <div className="animate-in fade-in duration-1000 gradient-border max-sm:m-0 h-[90%] max-wxl:h-fit w-fit">
-                            <a
-                                href={imageUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <img
-                                    src={imageUrl}
-                                    className="w-full h-full object-contain rounded-2xl"
-                                    title="resume"
-                                />
-                            </a>
-                        </div>
-                    )}
+                    <div className="animate-in fade-in duration-1000  max-sm:m-0 h-[90%] max-wxl:h-fit w-fit">
+                        {feedback?.imageURL
+                            ?.split(";")
+                            .filter((url) => url.trim() !== "")
+                            .map((url, index) => (
+                                <div
+                                    key={index}
+                                    className="mb-4 animate-in fade-in duration-700 gradient-border"
+                                >
+                                    <a
+                                        href={url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <img
+                                            src={url}
+                                            alt={`resume-page-${index + 1}`}
+                                            className="w-full h-auto object-contain rounded-2xl"
+                                        />
+                                    </a>
+                                </div>
+                            ))}
+                    </div>
                 </section>
                 <section className="feedback-section">
                     <h2 className="text-4xl text-white font-bold">

@@ -170,9 +170,9 @@ export const uploadImageAPI = async (filesOrBase64Array) => {
 };
 
 // Upload CV
-export const uploadResumeAPI = async (file) => {
+export const uploadResumeAPI = async (file, title) => {
     const response = await authorizedAxiosInstance.post(
-        `${API_ROOT}/api/cv/upload`,
+        `${API_ROOT}/api/cv/upload/${title}`,
         file
     );
     return response.data.data;
@@ -181,6 +181,36 @@ export const uploadResumeAPI = async (file) => {
 export const getResumeFeedbackAPI = async (resumeId) => {
     const response = await authorizedAxiosInstance.get(
         `${API_ROOT}/api/cv/${resumeId}`
+    );
+    return response.data.data;
+};
+
+export const getAllCvAPI = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/cv/list`
+    );
+    return response.data.data;
+};
+
+// Upload JD
+export const uploadJdAPI = async (file) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/api/jd/analyze`,
+        file
+    );
+    return response.data;
+};
+
+export const getJobDescriptionDetailAPI = async (jdId) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/jd/${jdId}`
+    );
+    return response.data;
+};
+
+export const getAllJdAPI = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/jd/list`
     );
     return response.data.data;
 };
