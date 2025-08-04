@@ -7,8 +7,10 @@ import {
     postForumAPI,
     getAllForumTopicsAPI,
 } from "~/apis/index";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
-const NewPostPage = () => {
+const MyPostPage = () => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [coverImagePreview, setCoverImagePreview] = useState(null);
@@ -16,6 +18,8 @@ const NewPostPage = () => {
     const [topics, setTopics] = useState([]);
     const [selectedTopicId, setSelectedTopicId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [myPosts, setMyPosts] = useState([]);
+    const [loadingPosts, setLoadingPosts] = useState(true);
 
     useEffect(() => {
         const fetchTopics = async () => {
@@ -23,13 +27,32 @@ const NewPostPage = () => {
                 const data = await getAllForumTopicsAPI();
                 if (Array.isArray(data) && data.length > 0) {
                     setTopics(data);
-                    setSelectedTopicId(Number(data[0].id));
+                    setSelectedTopicId(null);
                 }
             } catch (err) {
                 toast.error("Lỗi khi tải danh sách chủ đề.");
             }
         };
         fetchTopics();
+    }, []);
+
+    useEffect(() => {
+        const fetchMyPosts = async () => {
+            setLoadingPosts(true);
+            try {
+                const res = await axios.get("/forum-post/my-posts");
+                if (res.data && Array.isArray(res.data.data)) {
+                    setMyPosts(res.data.data);
+                } else {
+                    setMyPosts([]);
+                }
+            } catch (err) {
+                setMyPosts([]);
+            } finally {
+                setLoadingPosts(false);
+            }
+        };
+        fetchMyPosts();
     }, []);
 
     const handleImageUpload = (e) => {
@@ -129,7 +152,7 @@ const NewPostPage = () => {
             setContent("");
             setCoverImagePreview(null);
             setCoverImageFile(null);
-            setSelectedTopicId(topics.length > 0 ? Number(topics[0].id) : null);
+            setSelectedTopicId(null);
         } catch (err) {
             console.error(err);
             toast.update(loadingToastId, {
@@ -143,37 +166,71 @@ const NewPostPage = () => {
         }
     };
 
+    // Forum-like PostCard for my posts
+    const PostCard = ({ post }) => (
+        <div className="bg-white dark:bg-[#1e1e2f] shadow rounded-lg overflow-hidden mb-10">
+            <Link to={`/main/singlePostPage/${post.postId}`}>
+                <img
+                    src={post.image?.[0] || "https://placehold.co/800x300?text=No+Image"}
+                    alt="Post banner"
+                    className="w-full h-56 object-cover"
+                />
+                <div className="p-4">
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                        {post.userName} • {new Date(post.createAt).toLocaleString("vi-VN", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false,
+                        })}
+                    </div>
+                    <h2 className="text-xl font-bold mb-2">{post.title}</h2>
+                    <div className="text-sm text-gray-500 dark:text-gray-400 space-x-2 mb-2">
+                        <span>#{post.forumTopicType?.title || "chủ đề"}</span>
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-300 flex items-center justify-between">
+                        <span>❤️ {post.reactionCount || 0} Lượt thích</span>
+                        <span>🕓 {post.readTimeEstimate || 3} phút đọc</span>
+                    </div>
+                </div>
+            </Link>
+        </div>
+    );
+
     return (
         <div className="container mx-auto px-4 py-7">
-            <div className="bg-white p-8 rounded-2xl shadow-xl relative z-10">
-                <h1 className="text-3xl font-bold mb-8 text-gray-800">✍️ Tạo bài viết mới</h1>
+            <div className="w-[90%] max-w-3xl mx-auto bg-white dark:bg-[#252525] border border-neutral-200 dark:border-neutral-700 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300 p-8 relative z-10">
+                <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">✍️ Tạo bài viết mới</h1>
 
                 {/* Ảnh bìa */}
                 <div className="mb-6">
-                    <label className="block mb-2 text-sm font-medium text-gray-700">Ảnh bìa</label>
+                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Ảnh bìa</label>
                     <input
                         type="file"
                         accept="image/*"
                         onChange={handleImageUpload}
-                        className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer"
+                        className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer dark:file:bg-blue-500 dark:hover:file:bg-blue-600"
                     />
                     {coverImagePreview && (
                         <img
                             src={coverImagePreview}
                             alt="Preview"
-                            className="mt-4 rounded-lg max-h-64 object-cover w-full border border-gray-300"
+                            className="mt-4 rounded-lg max-h-64 object-cover w-full border border-gray-300 dark:border-neutral-700"
                         />
                     )}
                 </div>
 
                 {/* Chủ đề */}
                 <div className="mb-6">
-                    <label className="block mb-2 text-sm font-medium text-gray-700">Chọn chủ đề</label>
+                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Chọn chủ đề</label>
                     <select
                         value={selectedTopicId ?? ""}
                         onChange={(e) => setSelectedTopicId(Number(e.target.value))}
-                        className="w-full p-3 rounded-md border border-gray-300 bg-white text-gray-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                        className="w-full p-3 rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-700 dark:text-neutral-200 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                     >
+                        <option value="" disabled>--Chọn chủ đề--</option>
                         {topics.length === 0 ? (
                             <option disabled>Không có chủ đề</option>
                         ) : (
@@ -192,7 +249,7 @@ const NewPostPage = () => {
                     placeholder="📝 Tiêu đề bài viết..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full p-4 mb-5 text-xl font-semibold rounded-md border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full p-4 mb-5 text-xl font-semibold rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                 />
 
                 {/* Nội dung */}
@@ -201,7 +258,7 @@ const NewPostPage = () => {
                     value={content}
                     onChange={setContent}
                     placeholder="✍️ Viết nội dung bài viết ở đây..."
-                    className="mb-6 bg-white text-black border-none"
+                    className="mb-6 bg-white dark:bg-[#181818] text-black dark:text-white border-none rounded-md"
                     modules={{
                         toolbar: [
                             [{ header: [1, 2, 3, false] }],
@@ -219,9 +276,8 @@ const NewPostPage = () => {
                     <button
                         onClick={handlePublish}
                         disabled={isLoading}
-                        className={`flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-all ${
-                            isLoading ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
+                        className={`flex items-center justify-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                     >
                         {isLoading ? (
                             <>
@@ -253,8 +309,20 @@ const NewPostPage = () => {
                     </button>
                 </div>
             </div>
+
+            {/* My Posts Section */}
+            <div className="w-[90%] max-w-3xl mx-auto mt-12">
+                <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Bài viết của tôi</h2>
+                {loadingPosts ? (
+                    <div className="text-center text-gray-500 dark:text-gray-400">Đang tải bài viết...</div>
+                ) : myPosts.length === 0 ? (
+                    <div className="text-center text-gray-500 dark:text-gray-400">Bạn chưa có bài viết nào.</div>
+                ) : (
+                    myPosts.map((post) => <PostCard key={post.postId} post={post} />)
+                )}
+            </div>
         </div>
     );
 };
 
-export default NewPostPage;
+export default MyPostPage;

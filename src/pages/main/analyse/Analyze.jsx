@@ -26,35 +26,39 @@ const Analyze = () => {
     };
 
     return (
-        <div className="container mx-auto">
+        <div className="min-h-screen bg-gray-100 dark:bg-[#0e0c15] text-gray-900 dark:text-white transition-colors duration-300 container mx-auto py-10 px-4">
             <TabContext value={activeTab}>
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider", bgcolor: 'transparent' }}>
                     <TabList onChange={handleChangeTab}>
                         <Tab
-                            label="Tải CV"
+                            label={<span className="text-gray-900 dark:text-white font-bold">Tải CV</span>}
                             value={TABS.CV}
-                            icon={<PersonStandingIcon />}
+                            icon={<PersonStandingIcon className="text-gray-900 dark:text-white" />}
                             iconPosition="start"
                             component={Link}
                             to="/main/analyze/CV"
-                            sx={{ color: "#fff", fontWeight: "bold" }}
+                            sx={{ color: 'inherit', fontWeight: 'bold' }}
                         />
                         <Tab
-                            label="Tải JD"
+                            label={<span className="text-gray-900 dark:text-white">Tải JD</span>}
                             value={TABS.JD}
-                            icon={<NotepadText />}
+                            icon={<NotepadText className="text-gray-900 dark:text-white" />}
                             iconPosition="start"
                             component={Link}
                             to="/main/analyze/JD"
-                            sx={{ color: "#fff" }}
+                            sx={{ color: 'inherit' }}
                         />
                     </TabList>
                 </Box>
                 <TabPanel value={TABS.CV}>
-                    <AnalyzeCV />
+                    <div className="text-gray-900 dark:text-white">
+                        <AnalyzeCV />
+                    </div>
                 </TabPanel>
                 <TabPanel value={TABS.JD}>
-                    <AnalyzeJD />
+                    <div className="text-gray-900 dark:text-white">
+                        <AnalyzeJD />
+                    </div>
                 </TabPanel>
             </TabContext>
         </div>

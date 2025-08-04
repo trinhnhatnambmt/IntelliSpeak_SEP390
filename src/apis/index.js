@@ -1,3 +1,45 @@
+// ==== GET ALL COMMENTS FOR A POST ====
+export const getForumPostRepliesAPI = async (postId) => {
+  const res = await authorizedAxiosInstance.get(`${API_ROOT}/forum-post/${postId}/replies`);
+  return res.data;
+};
+// ==== UPDATE FORUM POST ====
+export const updateForumPostAPI = async (postId, { title, content, images, forumTopicTypeId }) => {
+  const res = await authorizedAxiosInstance.put(
+    `${API_ROOT}/forum-post/${postId}`,
+    {
+      title,
+      content,
+      images,
+      forumTopicTypeId,
+    }
+  );
+  return res.data;
+};
+// ==== REPLY / COMMENT ====
+export const postReplyAPI = async ({ postId, title, content }) => {
+  const res = await authorizedAxiosInstance.post(`${API_ROOT}/reply`, {
+    postId,
+    title,
+    content,
+  });
+  return res.data;
+};
+// ==== DELETE IMAGE FROM FORUM POST ====
+export const deleteForumPostImageAPI = async (postId, imageId) => {
+  const res = await authorizedAxiosInstance.delete(`${API_ROOT}/forum-post/posts/${postId}/images/${imageId}`);
+  return res.data;
+};
+// ==== DELETE FORUM POST ====
+export const deleteForumPostAPI = async (postId) => {
+  const res = await authorizedAxiosInstance.delete(`${API_ROOT}/forum-post/${postId}`);
+  return res.data;
+};
+// ==== MY POSTS ====
+export const getMyForumPostsAPI = async () => {
+  const res = await authorizedAxiosInstance.get(`${API_ROOT}/forum-post/my-posts`);
+  return res.data;
+};
 import { toast } from "react-toastify";
 import authorizedAxiosInstance from "~/utils/authorizeAxios";
 import { API_ROOT } from "~/utils/constant";
@@ -171,46 +213,46 @@ export const uploadImageAPI = async (filesOrBase64Array) => {
 
 // Upload CV
 export const uploadResumeAPI = async (file, title) => {
-    const response = await authorizedAxiosInstance.post(
-        `${API_ROOT}/api/cv/upload/${title}`,
-        file
-    );
-    return response.data.data;
+  const response = await authorizedAxiosInstance.post(
+    `${API_ROOT}/api/cv/upload/${title}`,
+    file
+  );
+  return response.data.data;
 };
 
 export const getResumeFeedbackAPI = async (resumeId) => {
-    const response = await authorizedAxiosInstance.get(
-        `${API_ROOT}/api/cv/${resumeId}`
-    );
-    return response.data.data;
+  const response = await authorizedAxiosInstance.get(
+    `${API_ROOT}/api/cv/${resumeId}`
+  );
+  return response.data.data;
 };
 
 export const getAllCvAPI = async () => {
-    const response = await authorizedAxiosInstance.get(
-        `${API_ROOT}/api/cv/list`
-    );
-    return response.data.data;
+  const response = await authorizedAxiosInstance.get(
+    `${API_ROOT}/api/cv/list`
+  );
+  return response.data.data;
 };
 
 // Upload JD
 export const uploadJdAPI = async (file) => {
-    const response = await authorizedAxiosInstance.post(
-        `${API_ROOT}/api/jd/analyze`,
-        file
-    );
-    return response.data;
+  const response = await authorizedAxiosInstance.post(
+    `${API_ROOT}/api/jd/analyze`,
+    file
+  );
+  return response.data;
 };
 
 export const getJobDescriptionDetailAPI = async (jdId) => {
-    const response = await authorizedAxiosInstance.get(
-        `${API_ROOT}/api/jd/${jdId}`
-    );
-    return response.data;
+  const response = await authorizedAxiosInstance.get(
+    `${API_ROOT}/api/jd/${jdId}`
+  );
+  return response.data;
 };
 
 export const getAllJdAPI = async () => {
-    const response = await authorizedAxiosInstance.get(
-        `${API_ROOT}/api/jd/list`
-    );
-    return response.data.data;
+  const response = await authorizedAxiosInstance.get(
+    `${API_ROOT}/api/jd/list`
+  );
+  return response.data.data;
 };

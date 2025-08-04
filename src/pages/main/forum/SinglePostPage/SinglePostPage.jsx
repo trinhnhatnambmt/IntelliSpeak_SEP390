@@ -3,17 +3,33 @@ import { useParams } from "react-router-dom";
 import RightSideBar from "./RightSideBar";
 import LeftSideBar from "./LeftSideBar";
 import CommentSection from "./CommentSection";
-import { getForumPostByIdAPI } from "~/apis";
+import { getForumPostByIdAPI, postReplyAPI, getForumPostRepliesAPI } from "~/apis";
+import { toast } from "react-toastify";
 import parse from "html-react-parser";
 
 const SinglePostPage = () => {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
   const commentRef = useRef(null);
+  const [commentTitle, setCommentTitle] = useState("");
+  const [commentContent, setCommentContent] = useState("");
+  const [isCommentLoading, setIsCommentLoading] = useState(false);
+  const [comments, setComments] = useState([]);
+  // Fetch comments for this post
+  const fetchComments = async () => {
+    try {
+      const res = await getForumPostRepliesAPI(postId);
+      setComments(res.data || []);
+    } catch (err) {
+      setComments([]);
+    }
+  };
+
 
   const scrollToComment = () => {
     commentRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -25,7 +41,34 @@ const SinglePostPage = () => {
       }
     };
     fetchPost();
+    fetchComments();
+    // eslint-disable-next-line
   }, [postId]);
+
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!commentTitle.trim() || !commentContent.trim()) {
+      toast.error("Vui lòng nhập tiêu đề và nội dung bình luận.");
+      return;
+    }
+    setIsCommentLoading(true);
+    try {
+      await postReplyAPI({
+        postId: Number(postId),
+        title: commentTitle,
+        content: commentContent,
+      });
+      toast.success("Đã gửi bình luận!");
+      setCommentTitle("");
+      setCommentContent("");
+      await fetchComments();
+    } catch (err) {
+      toast.error("Gửi bình luận thất bại!");
+    } finally {
+      setIsCommentLoading(false);
+    }
+  };
 
   if (!post)
     return <div className="text-center py-10">Đang tải bài viết...</div>;
@@ -103,7 +146,49 @@ const SinglePostPage = () => {
           )}
 
           {/* Comment Section */}
-          <CommentSection commentRef={commentRef} />
+          <div ref={commentRef} className="mt-10">
+            <h3 className="text-lg font-semibold mb-3 text-gray-800 dark:text-white">Bình luận</h3>
+            <form onSubmit={handleCommentSubmit} className="mb-8 bg-gray-50 dark:bg-[#23233a] p-4 rounded-lg">
+              <input
+                type="text"
+                placeholder="Tiêu đề bình luận"
+                className="w-full mb-2 p-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-white"
+                value={commentTitle}
+                onChange={e => setCommentTitle(e.target.value)}
+                disabled={isCommentLoading}
+              />
+              <textarea
+                placeholder="Nội dung bình luận"
+                className="w-full mb-2 p-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-white min-h-[80px]"
+                value={commentContent}
+                onChange={e => setCommentContent(e.target.value)}
+                disabled={isCommentLoading}
+              />
+              <button
+                type="submit"
+                disabled={isCommentLoading}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition-all disabled:opacity-50"
+              >
+                {isCommentLoading ? "Đang gửi..." : "Gửi bình luận"}
+              </button>
+            </form>
+            {/* Existing comments */}
+            <div className="space-y-4">
+              {comments.length === 0 ? (
+                <div className="text-gray-500 dark:text-gray-400 text-center">Chưa có bình luận nào.</div>
+              ) : (
+                comments.map((cmt) => (
+                  <div key={cmt.id} className="bg-white dark:bg-[#23233a] rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center mb-1">
+                      <span className="font-semibold text-gray-800 dark:text-white mr-2">{cmt.title}</span>
+                      <span className="text-xs text-gray-400">{new Date(cmt.createAt).toLocaleString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })}</span>
+                    </div>
+                    <div className="text-gray-700 dark:text-gray-200">{cmt.content}</div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Right Sidebar */}
