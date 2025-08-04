@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { logo } from "~/assets";
+import { squarelogo, intellispeakdark } from "~/assets";
 import Button from "~/components/Button/Button";
 import GitHubButton from "~/components/Button/RegisterButton";
 import GooeyNav from "~/components/GooeyNav";
@@ -35,13 +35,15 @@ const Header = ({ authenticated = false }) => {
         >
             <div className="relative container mx-auto flex items-center justify-between">
                 {!authenticated && (
-                    <a href="/">
-                        <img src={logo} alt="logo" width={200} />
+                    <a href="/" className="flex items-center gap-2">
+                        <img src={squarelogo} alt="logo" className="h-10 w-auto" />
+                        <img src={intellispeakdark} alt="logo" className="h-10 w-auto" />
                     </a>
                 )}
                 {authenticated && (
-                    <a href="/main" className="mr-15">
-                        <img src={logo} alt="logo" width={200} />
+                    <a href="/main" className="flex items-center gap-2 mr-15">
+                        <img src={squarelogo} alt="logo" className="h-10 w-auto" />
+                        <img src={intellispeakdark} alt="logo" className="h-10 w-auto" />
                     </a>
                 )}
 

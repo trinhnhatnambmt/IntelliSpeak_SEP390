@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { logo } from "~/assets";
+import { squarelogo, intellispeakdark } from "~/assets";
 
 const Footer = () => {
     return (
@@ -8,12 +8,16 @@ const Footer = () => {
             <div className="container mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
                 {/* Logo và Mô tả */}
                 <div className="flex flex-col items-start gap-4 md:w-1/3">
-                    <Link to="/">
+                    <Link to="/" className="flex items-center gap-2">
                         <img
-                            src={logo}
+                            src={squarelogo}
                             alt="logo"
-                            width={150}
-                            className="filter brightness-0 invert"
+                            className="h-7 w-auto filter brightness-0 invert"
+                        />
+                        <img
+                            src={intellispeakdark}
+                            alt="logo"
+                            className="h-7 w-auto"
                         />
                     </Link>
                     <p className="text-gray-300 text-sm leading-relaxed">

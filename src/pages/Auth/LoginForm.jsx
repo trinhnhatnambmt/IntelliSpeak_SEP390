@@ -1,7 +1,7 @@
 import { Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { authThumb, logo } from "~/assets";
+import { authThumb, squarelogo, intellispeakdark } from "~/assets";
 import { useForm } from "react-hook-form";
 import {
     EMAIL_RULE,
@@ -27,7 +27,6 @@ const LoginForm = () => {
     } = useForm();
 
     const submitLogin = (data) => {
-        // console.log("submit login:", data);
         const { email, password } = data;
         toast
             .promise(
@@ -43,7 +42,6 @@ const LoginForm = () => {
             )
             .then((res) => {
                 console.log(res);
-                // Đoạn này kiểm tra ko có lỗi thì redirect về route
                 if (!res.error) {
                     navigate("/main");
                 }
@@ -57,13 +55,10 @@ const LoginForm = () => {
                     onSubmit={handleSubmit(submitLogin)}
                     className="relative flex flex-col gap-5 justify-center items-center w-1/2"
                 >
-                    <img
-                        src={logo}
-                        alt="logo"
-                        width={180}
-                        onClick={() => navigate("/")}
-                        className="absolute top-5 left-5 cursor-pointer"
-                    />
+                    <div className="absolute top-5 left-5 cursor-pointer flex items-center gap-2" onClick={() => navigate("/")}>
+                        <img src={squarelogo} alt="logo" className="h-10 w-auto" />
+                        <img src={intellispeakdark} alt="logo" className="h-10 w-auto" />
+                    </div>
                     <h1 className="font-bold text-4xl">Đăng Nhập</h1>
                     <div className="w-96 mx-auto">
                         <label htmlFor="pass" className="text-sm font-normal">
@@ -100,10 +95,6 @@ const LoginForm = () => {
                                 className="w-full outline-none focus-within:border-white rounded-md p-2 border-[1px] border-gray-400"
                                 {...register("password", {
                                     required: FIELD_REQUIRED_MESSAGE,
-                                    // pattern: {
-                                    //     value: PASSWORD_RULE,
-                                    //     message: PASSWORD_RULE_MESSAGE,
-                                    // },
                                 })}
                             />
                             <div
