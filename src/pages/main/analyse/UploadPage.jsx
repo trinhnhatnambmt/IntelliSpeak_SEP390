@@ -74,7 +74,7 @@ const UploadPage = () => {
                             <div className="form-div">
                                 <label
                                     htmlFor="title"
-                                    className="block text-white font-medium mb-1"
+                                    className="block text-gray-800 dark:text-white font-medium mb-1"
                                 >
                                     Tiêu đề CV:
                                 </label>
@@ -85,7 +85,7 @@ const UploadPage = () => {
                                     onChange={(e) => setTitle(e.target.value)}
                                     placeholder="VD: CV Frontend Developer"
                                     required
-                                    className="relative z-10 w-full bg-[#0e0c15] border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="relative z-10 w-full bg-white dark:bg-[#0e0c15] border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                                 <FileUploader
                                     onFileSelect={handleFileSelect}

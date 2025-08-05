@@ -1,7 +1,7 @@
 import { Eye, EyeOff } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { authThumb, squarelogo, intellispeakdark } from "~/assets";
+import { authThumb, squarelogo, intellispeakdark, intellispeak } from "~/assets"; // Thêm intellispeak
 import { useForm } from "react-hook-form";
 import {
     EMAIL_RULE,
@@ -17,6 +17,7 @@ import { loginUserAPI } from "~/redux/user/userSlice";
 
 const LoginForm = () => {
     const [isVisible, setIsVisible] = useState(false);
+    const [logo, setLogo] = useState(intellispeak); // Khởi tạo logo mặc định là intellispeak
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -25,6 +26,24 @@ const LoginForm = () => {
         handleSubmit,
         formState: { errors },
     } = useForm();
+
+    // Sử dụng useEffect để lắng nghe sự thay đổi của theme
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+        const handleChange = (e) => {
+            setLogo(e.matches ? intellispeakdark : intellispeak);
+        };
+
+        // Thiết lập logo ban đầu
+        handleChange(mediaQuery);
+
+        // Lắng nghe sự kiện thay đổi của theme
+        mediaQuery.addEventListener('change', handleChange);
+
+        // Cleanup function để gỡ bỏ event listener khi component unmount
+        return () => mediaQuery.removeEventListener('change', handleChange);
+    }, []);
 
     const submitLogin = (data) => {
         const { email, password } = data;
@@ -53,22 +72,22 @@ const LoginForm = () => {
             <div className="flex justify-between">
                 <form
                     onSubmit={handleSubmit(submitLogin)}
-                    className="relative flex flex-col gap-5 justify-center items-center w-1/2"
+                    className="relative flex flex-col gap-5 justify-center items-center w-1/2 bg-gray-50 dark:bg-gray-900"
                 >
                     <div className="absolute top-5 left-5 cursor-pointer flex items-center gap-2" onClick={() => navigate("/")}>
                         <img src={squarelogo} alt="logo" className="h-10 w-auto" />
-                        <img src={intellispeakdark} alt="logo" className="h-10 w-auto" />
+                        <img src={logo} alt="logo" className="h-10 w-auto" /> {/* Thay đổi src bằng biến logo */}
                     </div>
-                    <h1 className="font-bold text-4xl">Đăng Nhập</h1>
+                    <h1 className="font-bold text-4xl text-gray-800 dark:text-white">Đăng Nhập</h1>
                     <div className="w-96 mx-auto">
-                        <label htmlFor="pass" className="text-sm font-normal">
+                        <label htmlFor="pass" className="text-sm font-normal text-gray-700 dark:text-gray-300">
                             Email
                         </label>
                         <div className="relative mt-1">
                             <input
                                 id="email"
                                 placeholder="Email"
-                                className="w-full outline-none focus-within:border-white rounded-md p-2 border-[1px] border-gray-400"
+                                className="w-full outline-none focus-within:border-blue-500 rounded-md p-2 border-[1px] border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                 {...register("email", {
                                     required: FIELD_REQUIRED_MESSAGE,
                                     pattern: {
@@ -84,7 +103,7 @@ const LoginForm = () => {
                         </div>
                     </div>
                     <div className="w-96 mx-auto">
-                        <label htmlFor="pass" className="text-sm font-normal">
+                        <label htmlFor="pass" className="text-sm font-normal text-gray-700 dark:text-gray-300">
                             Password
                         </label>
                         <div className="relative mt-1">
@@ -92,13 +111,13 @@ const LoginForm = () => {
                                 type={isVisible ? "text" : "password"}
                                 id="pass"
                                 placeholder="password"
-                                className="w-full outline-none focus-within:border-white rounded-md p-2 border-[1px] border-gray-400"
+                                className="w-full outline-none focus-within:border-blue-500 rounded-md p-2 border-[1px] border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                 {...register("password", {
                                     required: FIELD_REQUIRED_MESSAGE,
                                 })}
                             />
                             <div
-                                className="absolute top-3 right-4 text-2xl text-gray-500 cursor-pointer"
+                                className="absolute top-3 right-4 text-2xl text-gray-500 dark:text-gray-400 cursor-pointer"
                                 onClick={() => setIsVisible((prev) => !prev)}
                             >
                                 {isVisible ? (
@@ -116,18 +135,18 @@ const LoginForm = () => {
                     <div className="w-96 mx-auto mt-4">
                         <button
                             type="submit"
-                            className="interceptor-loading w-full bg-white text-black border border-gray-400 py-2 rounded-md font-medium hover:bg-zinc-300 transition duration-500 cursor-pointer"
+                            className="interceptor-loading w-full bg-blue-600 hover:bg-blue-700 text-white border border-blue-700 dark:border-blue-800 py-2 rounded-md font-medium transition duration-500 cursor-pointer"
                         >
                             Đăng Nhập
                         </button>
                     </div>
                     <div className="w-96 mx-auto my-4 flex items-center">
-                        <div className="flex-grow h-[0.5px] bg-gray-500" />
-                        <span className="px-3 text-sm text-gray-500">hoặc</span>
-                        <div className="flex-grow h-[0.5px] bg-gray-500" />
+                        <div className="flex-grow h-[0.5px] bg-gray-300 dark:bg-gray-600" />
+                        <span className="px-3 text-sm text-gray-500 dark:text-gray-400">hoặc</span>
+                        <div className="flex-grow h-[0.5px] bg-gray-300 dark:bg-gray-600" />
                     </div>
 
-                    <button className="cursor-pointer w-96 text-black flex justify-center gap-2 items-center bg-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-zinc-300 transition-all ease-in duration-200">
+                    <button className="cursor-pointer w-96 text-gray-700 dark:text-gray-300 flex justify-center gap-2 items-center bg-white dark:bg-gray-800 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all ease-in duration-200 border border-gray-300 dark:border-gray-600">
                         <svg
                             viewBox="0 0 48 48"
                             xmlns="http://www.w3.org/2000/svg"
@@ -153,11 +172,11 @@ const LoginForm = () => {
                         Continue with Google
                     </button>
                     <div className="w-96 mx-auto my-4 flex items-center">
-                        <span className="px-3 text-sm text-white-50">
+                        <span className="px-3 text-sm text-gray-600 dark:text-gray-400">
                             Bạn chưa có tài khoản trước đó sao?{" "}
                             <Link
                                 to="/register"
-                                className="underline ml-1 font-bold"
+                                className="underline ml-1 font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                             >
                                 Đăng Ký
                             </Link>
