@@ -28,6 +28,7 @@ import AnalyzeCV from "./pages/main/analyse/AnalyzeCV";
 import Analyze from "./pages/main/analyse/Analyze";
 import UploadJDPage from "./pages/main/analyse/UploadJDPage";
 import JobDescription from "./pages/main/analyse/JobDescription";
+import HRCreateQuestionPage from "./pages/main/hr/HRCreateQuestionPage";
 
 const ProtectedRoutes = ({ user }) => {
   if (!user) return <Navigate to="/" replace={true} />;
@@ -73,7 +74,10 @@ const App = () => {
             element={<SinglePostPage />}
           />
           <Route path="myPostPage" element={<NewPostPage />} />
+
+          {/* HR */}
           <Route path="updateHR" element={<UpdateHR />} />
+          <Route path="hr/create-question" element={<HRCreateQuestionPage />} />
         </Route>
       </Route>
 

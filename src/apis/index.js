@@ -256,3 +256,33 @@ export const getAllJdAPI = async () => {
   );
   return response.data.data;
 };
+
+// ==== HR APPLICATION ====
+export const applyForHrAPI = async ({
+  company,
+  phone,
+  country,
+  experienceYears,
+  linkedinUrl,
+  cvUrl
+}) => {
+  try {
+    const response = await authorizedAxiosInstance.post(
+      `${API_ROOT}/hr/apply`,
+      {
+        company,
+        phone,
+        country,
+        experienceYears,
+        linkedinUrl,
+        cvUrl
+      }
+    );
+    toast.success("HR application submitted successfully");
+    return response.data;
+  } catch (error) {
+    toast.error("Failed to submit HR application");
+    console.error("Error submitting HR application:", error);
+    throw error;
+  }
+};

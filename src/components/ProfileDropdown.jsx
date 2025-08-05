@@ -66,6 +66,11 @@ export default function WalletProfile() {
         },
         {
             icon: <BookOpenText className="w-5 h-5" />,
+            label: "Tạo câu hỏi HR",
+            href: "/main/hr/create-question",
+        },
+        {
+            icon: <BookOpenText className="w-5 h-5" />,
             label: "Bài viết của tôi",
             href: "/main/myPostPage",
         },

@@ -7,41 +7,70 @@ import {
     updateUserAPI,
 } from "~/redux/user/userSlice";
 import { toast } from "react-toastify";
+import { uploadImageAPI } from "~/apis/index";
 
 const PersonalInfo = () => {
     const currentUser = useSelector(selectCurrentUser);
-    console.log(currentUser);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editLabel, setEditLabel] = useState("");
     const [editKey, setEditKey] = useState("");
     const [editValue, setEditValue] = useState("");
+    const [avatarPreview, setAvatarPreview] = useState(null);
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
+
+    const dispatch = useDispatch();
 
     const openEditModal = (label, key, value) => {
         setEditLabel(label);
         setEditKey(key);
         setEditValue(value);
+        setAvatarPreview(key === 'avatar' ? value : null);
+        setAvatarFile(null);
         setIsModalOpen(true);
     };
 
-    const dispatch = useDispatch();
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setAvatarPreview(URL.createObjectURL(file));
+            setAvatarFile(file);
+        }
+    };
 
-    const handleSave = () => {
-        const updatedUser = { ...currentUser.user };
+    const handleSave = async () => {
+        try {
+            setIsUploading(true);
 
-        updatedUser[editKey] = editValue;
+            let updatedValue = editValue;
 
-        toast
-            .promise(dispatch(updateUserAPI(updatedUser)), {
-                pending: "Đang cập nhật...",
-            })
-            .then((res) => {
-                if (!res.error) {
-                    toast.success("Cập nhật thành công!");
+            // Nếu là upload avatar và có file mới
+            if (editKey === 'avatar' && avatarFile) {
+                const uploadedUrls = await uploadImageAPI([avatarFile]);
+                if (uploadedUrls.length > 0) {
+                    updatedValue = uploadedUrls[0];
                 }
-                dispatch(getUserProfileAPI());
+            }
+
+            const updatedUser = {
+                ...currentUser.user,
+                [editKey]: updatedValue
+            };
+
+            await toast.promise(dispatch(updateUserAPI(updatedUser)), {
+                pending: "Đang cập nhật...",
+                success: "Cập nhật thành công!",
+                error: "Cập nhật thất bại!"
             });
 
-        setIsModalOpen(false);
+            dispatch(getUserProfileAPI());
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error("Lỗi khi cập nhật:", error);
+            toast.error("Có lỗi xảy ra khi cập nhật");
+        } finally {
+            setIsUploading(false);
+        }
     };
 
     return (
@@ -142,16 +171,41 @@ const PersonalInfo = () => {
                     <Button key="cancel" onClick={() => setIsModalOpen(false)}>
                         Hủy
                     </Button>,
-                    <Button key="submit" type="primary" onClick={handleSave}>
+                    <Button
+                        key="submit"
+                        type="primary"
+                        onClick={handleSave}
+                        loading={isUploading}
+                    >
                         Lưu lại
                     </Button>,
                 ]}
             >
-                <Input
-                    placeholder={`Nhập ${editLabel.toLowerCase()}...`}
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                />
+                {editKey === 'avatar' ? (
+                    <div>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer dark:file:bg-blue-500 dark:hover:file:bg-blue-600 mb-4"
+                        />
+                        {avatarPreview && (
+                            <div className="mt-4 flex justify-center">
+                                <Avatar
+                                    size={128}
+                                    src={avatarPreview}
+                                    className="border border-gray-300 rounded-full"
+                                />
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <Input
+                        placeholder={`Nhập ${editLabel.toLowerCase()}...`}
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                    />
+                )}
             </Modal>
         </div>
     );
