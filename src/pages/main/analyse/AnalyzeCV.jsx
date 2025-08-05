@@ -11,11 +11,10 @@ const AnalyzeCV = () => {
     useEffect(() => {
         getAllCvAPI().then((res) => {
             setResumes(res);
-            console.log("🚀 ~ AnalyzeCV ~ res:", res);
         });
     }, []);
     return (
-        <div className="min-h-[60vh] bg-white dark:bg-[#18182a] rounded-2xl shadow-lg p-6 sm:p-10 transition-colors duration-300">
+        <div className="min-h-[60vh] bg-white dark:bg-[#18182a] rounded-2xl shadow-lg p-6 sm:p-10 transition-colors duration-300 ">
             <section className="main-section">
                 <div className="page-heading text-center mb-10">
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">

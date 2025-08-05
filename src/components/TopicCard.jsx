@@ -2,10 +2,9 @@ import React from "react";
 import { ChevronRight, ChevronsRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const TopicCard = () => {
+const TopicCard = ({ title, description, topicId }) => {
     return (
         <div className="w-full max-w-md relative mt-4 group mx-auto bg-white dark:bg-[#252525] border border-neutral-200 dark:border-neutral-700 overflow-hidden rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
-            {/* Hình ảnh chủ đề */}
             <figure className="w-full h-60 overflow-hidden">
                 <img
                     src={
@@ -18,20 +17,16 @@ const TopicCard = () => {
                 />
             </figure>
 
-            {/* Nội dung */}
             <div className="p-5 space-y-3">
                 <h1 className="text-xl font-semibold text-neutral-900 dark:text-white capitalize">
-                    Frontend
+                    {title}
                 </h1>
                 <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
-                    Lập trình viên Front-end là người xây dựng giao diện
-                    websites. Trong phần này Itellispeak sẽ chia sẻ cho bạn lộ
-                    trình phỏng vấn để trở thành lập trình viên Front-end nhé.
+                    {description}
                 </p>
 
-                {/* Nút Xem chi tiết */}
                 <Link
-                    to="/main/topicDetail"
+                    to={`/main/topicDetail/${topicId}`}
                     className="inline-flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300"
                 >
                     Xem chi tiết
