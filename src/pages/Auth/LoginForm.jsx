@@ -41,7 +41,7 @@ const LoginForm = () => {
                 }
             )
             .then((res) => {
-                console.log(res);
+                // console.log(res);
                 if (!res.error) {
                     navigate("/main");
                 }

@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 
 const PersonalInfo = () => {
     const currentUser = useSelector(selectCurrentUser);
-    console.log(currentUser);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editLabel, setEditLabel] = useState("");
     const [editKey, setEditKey] = useState("");

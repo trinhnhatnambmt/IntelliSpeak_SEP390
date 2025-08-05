@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getAllTopic } from "~/apis";
 import TopicCard from "~/components/TopicCard";
 
 const Topic = () => {
+    const [topic, setTopic] = useState([]);
+    useEffect(() => {
+        getAllTopic().then((res) => {
+            setTopic(res);
+        });
+    }, []);
     return (
         <div className="transition-colors duration-300 bg-white shadow-lg dark:bg-[#0e0c15] pt-10 h-screen">
             <div className="container mx-auto px-5 mt-10">
@@ -15,9 +22,14 @@ const Topic = () => {
                 </h2>
 
                 <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-10">
-                    <TopicCard />
-                    <TopicCard />
-                    <TopicCard />
+                    {topic?.map((item, index) => (
+                        <TopicCard
+                            key={index}
+                            title={item.title}
+                            description={item.description}
+                            topicId={item.topicId}
+                        />
+                    ))}
                 </div>
             </div>
         </div>
