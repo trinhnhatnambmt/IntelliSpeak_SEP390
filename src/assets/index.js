@@ -2,6 +2,7 @@ import service1 from "./services/service-1.png";
 import service2 from "./services/service-2.png";
 import service3 from "./services/service-3.png";
 import heroBackground from "./hero/hero-background.jpg";
+import Background from "./hero/Background.png";
 import homeSmile from "./home-smile.svg";
 import file02 from "./file-02.svg";
 import searchMd from "./search-md.svg";
@@ -53,6 +54,7 @@ export {
     service2,
     service3,
     heroBackground,
+    Background,
     homeSmile,
     file02,
     searchMd,
