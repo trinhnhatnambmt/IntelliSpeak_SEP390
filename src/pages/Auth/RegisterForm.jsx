@@ -1,7 +1,7 @@
 import { Eye, EyeOffIcon } from "lucide-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { authThumb2, logo } from "~/assets";
+import { authThumb2, squarelogo, intellispeakdark } from "~/assets";
 import {
     EMAIL_RULE,
     EMAIL_RULE_MESSAGE,
@@ -50,13 +50,13 @@ const RegisterForm = () => {
                     onSubmit={handleSubmit(submitRegister)}
                     className="relative flex flex-col gap-5 justify-center items-center w-1/2"
                 >
-                    <img
-                        src={logo}
-                        alt="logo"
-                        width={180}
+                    <div
+                        className="absolute top-5 left-5 cursor-pointer flex items-center gap-2"
                         onClick={() => navigate("/")}
-                        className="absolute top-5 left-5 cursor-pointer"
-                    />
+                    >
+                        <img src={squarelogo} alt="logo" className="h-10 w-auto" />
+                        <img src={intellispeakdark} alt="logo" className="h-10 w-auto" />
+                    </div>
                     <h1 className="font-bold text-4xl">Đăng Ký</h1>
                     <div className="w-96 mx-auto">
                         <label htmlFor="pass" className="text-sm font-normal">

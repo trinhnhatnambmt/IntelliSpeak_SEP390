@@ -4,20 +4,20 @@ import Earth from "~/components/Globe";
 const DirectMeetSection = () => {
     return (
         <section
-            className="container mx-auto my-12 px-20 py-20 md:py-10"
+            className="container mx-auto my-12 px-4 md:px-20 py-20 md:py-10 bg-white dark:bg-[#18122B] rounded-3xl shadow-lg transition-colors duration-500"
             id="highlight"
         >
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                 <div className="md:w-1/2 space-y-6">
-                    <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight">
+                    <h1 className="text-4xl md:text-5xl font-bold text-n-8 dark:text-white leading-tight tracking-tight transition-colors duration-500">
                         Kết nối các nhà tuyển dụng thực sự trên toàn thế giới
                     </h1>
-                    <p className="text-lg md:text-xl font-light text-gray-300 leading-relaxed">
+                    <p className="text-lg md:text-xl font-light text-gray-600 dark:text-gray-300 leading-relaxed transition-colors duration-500">
                         Tăng cơ hội nghề nghiệp của bạn. Trải nghiệm luyện tập
                         thực tế và kết nối trực tiếp với các nhà tuyển dụng uy
                         tín trên toàn cầu.
                     </p>
-                    <button className="mt-6 px-6 py-3 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 transition duration-300">
+                    <button className="mt-6 px-6 py-3 bg-emerald-500 text-white font-semibold rounded-full hover:bg-emerald-600 dark:hover:bg-emerald-400 transition-colors duration-300 shadow-md">
                         Tham gia ngay
                     </button>
                 </div>

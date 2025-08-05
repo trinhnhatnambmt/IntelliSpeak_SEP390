@@ -1,22 +1,31 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { logo } from "~/assets";
+import { squarelogo, intellispeakdark, intellispeak } from "~/assets";
 
 const Footer = () => {
     return (
-        <footer className="w-full mx-auto bg-[#0e0c15] text-white py-12 px-5 relative z-10">
+        <footer className="w-full mx-auto bg-white dark:bg-[#0e0c15] text-n-8 dark:text-white py-12 px-5 relative z-10 transition-colors duration-500">
             <div className="container mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
                 {/* Logo và Mô tả */}
                 <div className="flex flex-col items-start gap-4 md:w-1/3">
-                    <Link to="/">
+                    <Link to="/" className="flex items-center gap-2">
                         <img
-                            src={logo}
+                            src={squarelogo}
                             alt="logo"
-                            width={150}
-                            className="filter brightness-0 invert"
+                            className="h-7 w-auto filter dark:brightness-0 dark:invert"
+                        />
+                        <img
+                            src={intellispeakdark}
+                            alt="logo"
+                            className="h-7 w-auto dark:block hidden"
+                        />
+                        <img
+                            src={intellispeak}
+                            alt="logo"
+                            className="h-7 w-auto block dark:hidden opacity-70"
                         />
                     </Link>
-                    <p className="text-gray-300 text-sm leading-relaxed">
+                    <p className="text-gray-500 dark:text-gray-300 text-sm leading-relaxed transition-colors duration-500">
                         ItelliSpeak - Nền tảng luyện tập phỏng vấn và kết nối
                         với các nhà tuyển dụng uy tín trên toàn cầu.
                     </p>
@@ -24,14 +33,14 @@ const Footer = () => {
 
                 {/* Điều hướng */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-lg font-semibold text-white">
+                    <h3 className="text-lg font-semibold text-n-8 dark:text-white transition-colors duration-500">
                         Điều hướng
                     </h3>
                     <ul className="flex flex-col gap-2">
                         <li>
                             <Link
                                 to="/"
-                                className="text-gray-300 hover:text-white transition duration-300"
+                                className="text-gray-500 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors duration-300"
                             >
                                 Home
                             </Link>
@@ -39,7 +48,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/about"
-                                className="text-gray-300 hover:text-white transition duration-300"
+                                className="text-gray-500 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors duration-300"
                             >
                                 About
                             </Link>
@@ -47,7 +56,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/services"
-                                className="text-gray-300 hover:text-white transition duration-300"
+                                className="text-gray-500 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors duration-300"
                             >
                                 Services
                             </Link>
@@ -55,7 +64,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/contact"
-                                className="text-gray-300 hover:text-white transition duration-300"
+                                className="text-gray-500 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors duration-300"
                             >
                                 Contact
                             </Link>
@@ -65,14 +74,14 @@ const Footer = () => {
 
                 {/* Liên hệ */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-lg font-semibold text-white">
+                    <h3 className="text-lg font-semibold text-n-8 dark:text-white transition-colors duration-500">
                         Liên hệ
                     </h3>
                     <ul className="flex flex-col gap-2">
                         <li>
                             <a
                                 href="mailto:support@itellispeak.com"
-                                className="text-gray-300 hover:text-white transition duration-300"
+                                className="text-gray-500 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors duration-300"
                             >
                                 Email: support@itellispeak.com
                             </a>
@@ -80,7 +89,7 @@ const Footer = () => {
                         <li>
                             <a
                                 href="tel:+123456789"
-                                className="text-gray-300 hover:text-white transition duration-300"
+                                className="text-gray-500 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors duration-300"
                             >
                                 Phone: +123 456 789
                             </a>
@@ -88,7 +97,7 @@ const Footer = () => {
                         <li>
                             <a
                                 href="#"
-                                className="text-gray-300 hover:text-white transition duration-300"
+                                className="text-gray-500 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors duration-300"
                             >
                                 Address: 123 Street, City, Country
                             </a>
@@ -98,13 +107,13 @@ const Footer = () => {
 
                 {/* Mạng xã hội */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-lg font-semibold text-white">
+                    <h3 className="text-lg font-semibold text-n-8 dark:text-white transition-colors duration-500">
                         Theo dõi chúng tôi
                     </h3>
                     <div className="flex gap-4">
                         <a
                             href="#"
-                            className="text-gray-300 hover:text-white transition duration-300"
+                            className="text-gray-500 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors duration-300"
                         >
                             <svg
                                 className="w-6 h-6"
@@ -116,7 +125,7 @@ const Footer = () => {
                         </a>
                         <a
                             href="#"
-                            className="text-gray-300 hover:text-white transition duration-300"
+                            className="text-gray-500 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors duration-300"
                         >
                             <svg
                                 className="w-6 h-6"
@@ -131,7 +140,7 @@ const Footer = () => {
             </div>
 
             {/* Dòng bản quyền */}
-            <div className="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400 text-sm">
+            <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-gray-400 dark:text-gray-500 text-sm transition-colors duration-500">
                 &copy; {new Date().getFullYear()} ItelliSpeak. All rights
                 reserved.
             </div>
