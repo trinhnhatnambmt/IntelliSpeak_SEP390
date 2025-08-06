@@ -9,6 +9,7 @@ import {
     Sun,
     Moon,
     BookOpenText,
+    Briefcase,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -59,6 +60,16 @@ export default function WalletProfile() {
         },
 
         {
+            icon: <Briefcase className="w-5 h-5" />,
+            label: "Cập nhật HR",
+            href: "/main/updateHR",
+        },
+        {
+            icon: <BookOpenText className="w-5 h-5" />,
+            label: "Tạo câu hỏi HR",
+            href: "/main/hr/create-question",
+        },
+        {
             icon: <BookOpenText className="w-5 h-5" />,
             label: "Bài viết của tôi",
             href: "/main/myPostPage",
@@ -75,7 +86,6 @@ export default function WalletProfile() {
             label: "Cài đặt",
             href: "/main/settings",
         },
-
         {
             icon: <DoorOpen className="w-5 h-5" />,
             label: "Đăng xuất",

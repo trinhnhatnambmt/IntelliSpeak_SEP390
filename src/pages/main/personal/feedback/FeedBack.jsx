@@ -21,7 +21,7 @@ const FeedBack = () => {
                 </div>
             </div>
             <div className="w-[90%] h-[1px] bg-gray-400 mx-auto"></div>
-            <p className="w-[70%] text-lg mx-auto mt-10 text-[#D2DEF1]">
+            <p className="w-[70%] text-lg mx-auto mt-10 text-gray-800 dark:text-[#D2DEF1]">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                 Officia saepe vero, ipsa deserunt beatae vel necessitatibus,
                 nobis magni culpa voluptate doloribus. Nihil alias accusamus
@@ -40,7 +40,7 @@ const FeedBack = () => {
                     Breakdown of Evaluation:
                 </h2>
                 <div className="mt-5">
-                    <h3 className="font-extrabold text-lg text-[#D2DEF1]">
+                    <h3 className="font-extrabold text-lg text-gray-800 dark:text-[#D2DEF1]">
                         1.Enthusiasm & Interest (0/20)
                     </h3>
                     <p className="mt-2">
@@ -49,7 +49,7 @@ const FeedBack = () => {
                     </p>
                 </div>
                 <div className="mt-5">
-                    <h3 className="font-extrabold text-lg text-[#D2DEF1]">
+                    <h3 className="font-extrabold text-lg text-gray-800 dark:text-[#D2DEF1]">
                         1.Enthusiasm & Interest (0/20)
                     </h3>
                     <p className="mt-2">
@@ -58,7 +58,7 @@ const FeedBack = () => {
                     </p>
                 </div>
                 <div className="mt-5">
-                    <h3 className="font-extrabold text-lg text-[#D2DEF1]">
+                    <h3 className="font-extrabold text-lg text-gray-800 dark:text-[#D2DEF1]">
                         1.Enthusiasm & Interest (0/20)
                     </h3>
                     <p className="mt-2">
@@ -71,7 +71,7 @@ const FeedBack = () => {
                         <h2 className="font-extrabold text-3xl">
                             Final Verdict:
                         </h2>
-                        <div className="w-[262px] h-[40px] rounded-2xl bg-[#27282F] flex items-center justify-center">
+                        <div className="w-[262px] h-[40px] rounded-2xl bg-gray-200 dark:bg-[#27282F] flex items-center justify-center">
                             <p className="text-2xl font-extrabold text-red-400">
                                 Not Recommended
                             </p>

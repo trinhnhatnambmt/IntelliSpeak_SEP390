@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Stepper({
     children,
     initialStep = 1,
-    onStepChange = () => {},
-    onFinalStepCompleted = () => {},
+    onStepChange = () => { },
+    onFinalStepCompleted = () => { },
     stepCircleContainerClassName = "",
     stepContainerClassName = "",
     contentClassName = "",
@@ -60,7 +60,7 @@ export default function Stepper({
                 style={{ border: "1px solid #222" }}
             >
                 <div
-                    className={`${stepContainerClassName} flex w-full items-center p-8`}
+                    className={`${stepContainerClassName} flex w-full items-center p-8 `}
                 >
                     {stepsArray.map((_, index) => {
                         const stepNumber = index + 1;
@@ -113,20 +113,18 @@ export default function Stepper({
                 {!isCompleted && (
                     <div className={`px-8 pb-8 ${footerClassName}`}>
                         <div
-                            className={`mt-10 flex ${
-                                currentStep !== 1
-                                    ? "justify-between"
-                                    : "justify-end"
-                            }`}
+                            className={`mt-10 flex ${currentStep !== 1
+                                ? "justify-between"
+                                : "justify-end"
+                                }`}
                         >
                             {currentStep !== 1 && (
                                 <button
                                     onClick={handleBack}
-                                    className={`duration-350 rounded px-2 py-1 transition ${
-                                        currentStep === 1
-                                            ? "pointer-events-none opacity-50 text-neutral-400"
-                                            : "text-neutral-400 hover:text-neutral-700"
-                                    }`}
+                                    className={`duration-350 rounded px-2 py-1 transition ${currentStep === 1
+                                        ? "pointer-events-none opacity-50 text-neutral-400"
+                                        : "text-neutral-400 hover:text-neutral-700"
+                                        }`}
                                     {...backButtonProps}
                                 >
                                     {backButtonText}
@@ -233,13 +231,21 @@ function StepIndicator({
         currentStep === step
             ? "active"
             : currentStep < step
-            ? "inactive"
-            : "complete";
+                ? "inactive"
+                : "complete";
 
     const handleClick = () => {
         if (step !== currentStep && !disableStepIndicators) onClickStep(step);
     };
 
+    let indicatorClass = "flex h-8 w-8 items-center justify-center rounded-full font-semibold border border-gray-200 dark:border-[#252134] transition-colors duration-500 ";
+    if (status === "inactive") {
+        indicatorClass += " bg-gray-200 text-gray-400 dark:bg-[#222] dark:text-white";
+    } else if (status === "active") {
+        indicatorClass += " bg-[#00d8ff] text-white";
+    } else if (status === "complete") {
+        indicatorClass += " bg-[#00d8ff] text-white";
+    }
     return (
         <motion.div
             onClick={handleClick}
@@ -247,35 +253,15 @@ function StepIndicator({
             animate={status}
             initial={false}
         >
-            <motion.div
-                variants={{
-                    inactive: {
-                        scale: 1,
-                        backgroundColor: "#222",
-                        color: "#a3a3a3",
-                    },
-                    active: {
-                        scale: 1,
-                        backgroundColor: "#00d8ff",
-                        color: "#00d8ff",
-                    },
-                    complete: {
-                        scale: 1,
-                        backgroundColor: "#00d8ff",
-                        color: "#3b82f6",
-                    },
-                }}
-                transition={{ duration: 0.3 }}
-                className="flex h-8 w-8 items-center justify-center rounded-full font-semibold"
-            >
+            <div className={indicatorClass}>
                 {status === "complete" ? (
-                    <CheckIcon className="h-4 w-4 text-black" />
+                    <CheckIcon className="h-4 w-4 text-white dark:text-black" />
                 ) : status === "active" ? (
-                    <div className="h-3 w-3 rounded-full bg-[#060606]" />
+                    <div className="h-3 w-3 rounded-full bg-white dark:bg-[#060606]" />
                 ) : (
                     <span className="text-sm">{step}</span>
                 )}
-            </motion.div>
+            </div>
         </motion.div>
     );
 }
@@ -287,7 +273,7 @@ function StepConnector({ isComplete }) {
     };
 
     return (
-        <div className="relative mx-2 h-0.5 flex-1 overflow-hidden rounded bg-neutral-600">
+        <div className="relative mx-2 h-0.5 flex-1 overflow-hidden rounded dark:bg-neutral-600 bg-gray-200">
             <motion.div
                 className="absolute left-0 top-0 h-full"
                 variants={lineVariants}

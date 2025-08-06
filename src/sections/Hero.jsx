@@ -88,7 +88,7 @@ const Hero = () => {
                                 alt="AI"
                             />
                             <ScrollParallax isAbsolutelyPositioned>
-                                <ul className="hidden absolute -left-[5.5rem] bottom-[7.5rem] px-1 py-1 bg-n-1/40 dark:bg-n-9/40 backdrop-blur border border-n-1/10 rounded-2xl xl:flex transition-colors duration-500">
+                                <ul className="hidden absolute -left-[5.5rem] bottom-[7.5rem] px-1 py-1 bg-n-9/40 backdrop-blur border border-n-1/10 rounded-2xl xl:flex transition-colors duration-500">
                                     {heroIcons.map((icon, index) => (
                                         <li className="p-5" key={index}>
                                             <img
@@ -96,6 +96,7 @@ const Hero = () => {
                                                 width={24}
                                                 height={25}
                                                 alt={icon}
+                                                className="filter brightness-0 dark:filter-none transition-all duration-500"
                                             />
                                         </li>
                                     ))}
