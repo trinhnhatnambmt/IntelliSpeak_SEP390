@@ -31,61 +31,71 @@ import JobDescription from "./pages/main/analyse/JobDescription";
 import HRCreateQuestionPage from "./pages/main/hr/HRCreateQuestionPage";
 
 const ProtectedRoutes = ({ user }) => {
-  if (!user) return <Navigate to="/" replace={true} />;
-  return <Outlet />;
+    if (!user) return <Navigate to="/" replace={true} />;
+    return <Outlet />;
+};
+
+const PublicRoutes = ({ user }) => {
+    if (user) return <Navigate to="/main" replace />;
+    return <Outlet />;
 };
 
 const App = () => {
-  const currentUser = useSelector(selectCurrentUser);
+    const currentUser = useSelector(selectCurrentUser);
 
-  return (
-    <Routes>
-      <Route path="/" element={<Homepage />} />
-      <Route path="/upgrade-plan" element={<UpgradePlan />} />
-      <Route path="/payment-success" element={<PaymentSuccess />} />
-      <Route path="/payment-failed" element={<PaymentFailed />} />
+    return (
+        <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/upgrade-plan" element={<UpgradePlan />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-failed" element={<PaymentFailed />} />
 
-      {/* After analyze */}
-      <Route path="/resume/:id" element={<Resume />} />
-      <Route path="/jd/:id" element={<JobDescription />} />
+            {/* After analyze */}
+            <Route path="/resume/:id" element={<Resume />} />
+            <Route path="/jd/:id" element={<JobDescription />} />
 
-      <Route element={<ProtectedRoutes user={currentUser} />}>
-        <Route path="/main" element={<MainPage />}>
-          <Route index element={<InterviewPractice />} />
-          <Route path="interviewPage" element={<InterviewPage />} />
-          <Route path="topic" element={<Topic />} />
-          <Route path="topicDetail" element={<TopicDetail />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="feedback" element={<FeedBack />} />
+            <Route element={<ProtectedRoutes user={currentUser} />}>
+                <Route path="/main" element={<MainPage />}>
+                    <Route index element={<InterviewPractice />} />
+                    <Route
+                        path="interviewPage/:id"
+                        element={<InterviewPage />}
+                    />
+                    <Route path="topic" element={<Topic />} />
+                    <Route path="topicDetail/:id" element={<TopicDetail />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="feedback" element={<FeedBack />} />
 
-          {/* Analyze  */}
-          <Route path="analyze/CV" element={<Analyze />} />
-          <Route path="analyze/JD" element={<Analyze />} />
+                    {/* Analyze  */}
+                    <Route path="analyze/CV" element={<Analyze />} />
+                    <Route path="analyze/JD" element={<Analyze />} />
 
-          {/* Upload cv/jd */}
-          <Route path="upload" element={<UploadPage />} />
-          <Route path="uploadJD" element={<UploadJDPage />} />
+                    {/* Upload cv/jd */}
+                    <Route path="upload" element={<UploadPage />} />
+                    <Route path="uploadJD" element={<UploadJDPage />} />
 
-          <Route path="payment" element={<Payment />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="forum" element={<Forum />} />
-          <Route
-            path="singlePostPage/:postId"
-            element={<SinglePostPage />}
-          />
-          <Route path="myPostPage" element={<NewPostPage />} />
+                    <Route path="payment" element={<Payment />} />
+                    <Route path="settings" element={<Settings />} />
+                    <Route path="forum" element={<Forum />} />
+                    <Route
+                        path="singlePostPage/:postId"
+                        element={<SinglePostPage />}
+                    />
+                    <Route path="myPostPage" element={<NewPostPage />} />
 
-          {/* HR */}
-          <Route path="updateHR" element={<UpdateHR />} />
-          <Route path="hr/create-question" element={<HRCreateQuestionPage />} />
-        </Route>
-      </Route>
+                    {/* HR */}
+                    <Route path="updateHR" element={<UpdateHR />} />
+                    <Route path="hr/create-question" element={<HRCreateQuestionPage />} />
+                </Route>
+            </Route>
 
-      {/* Authentication */}
-      <Route path="/login" element={<Auth />} />
-      <Route path="/register" element={<Auth />} />
-    </Routes>
-  );
+            {/* Authentication */}
+            <Route element={<PublicRoutes user={currentUser} />}>
+                <Route path="/login" element={<Auth />} />
+                <Route path="/register" element={<Auth />} />
+            </Route>
+        </Routes>
+    );
 };
 
 export default App;
