@@ -16,12 +16,10 @@ const InterviewPage = () => {
 
     const navigate = useNavigate();
 
-   
-
     const currentInterviewSession = useSelector(selectCurrentInterviewSession);
 
     const currentUser = useSelector(selectCurrentUser);
-    // console.log("🚀 ~ InterviewPage ~ currentUser:", currentUser);
+    console.log("🚀 ~ InterviewPage ~ currentUser:", currentUser);
 
     useEffect(() => {
         currentInterviewSession && startCall();
@@ -33,7 +31,7 @@ const InterviewPage = () => {
             .join(", ");
         const assistantOptions = {
             name: "AI Recruiter",
-            firstMessage: `Chào ${currentUser?.userName}, bạn đã sẵn sàng cho buổi phỏng vấn ${currentInterviewSession?.title} chưa?`,
+            firstMessage: `Chào ${currentUser?.userName}, bạn đã sẵn sàng cho buổi ${currentInterviewSession?.title} chưa?`,
 
             transcriber: {
                 provider: "11labs",
@@ -120,7 +118,7 @@ const InterviewPage = () => {
     const generateFeedback = () => {};
 
     return (
-        <div className="h-full w-full bg-gray-50 dark:bg-[#18182a] transition-colors duration-300">
+        <div className="h-full w-full transition-colors duration-300">
             <div className="container mx-auto px-5 relative z-10">
                 {/* Header Section */}
                 <div className="flex items-center justify-between mt-30 mb-10">
@@ -137,15 +135,14 @@ const InterviewPage = () => {
                     {/* Left Box (Robot) */}
                     <div className="w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-purple-300 dark:border-purple-400 relative overflow-hidden">
                         {/* Light Mode Gradient */}
-                        <div
-                            className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden"
-                        />
+                        <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
 
                         {/* Dark Mode Gradient */}
                         <div
                             className="absolute inset-0 hidden dark:block"
                             style={{
-                                background: "linear-gradient(0deg, rgba(19, 17, 42, 1) 17%, rgba(24, 21, 55, 1) 63%)"
+                                background:
+                                    "linear-gradient(0deg, rgba(19, 17, 42, 1) 17%, rgba(24, 21, 55, 1) 63%)",
                             }}
                         />
 
@@ -162,7 +159,8 @@ const InterviewPage = () => {
                         <div
                             className="w-[120px] h-[120px] rounded-full flex items-center justify-center z-10"
                             style={{
-                                background: "radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 87%)"
+                                background:
+                                    "radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 87%)",
                             }}
                         >
                             <img
@@ -176,29 +174,25 @@ const InterviewPage = () => {
                     {/* Right Box (User) */}
                     <div className="w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-gray-300 dark:border-[#4B4D4F66] relative overflow-hidden">
                         {/* Light Mode Gradient */}
-                        <div
-                            className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden"
-                        />
+                        <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
 
                         {/* Dark Mode Gradient */}
                         <div
                             className="absolute inset-0 hidden dark:block"
                             style={{
-                                background: "linear-gradient(0deg, rgba(8, 9, 13, 1) 6%, rgba(26, 28, 32, 1) 74%)"
+                                background:
+                                    "linear-gradient(0deg, rgba(8, 9, 13, 1) 6%, rgba(26, 28, 32, 1) 74%)",
                             }}
                         />
 
                         <img
-                            src={service1}
+                            src={currentUser?.avatar}
                             className="w-[120px] h-[120px] rounded-full z-10"
                         />
                     </div>
                 </div>
 
-                
                 <div className="flex items-center justify-center gap-5">
-                    
-
                     <button
                         className={`px-6 py-3 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer 
                             bg-green-500 hover:bg-green-60`}
@@ -211,10 +205,11 @@ const InterviewPage = () => {
                     <button
                         disabled={endingCall}
                         onClick={stopInterView}
-                        className={`px-6 py-3 ${endingCall
+                        className={`px-6 py-3 ${
+                            endingCall
                                 ? "bg-gray-400 cursor-not-allowed"
                                 : "bg-red-500 hover:bg-red-600"
-                            } text-white font-semibold rounded-full transition duration-300 flex items-center`}
+                        } text-white font-semibold rounded-full transition duration-300 flex items-center`}
                     >
                         <PhoneOff className="mr-2 h-4 w-4" />
                         {endingCall ? "Đang kết thúc..." : "Rời khỏi phỏng vấn"}
