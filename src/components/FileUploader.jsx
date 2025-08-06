@@ -34,7 +34,7 @@ const FileUploader = ({ onFileSelect, file }) => {
     // const file = acceptedFiles[0] || null;
 
     return (
-        <div className="w-full border-2  border-gray-300 rounded-2xl px-30 py-15 bg-[#0e0c15] shadow-md hover:shadow-lg transition-all duration-300 relative z-10">
+        <div className="w-full border-2  border-gray-300 rounded-2xl px-30 py-15 bg-white dark:bg-[#0e0c15] shadow-md hover:shadow-lg transition-all duration-300 relative z-10">
             <div {...getRootProps()} className="cursor-pointer">
                 <input {...getInputProps()} />
                 {file ? (
@@ -76,14 +76,14 @@ const FileUploader = ({ onFileSelect, file }) => {
                         <div className="flex justify-center">
                             <Upload className="w-15 h-15 text-gray-400" />
                         </div>
-                        <p className="text-lg text-white font-medium">
+                        <p className="text-lg text-gray-800 dark:text-white font-medium">
                             Click để{" "}
                             <span className="text-blue-600 font-bold">
                                 tải lên
                             </span>{" "}
                             hoặc kéo thả tệp PDF vào đây
                         </p>
-                        <p className="text-sm text-white">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                             Chỉ những file PDF (giới hạn{" "}
                             {formatSize(maxFileSize)})
                         </p>

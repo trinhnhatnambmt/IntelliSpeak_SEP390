@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { applyForHrAPI, uploadResumeAPI } from "~/apis";
 
 const UpdateHR = () => {
     const [formData, setFormData] = useState({
@@ -8,6 +10,7 @@ const UpdateHR = () => {
         motivation: "",
         cv: null,
     });
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -18,12 +21,47 @@ const UpdateHR = () => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
 
-        // In ra formData (sau này gửi lên API/backend tại đây)
-        console.log("Submitted data:", formData);
-        alert("Đã gửi form lên admin để xét duyệt!");
+        try {
+            // First upload the CV file
+            let cvUrl = "";
+            if (formData.cv) {
+                const uploadResponse = await uploadResumeAPI(
+                    formData.cv,
+                    `HR_Application_${formData.fullName}_${Date.now()}`
+                );
+                cvUrl = uploadResponse.url; // Adjust this based on your API response structure
+            }
+
+            // Then submit the HR application
+            await applyForHrAPI({
+                company: formData.fullName, // Using fullName as company for now
+                phone: formData.phone,
+                country: "Vietnam", // You might want to add a country field
+                experienceYears: 0, // You might want to add this field
+                linkedinUrl: "", // You might want to add this field
+                cvUrl: cvUrl,
+                // Add motivation if your API supports it
+            });
+
+            toast.success("HR application submitted successfully!");
+            // Reset form after successful submission
+            setFormData({
+                fullName: "",
+                email: "",
+                phone: "",
+                motivation: "",
+                cv: null,
+            });
+        } catch (error) {
+            console.error("Error submitting HR application:", error);
+            toast.error("Failed to submit HR application. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -109,9 +147,11 @@ const UpdateHR = () => {
                     </div>
                     <button
                         type="submit"
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+                        disabled={isLoading}
+                        className={`bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                     >
-                        Gửi yêu cầu
+                        {isLoading ? "Đang gửi..." : "Gửi yêu cầu"}
                     </button>
                 </form>
             </div>
