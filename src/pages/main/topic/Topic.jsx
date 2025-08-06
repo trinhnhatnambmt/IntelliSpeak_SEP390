@@ -28,6 +28,7 @@ const Topic = () => {
                             title={item.title}
                             description={item.description}
                             topicId={item.topicId}
+                            thumbnail={item.thumbnail}
                         />
                     ))}
                 </div>
