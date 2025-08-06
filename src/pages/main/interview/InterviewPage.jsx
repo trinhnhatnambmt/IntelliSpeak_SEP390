@@ -43,10 +43,13 @@ const InterviewPage = () => {
                 provider: "deepgram",
                 model: "nova-2",
                 language: "en-US",
+                encoding: "linear16",
+                sampleRate: 16000
             },
             voice: {
                 provider: "playht",
                 voiceId: "jennifer",
+                speed: 1.0
             },
             model: {
                 provider: "openai",
