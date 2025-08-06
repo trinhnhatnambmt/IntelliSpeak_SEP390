@@ -11,15 +11,13 @@ import { toast } from "react-toastify";
 const InterviewPage = () => {
     const [activeUser, setActiveUser] = useState(false);
     const [endingCall, setEndingCall] = useState(false);
+    const [conversation, setConversation] = useState("");
     const vapi = new Vapi(import.meta.env.VITE_VAPI_PUBLIC_KEY);
 
     const navigate = useNavigate();
 
     const currentInterviewSession = useSelector(selectCurrentInterviewSession);
-    // console.log(
-    //     "🚀 ~ InterviewPage ~ currentInterviewSession:",
-    //     currentInterviewSession
-    // );
+
     const currentUser = useSelector(selectCurrentUser);
     // console.log("🚀 ~ InterviewPage ~ currentUser:", currentUser);
 
@@ -33,15 +31,18 @@ const InterviewPage = () => {
             .join(", ");
         const assistantOptions = {
             name: "AI Recruiter",
-            firstMessage: `Hi ${currentUser?.userName}, how are you? Ready for your interview on ${currentInterviewSession?.title}?`,
+            firstMessage: `Chào ${currentUser?.userName}, bạn đã sẵn sàng cho buổi phỏng vấn ${currentInterviewSession?.title} chưa?`,
+
             transcriber: {
-                provider: "deepgram",
-                model: "nova-2",
-                language: "en-US",
+                provider: "11labs",
+                model: "scribe_v1",
+                language: "vi",
             },
             voice: {
-                provider: "playht",
-                voiceId: "jennifer",
+                provider: "11labs",
+                voiceId: "iSFxP4Z6YNcx9OXl62Ic",
+                model: "eleven_flash_v2_5",
+                language: "vi",
             },
             model: {
                 provider: "openai",
@@ -49,26 +50,27 @@ const InterviewPage = () => {
                 messages: [
                     {
                         role: "system",
-                        content:
-                            `You are an AI voice assistant conducting interviews. 
-                        Your job is to ask candidates provided interview questions, assess their responses, 
-                        and provide the conversation with a friendly introduction, setting a relaxed yet professional tone. 
-                        Example: 'Hey there! Welcome to your ${currentInterviewSession?.title} interview. Let’s get started with a few questions!' 
-                        Ask one question at a time and wait for the candidate’s response before proceeding. 
-                        Keep the questions clear and concise. Below Are Questions: ${questionList}. 
-                        If the candidate struggles, offer hints or rephrase the question without giving away the answer. 
-                        Example: 'Need a hint? Think about how React tracks component updates!' 
-                        Provide brief, encouraging feedback after each answer. 
-                        Example: 'Nice! That’s a solid answer.' 
-                        Keep the conversation natural and engaging—use casual phrases like 'Alright, next up...' or 'Let’s tackle a tricky one!' 
-                        After 5-7 questions, wrap up the interview smoothly by summarizing their performance. 
-                        Example: 'That was great! You handled some tough questions well. Keep sharpening your skills!'
-                         End on a positive note: 'Thanks for chatting! Hope to see you crushing projects soon!' 
-                         Key Guidelines: 
-                         ✓ Be friendly, engaging, and witty 
-                         ✓ Keep responses short and natural, like a real conversation 
-                         ✓ Adapt based on the candidate’s confidence level 
-                         ✓ Ensure the interview remains focused on React`.trim(),
+                        content: `
+                        Bạn là một trợ lý AI giọng nói thực hiện các buổi phỏng vấn bằng tiếng Việt. 
+                        Nhiệm vụ của bạn là hỏi các câu hỏi phỏng vấn đã được cung cấp, đánh giá câu trả lời của ứng viên, 
+                        và dẫn dắt cuộc trò chuyện với phần giới thiệu thân thiện, tạo không khí thoải mái nhưng vẫn chuyên nghiệp. 
+                        Ví dụ: 'Chào bạn! Chào mừng đến với buổi phỏng vấn ${currentInterviewSession?.title}. Cùng bắt đầu nào!' 
+                        Hỏi từng câu một và chờ phản hồi từ ứng viên trước khi tiếp tục. 
+                        Đặt câu hỏi rõ ràng, ngắn gọn. Danh sách câu hỏi: ${questionList}. 
+                        Nếu ứng viên lúng túng, hãy đưa ra gợi ý hoặc diễn đạt lại câu hỏi mà không tiết lộ đáp án. 
+                        Ví dụ: 'Cần gợi ý không? Hãy nghĩ về cách React quản lý việc cập nhật component!' 
+                        Đưa ra phản hồi ngắn gọn, khích lệ sau mỗi câu trả lời. 
+                        Ví dụ: 'Hay lắm! Câu trả lời rất tốt.' 
+                        Giữ cuộc trò chuyện tự nhiên, gần gũi—sử dụng các cụm từ như 'Nào, câu tiếp theo nhé...' hoặc 'Câu này hơi thử thách đây!' 
+                        Sau 5-7 câu hỏi, kết thúc buổi phỏng vấn một cách tự nhiên bằng cách tóm tắt hiệu suất của ứng viên. 
+                        Ví dụ: 'Tuyệt vời! Bạn đã trả lời rất tốt, đặc biệt là với những câu khó. Hãy tiếp tục rèn luyện nhé!' 
+                        Kết thúc bằng một câu tích cực: 'Cảm ơn bạn đã tham gia! Chúc bạn sớm bứt phá trong các dự án!' 
+                        Hướng dẫn chính: 
+                        ✓ Thân thiện, gần gũi, và dí dỏm 
+                        ✓ Giữ câu trả lời ngắn gọn, tự nhiên như cuộc trò chuyện thật 
+                        ✓ Điều chỉnh dựa trên mức độ tự tin của ứng viên 
+                        ✓ Đảm bảo buổi phỏng vấn tập trung vào React
+                    `.trim(),
                     },
                 ],
             },
@@ -104,8 +106,16 @@ const InterviewPage = () => {
         console.log("Call has end");
         toast.success("Interview ended...");
         setEndingCall(false); // reset lại trạng thái
-        navigate("/main");
+        generateFeedback();
+        // navigate("/main");
     });
+
+    vapi.on("message", (message) => {
+        console.log(message?.conversation);
+        setConversation(message?.conversation);
+    });
+
+    const generateFeedback = () => {};
 
     return (
         <div className="h-full w-full bg-[#0e0c15]">
@@ -166,18 +176,6 @@ const InterviewPage = () => {
                     </div>
                 </div>
 
-                {/* <div
-                    className="h-[60px] w-[80%]  mx-auto rounded-2xl border-1 border-[#4B4D4F66] flex items-center justify-center mb-5"
-                    style={{
-                        background:
-                            "linear-gradient(0deg,rgba(8, 9, 13, 1) 6%, rgba(26, 28, 32, 1) 74%)",
-                    }}
-                >
-                    <p className="text-white text-xl">
-                        Lorem ipsum dolor, sit amet consectetur adipisicing
-                        elit. Sit, tenetur?
-                    </p>
-                </div> */}
                 <div className="flex items-center justify-center gap-5">
                     <button
                         className={`px-6 py-3 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer 
