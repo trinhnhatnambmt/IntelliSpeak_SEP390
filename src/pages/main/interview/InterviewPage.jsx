@@ -19,13 +19,8 @@ const InterviewPage = () => {
     const navigate = useNavigate();
 
     const currentInterviewSession = useSelector(selectCurrentInterviewSession);
-    // console.log(
-    //     "🚀 ~ InterviewPage ~ currentInterviewSession:",
-    //     currentInterviewSession
-    // );
 
     const currentUser = useSelector(selectCurrentUser);
-    // console.log("🚀 ~ InterviewPage ~ currentUser:", currentUser);
 
     useEffect(() => {
         currentInterviewSession && startCall();
@@ -58,7 +53,7 @@ const InterviewPage = () => {
             },
             model: {
                 provider: "openai",
-                model: "gpt-4",
+                model: "gpt-5",
                 messages: [
                     {
                         role: "system",
@@ -81,7 +76,7 @@ const InterviewPage = () => {
                         ✓ Thân thiện, gần gũi, và dí dỏm 
                         ✓ Giữ câu trả lời ngắn gọn, tự nhiên như cuộc trò chuyện thật 
                         ✓ Điều chỉnh dựa trên mức độ tự tin của ứng viên 
-                        ✓ Đảm bảo buổi phỏng vấn tập trung vào React
+                        ✓ Đảm bảo buổi phỏng vấn tập trung vào những nội dung thuộc câu hỏi đã nêu ra
                     `.trim(),
                     },
                 ],
@@ -130,7 +125,7 @@ const InterviewPage = () => {
     });
 
     const generateFeedback = () => {
-        // console.log("Sending feedback with conversation:", conversation);
+        console.log("Sending feedback with conversation:", conversation);
         toast
             .promise(
                 dispatch(
@@ -145,8 +140,11 @@ const InterviewPage = () => {
             )
             .then((res) => {
                 if (!res.error) {
-                    console.log(res);
+                    toast.success(
+                        "Tạo xong feedback rồi nhé mời bạn đọc và cải thiện nha."
+                    );
                 }
+                navigate(`/main/feedback`);
             });
     };
     return (
@@ -178,14 +176,14 @@ const InterviewPage = () => {
                             }}
                         />
 
-                    {/* Pulsing Circles */}
-                    {!activeUser && (
-                        <>
-                            <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
-                            <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
-                            <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
-                        </>
-                    )}
+                        {/* Pulsing Circles */}
+                        {!activeUser && (
+                            <>
+                                <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
+                                <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
+                                <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
+                            </>
+                        )}
 
                         {/* Robot Avatar */}
                         <div
@@ -228,11 +226,11 @@ const InterviewPage = () => {
                     <button
                         className={`px-6 py-3 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer 
                             bg-green-500 hover:bg-green-60`}
-                >
-                    <>
-                        <Mic className="mr h-4 w-4" />
-                    </>
-                </button>
+                    >
+                        <>
+                            <Mic className="mr h-4 w-4" />
+                        </>
+                    </button>
 
                     <button
                         disabled={endingCall}
