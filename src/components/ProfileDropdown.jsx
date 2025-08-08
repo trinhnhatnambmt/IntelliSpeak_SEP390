@@ -10,6 +10,7 @@ import {
     Moon,
     BookOpenText,
     Briefcase,
+    ClipboardEdit,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -65,7 +66,7 @@ export default function WalletProfile() {
             href: "/main/updateHR",
         },
         {
-            icon: <BookOpenText className="w-5 h-5" />,
+            icon: <ClipboardEdit className="w-5 h-5" />,
             label: "Tạo câu hỏi HR",
             href: "/main/hr/create-question",
         },
