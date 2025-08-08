@@ -64,7 +64,7 @@ const App = () => {
                     <Route path="topic" element={<Topic />} />
                     <Route path="topicDetail/:id" element={<TopicDetail />} />
                     <Route path="profile" element={<Profile />} />
-                    <Route path="feedback" element={<FeedBack />} />
+                    <Route path="feedback/:id" element={<FeedBack />} />
 
                     {/* Analyze  */}
                     <Route path="analyze/CV" element={<Analyze />} />
@@ -85,7 +85,10 @@ const App = () => {
 
                     {/* HR */}
                     <Route path="updateHR" element={<UpdateHR />} />
-                    <Route path="hr/create-question" element={<HRCreateQuestionPage />} />
+                    <Route
+                        path="hr/create-question"
+                        element={<HRCreateQuestionPage />}
+                    />
                 </Route>
             </Route>
 
