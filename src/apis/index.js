@@ -284,7 +284,12 @@ export const getAllInterviewSessionWithId = async (id) => {
     return response.data.data;
 };
 
-
+export const getAllTopicWithTheirTags = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/interview-sessions/topics-with-tags`
+    );
+    return response.data.data;
+};
 
 // ==== HR APPLICATION ====
 export const applyForHrAPI = async ({
@@ -293,7 +298,7 @@ export const applyForHrAPI = async ({
     country,
     experienceYears,
     linkedinUrl,
-    cvUrl
+    cvUrl,
 }) => {
     try {
         const response = await authorizedAxiosInstance.post(
@@ -304,7 +309,7 @@ export const applyForHrAPI = async ({
                 country,
                 experienceYears,
                 linkedinUrl,
-                cvUrl
+                cvUrl,
             }
         );
         toast.success("HR application submitted successfully");

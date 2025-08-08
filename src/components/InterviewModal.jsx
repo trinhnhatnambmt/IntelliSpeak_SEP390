@@ -1,9 +1,23 @@
 import { Form, Modal, Select } from "antd";
+import { useState } from "react";
 
-const ModalInterview = ({ open, onOk, onCancel }) => {
+const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
+    const [selectedRole, setSelectedRole] = useState(null);
+
+    const handleRoleChange = (value) => {
+        setSelectedRole(value); // value = topicId
+    };
+
+    console.log("🚀 ~ ModalInterview ~ topicWithTags:", topicWithTags);
     const handleChange = (value) => {
         console.log(`selected ${value}`);
     };
+
+    const getTagsForSelectedRole = () => {
+        const topic = topicWithTags.find((t) => t.topicId === selectedRole);
+        return topic?.tags || [];
+    };
+
     return (
         <Modal
             title="Bắt đầu phỏng vấn"
@@ -21,32 +35,6 @@ const ModalInterview = ({ open, onOk, onCancel }) => {
                 autoComplete="off"
             >
                 <Form.Item
-                    label="Loại phỏng vấn bạn muốn luyện tập?"
-                    name="typeOfInterview"
-                    rules={[
-                        {
-                            required: true,
-                            message: "Chọn loại phỏng vấn!",
-                        },
-                    ]}
-                >
-                    <Select
-                        defaultValue="technical"
-                        style={{ width: "100%" }}
-                        onChange={handleChange}
-                        options={[
-                            {
-                                value: "technical",
-                                label: "Technical",
-                            },
-                            {
-                                value: "non-technical",
-                                label: "Non-Technical",
-                            },
-                        ]}
-                    />
-                </Form.Item>
-                <Form.Item
                     label="Bạn đang tập trung vào vai trò nào?"
                     name="role"
                     rules={[
@@ -57,27 +45,13 @@ const ModalInterview = ({ open, onOk, onCancel }) => {
                     ]}
                 >
                     <Select
-                        defaultValue="frontend"
+                        placeholder="Chọn vai trò"
                         style={{ width: "100%" }}
-                        onChange={handleChange}
-                        options={[
-                            {
-                                value: "frontend",
-                                label: "Frontend",
-                            },
-                            {
-                                value: "backend",
-                                label: "Backend",
-                            },
-                            {
-                                value: "fullstack",
-                                label: "Fullstack",
-                            },
-                            {
-                                value: "data-scientist",
-                                label: "Data Scientist",
-                            },
-                        ]}
+                        onChange={handleRoleChange}
+                        options={topicWithTags.map((topic) => ({
+                            value: topic.topicId,
+                            label: topic.title,
+                        }))}
                     />
                 </Form.Item>
                 <Form.Item
@@ -91,55 +65,41 @@ const ModalInterview = ({ open, onOk, onCancel }) => {
                     ]}
                 >
                     <Select
-                        defaultValue="javascript"
+                        mode="multiple"
+                        placeholder="Chọn tech stack"
                         style={{ width: "100%" }}
-                        onChange={handleChange}
-                        options={[
-                            {
-                                value: "javascript",
-                                label: "JavaScript",
-                            },
-                            {
-                                value: "python",
-                                label: "Python",
-                            },
-                            {
-                                value: "java",
-                                label: "Java",
-                            },
-                            {
-                                value: "csharp",
-                                label: "C#",
-                            },
-                        ]}
+                        options={getTagsForSelectedRole().map((tag) => ({
+                            value: tag.tagId,
+                            label: tag.title,
+                        }))}
                     />
                 </Form.Item>
                 <Form.Item
-                    label="Thời lượng buổi phỏng vấn bạn mong muốn là bao lâu?"
+                    label="Số lượng câu hỏi bạn muốn đặt ra trong bài phỏng vấn"
                     name="duration"
                     rules={[
                         {
                             required: true,
-                            message: "Chọn thời lượng!",
+                            message: "Chọn số lượng câu hỏi!",
                         },
                     ]}
                 >
                     <Select
-                        defaultValue="10ph"
+                        defaultValue="5"
                         style={{ width: "100%" }}
                         onChange={handleChange}
                         options={[
                             {
-                                value: "10ph",
-                                label: "10 phút",
+                                value: "5",
+                                label: "5 câu",
                             },
                             {
-                                value: "20ph",
-                                label: "20 phút",
+                                value: "10",
+                                label: "10 câu",
                             },
                             {
-                                value: "30ph",
-                                label: "30 phút",
+                                value: "15",
+                                label: "15 câu",
                             },
                         ]}
                     />

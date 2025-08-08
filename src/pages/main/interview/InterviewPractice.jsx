@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { robot } from "~/assets";
 import Button from "~/components/Button/Button";
 import ModalInterview from "../../../components/InterviewModal";
 import InterviewCard from "../../../components/InterviewCard";
 import { useNavigate } from "react-router-dom";
+import { getAllTopicWithTheirTags } from "~/apis";
 
 const InterviewPractice = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [topicWithTags, setTopicWithTags] = useState([]);
+
+    useEffect(() => {
+        getAllTopicWithTheirTags().then((res) => {
+            setTopicWithTags(res);
+        });
+    }, []);
+
     const navigate = useNavigate();
     const showModal = () => {
         setIsModalOpen(true);
@@ -47,6 +56,7 @@ const InterviewPractice = () => {
                                     open={isModalOpen}
                                     onOk={handleOk}
                                     onCancel={handleCancel}
+                                    topicWithTags={topicWithTags}
                                 />
                             </div>
                             <div>

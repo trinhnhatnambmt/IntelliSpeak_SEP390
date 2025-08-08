@@ -1,24 +1,28 @@
 import { Mic, MicOff, PhoneOff, Repeat } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { robot_assistant, service1 } from "~/assets";
 import { selectCurrentInterviewSession } from "~/redux/interview/interviewSessionSlice";
 import Vapi from "@vapi-ai/web";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import { toast } from "react-toastify";
+import { interviewFeedbackAPI } from "~/redux/interview/feedbackSlice";
 
 const InterviewPage = () => {
     const [activeUser, setActiveUser] = useState(false);
     const [endingCall, setEndingCall] = useState(false);
-    const [conversation, setConversation] = useState("");
+    const [conversation, setConversation] = useState([]);
     const vapi = new Vapi(import.meta.env.VITE_VAPI_PUBLIC_KEY);
+    const dispatch = useDispatch();
 
     const navigate = useNavigate();
 
-
-
     const currentInterviewSession = useSelector(selectCurrentInterviewSession);
+    // console.log(
+    //     "🚀 ~ InterviewPage ~ currentInterviewSession:",
+    //     currentInterviewSession
+    // );
 
     const currentUser = useSelector(selectCurrentUser);
     // console.log("🚀 ~ InterviewPage ~ currentUser:", currentUser);
@@ -27,13 +31,19 @@ const InterviewPage = () => {
         currentInterviewSession && startCall();
     }, [currentInterviewSession]);
 
+    useEffect(() => {
+        if (endingCall && conversation.length > 0) {
+            generateFeedback();
+        }
+    }, [conversation]);
+
     const startCall = () => {
         let questionList = currentInterviewSession?.questions
             .map((q) => q.content)
             .join(", ");
         const assistantOptions = {
             name: "AI Recruiter",
-            firstMessage: `Chào ${currentUser?.userName}, bạn đã sẵn sàng cho buổi phỏng vấn ${currentInterviewSession?.title} chưa?`,
+            firstMessage: `Chào ${currentUser?.userName}, bạn đã sẵn sàng cho buổi ${currentInterviewSession?.title} chưa?`,
 
             transcriber: {
                 provider: "11labs",
@@ -107,46 +117,66 @@ const InterviewPage = () => {
     vapi.on("call-end", () => {
         console.log("Call has end");
         toast.success("Interview ended...");
-        setEndingCall(false); // reset lại trạng thái
-        generateFeedback();
+        setEndingCall(true); // reset lại trạng thái
         // navigate("/main");
     });
 
     vapi.on("message", (message) => {
-        console.log(message?.conversation);
-        setConversation(message?.conversation);
+        if (Array.isArray(message?.conversation)) {
+            console.log(message.conversation);
+
+            setConversation(message.conversation.slice(1));
+        }
     });
 
-    const generateFeedback = () => { };
-
+    const generateFeedback = () => {
+        // console.log("Sending feedback with conversation:", conversation);
+        toast
+            .promise(
+                dispatch(
+                    interviewFeedbackAPI({
+                        interviewSession: currentInterviewSession,
+                        chatHistory: conversation,
+                    })
+                ),
+                {
+                    pending: "Đang chờ để gửi feedback...",
+                }
+            )
+            .then((res) => {
+                if (!res.error) {
+                    console.log(res);
+                }
+            });
+    };
     return (
-        <div className="container mx-auto px-5 relative z-10">
-            {/* Header Section */}
-            <div className="flex items-center justify-between mt-30 mb-10">
-                <h1 className="font-extrabold text-4xl text-gray-900 dark:text-white">
-                    Tiêu đề của phỏng vấn
-                </h1>
-                <div className="rounded-xl py-2 px-2 text-lg  bg-gradient-to-r from-sky-200 to-pink-100 dark:bg-[#24273A] dark:bg-none">
-                    Technical
+        <div className="h-full w-full transition-colors duration-300">
+            <div className="container mx-auto px-5 relative z-10">
+                {/* Header Section */}
+                <div className="flex items-center justify-between mt-30 mb-10">
+                    <h1 className="font-extrabold text-4xl text-gray-900 dark:text-white">
+                        Tiêu đề của phỏng vấn
+                    </h1>
+                    <div className="rounded-xl py-2 px-2 text-lg  bg-gradient-to-r from-sky-200 to-pink-100 dark:bg-[#24273A] dark:bg-none">
+                        Technical
+                    </div>
                 </div>
-            </div>
 
-            {/* Video Containers */}
-            <div className="flex items-center justify-center gap-5 mb-5">
-                {/* Left Box (Robot) */}
-                <div className="w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-purple-300 dark:border-purple-400 relative overflow-hidden">
-                    {/* Light Mode Gradient */}
-                    <div
-                        className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden"
-                    />
+                {/* Video Containers */}
+                <div className="flex items-center justify-center gap-5 mb-5">
+                    {/* Left Box (Robot) */}
+                    <div className="w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-purple-300 dark:border-purple-400 relative overflow-hidden">
+                        {/* Light Mode Gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
 
-                    {/* Dark Mode Gradient */}
-                    <div
-                        className="absolute inset-0 hidden dark:block"
-                        style={{
-                            background: "linear-gradient(0deg, rgba(19, 17, 42, 1) 17%, rgba(24, 21, 55, 1) 63%)"
-                        }}
-                    />
+                        {/* Dark Mode Gradient */}
+                        <div
+                            className="absolute inset-0 hidden dark:block"
+                            style={{
+                                background:
+                                    "linear-gradient(0deg, rgba(19, 17, 42, 1) 17%, rgba(24, 21, 55, 1) 63%)",
+                            }}
+                        />
 
                     {/* Pulsing Circles */}
                     {!activeUser && (
@@ -157,49 +187,46 @@ const InterviewPage = () => {
                         </>
                     )}
 
-                    {/* Robot Avatar */}
-                    <div
-                        className="w-[120px] h-[120px] rounded-full flex items-center justify-center z-10"
-                        style={{
-                            background: "radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 87%)"
-                        }}
-                    >
+                        {/* Robot Avatar */}
+                        <div
+                            className="w-[120px] h-[120px] rounded-full flex items-center justify-center z-10"
+                            style={{
+                                background:
+                                    "radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 87%)",
+                            }}
+                        >
+                            <img
+                                src={robot_assistant}
+                                alt="robot"
+                                className="w-[66px] h-[66px] object-cover"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Right Box (User) */}
+                    <div className="w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-gray-300 dark:border-[#4B4D4F66] relative overflow-hidden">
+                        {/* Light Mode Gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
+
+                        {/* Dark Mode Gradient */}
+                        <div
+                            className="absolute inset-0 hidden dark:block"
+                            style={{
+                                background:
+                                    "linear-gradient(0deg, rgba(8, 9, 13, 1) 6%, rgba(26, 28, 32, 1) 74%)",
+                            }}
+                        />
+
                         <img
-                            src={robot_assistant}
-                            alt="robot"
-                            className="w-[66px] h-[66px] object-cover"
+                            src={currentUser?.avatar}
+                            className="w-[120px] h-[120px] rounded-full z-10"
                         />
                     </div>
                 </div>
 
-                {/* Right Box (User) */}
-                <div className="w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-gray-300 dark:border-[#4B4D4F66] relative overflow-hidden">
-                    {/* Light Mode Gradient */}
-                    <div
-                        className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden"
-                    />
-
-                    {/* Dark Mode Gradient */}
-                    <div
-                        className="absolute inset-0 hidden dark:block"
-                        style={{
-                            background: "linear-gradient(0deg, rgba(8, 9, 13, 1) 6%, rgba(26, 28, 32, 1) 74%)"
-                        }}
-                    />
-
-                    <img
-                        src={service1}
-                        className="w-[120px] h-[120px] rounded-full z-10"
-                    />
-                </div>
-            </div>
-
-
-            <div className="flex items-center justify-center gap-5">
-
-
-                <button
-                    className={`px-6 py-3 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer 
+                <div className="flex items-center justify-center gap-5">
+                    <button
+                        className={`px-6 py-3 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer 
                             bg-green-500 hover:bg-green-60`}
                 >
                     <>
@@ -207,17 +234,19 @@ const InterviewPage = () => {
                     </>
                 </button>
 
-                <button
-                    disabled={endingCall}
-                    onClick={stopInterView}
-                    className={`px-6 py-3 ${endingCall
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-red-500 hover:bg-red-600"
+                    <button
+                        disabled={endingCall}
+                        onClick={stopInterView}
+                        className={`px-6 py-3 ${
+                            endingCall
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-red-500 hover:bg-red-600"
                         } text-white font-semibold rounded-full transition duration-300 flex items-center`}
-                >
-                    <PhoneOff className="mr-2 h-4 w-4" />
-                    {endingCall ? "Đang kết thúc..." : "Rời khỏi phỏng vấn"}
-                </button>
+                    >
+                        <PhoneOff className="mr-2 h-4 w-4" />
+                        {endingCall ? "Đang kết thúc..." : "Rời khỏi phỏng vấn"}
+                    </button>
+                </div>
             </div>
         </div>
     );

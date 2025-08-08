@@ -4,6 +4,7 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
 import { interviewSessionReducer } from "./interview/interviewSessionSlice";
+import { interviewFeedbackReducer } from "./interview/feedbackSlice";
 
 const rootPersistConfig = {
     key: "root", // key của cái persist do chúng ta chỉ định, cứ để mặc định là root
@@ -16,6 +17,7 @@ const rootPersistConfig = {
 const reducers = combineReducers({
     user: userReducer,
     interviewSession: interviewSessionReducer,
+    interviewFeedback: interviewFeedbackReducer,
 });
 
 // Thực hiện persist Reducer
