@@ -144,7 +144,9 @@ const InterviewPage = () => {
                         "Tạo xong feedback rồi nhé mời bạn đọc và cải thiện nha."
                     );
                 }
-                navigate(`/main/feedback`);
+                navigate(
+                    `/main/feedback/${currentInterviewSession?.interviewSessionId}`
+                );
             });
     };
     return (
