@@ -13,14 +13,10 @@ const TopicDetailCard = ({
 }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const submitInterviewSession = (data) => {
+    const submitInterviewSession = () => {
         toast
             .promise(
-                dispatch(
-                    interViewSessionQuestionForAiAPI({
-                        interviewSessionId: interviewSessionId,
-                    })
-                ),
+                dispatch(interViewSessionQuestionForAiAPI(interviewSessionId)),
                 {
                     pending: "Đang chờ để chuyển qua phỏng vấn...",
                 }
@@ -41,13 +37,19 @@ const TopicDetailCard = ({
                 className="object-cover rounded-2xl border border-gray-200 dark:border-gray-600"
             />
             <div className="flex-1">
-                <h3 className="font-extrabold text-2xl text-gray-900 dark:text-white">{title}</h3>
+                <h3 className="font-extrabold text-2xl text-gray-900 dark:text-white">
+                    {title}
+                </h3>
                 <span className="text-lg text-orange-500 dark:text-orange-400 mt-4 block">
                     Độ khó: {difficulty}
                 </span>
-                <p className="mt-2 text-gray-700 dark:text-gray-300">Số lượng câu hỏi: {totalQuestion}</p>
+                <p className="mt-2 text-gray-700 dark:text-gray-300">
+                    Số lượng câu hỏi: {totalQuestion}
+                </p>
 
-                <p className="mt-2 text-gray-700 dark:text-gray-300">{description}</p>
+                <p className="mt-2 text-gray-700 dark:text-gray-300">
+                    {description}
+                </p>
                 <button
                     onClick={submitInterviewSession}
                     className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer"

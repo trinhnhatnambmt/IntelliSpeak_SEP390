@@ -1,29 +1,41 @@
 import { Mic, MicOff, PhoneOff, Repeat } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { robot_assistant, service1 } from "~/assets";
 import { selectCurrentInterviewSession } from "~/redux/interview/interviewSessionSlice";
 import Vapi from "@vapi-ai/web";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import { toast } from "react-toastify";
+import { interviewFeedbackAPI } from "~/redux/interview/feedbackSlice";
 
 const InterviewPage = () => {
     const [activeUser, setActiveUser] = useState(false);
     const [endingCall, setEndingCall] = useState(false);
-    const [conversation, setConversation] = useState("");
+    const [conversation, setConversation] = useState([]);
     const vapi = new Vapi(import.meta.env.VITE_VAPI_PUBLIC_KEY);
+    const dispatch = useDispatch();
 
     const navigate = useNavigate();
 
     const currentInterviewSession = useSelector(selectCurrentInterviewSession);
+    // console.log(
+    //     "🚀 ~ InterviewPage ~ currentInterviewSession:",
+    //     currentInterviewSession
+    // );
 
     const currentUser = useSelector(selectCurrentUser);
-    console.log("🚀 ~ InterviewPage ~ currentUser:", currentUser);
+    // console.log("🚀 ~ InterviewPage ~ currentUser:", currentUser);
 
     useEffect(() => {
         currentInterviewSession && startCall();
     }, [currentInterviewSession]);
+
+    useEffect(() => {
+        if (endingCall && conversation.length > 0) {
+            generateFeedback();
+        }
+    }, [conversation]);
 
     const startCall = () => {
         let questionList = currentInterviewSession?.questions
@@ -105,18 +117,38 @@ const InterviewPage = () => {
     vapi.on("call-end", () => {
         console.log("Call has end");
         toast.success("Interview ended...");
-        setEndingCall(false); // reset lại trạng thái
-        generateFeedback();
+        setEndingCall(true); // reset lại trạng thái
         // navigate("/main");
     });
 
     vapi.on("message", (message) => {
-        console.log(message?.conversation);
-        setConversation(message?.conversation);
+        if (Array.isArray(message?.conversation)) {
+            console.log(message.conversation);
+
+            setConversation(message.conversation.slice(1));
+        }
     });
 
-    const generateFeedback = () => {};
-
+    const generateFeedback = () => {
+        // console.log("Sending feedback with conversation:", conversation);
+        toast
+            .promise(
+                dispatch(
+                    interviewFeedbackAPI({
+                        interviewSession: currentInterviewSession,
+                        chatHistory: conversation,
+                    })
+                ),
+                {
+                    pending: "Đang chờ để gửi feedback...",
+                }
+            )
+            .then((res) => {
+                if (!res.error) {
+                    console.log(res);
+                }
+            });
+    };
     return (
         <div className="h-full w-full transition-colors duration-300">
             <div className="container mx-auto px-5 relative z-10">

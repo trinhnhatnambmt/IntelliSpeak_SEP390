@@ -8,10 +8,9 @@ const initialState = {
 
 export const interViewSessionQuestionForAiAPI = createAsyncThunk(
     "interviewSession/interViewSessionQuestionForAiAPI",
-    async (data) => {
+    async (id) => {
         const response = await authorizedAxiosInstance.post(
-            `${API_ROOT}/interview-sessions/random-questions`,
-            data
+            `${API_ROOT}/interview-sessions/${id}/random-questions-by-session`
         );
         return response.data.data;
     }
