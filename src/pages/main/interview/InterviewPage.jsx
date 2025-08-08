@@ -178,14 +178,14 @@ const InterviewPage = () => {
                             }}
                         />
 
-                        {/* Pulsing Circles */}
-                        {!activeUser && (
-                            <>
-                                <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
-                                <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
-                                <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
-                            </>
-                        )}
+                    {/* Pulsing Circles */}
+                    {!activeUser && (
+                        <>
+                            <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
+                            <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
+                            <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
+                        </>
+                    )}
 
                         {/* Robot Avatar */}
                         <div
@@ -228,11 +228,11 @@ const InterviewPage = () => {
                     <button
                         className={`px-6 py-3 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer 
                             bg-green-500 hover:bg-green-60`}
-                    >
-                        <>
-                            <Mic className="mr h-4 w-4" />
-                        </>
-                    </button>
+                >
+                    <>
+                        <Mic className="mr h-4 w-4" />
+                    </>
+                </button>
 
                     <button
                         disabled={endingCall}
