@@ -13,6 +13,11 @@ export const postQuestion = async (data) => {
     const response = await authorizedAxiosInstance.post(`${API_ROOT}/question`, data);
     return response.data;
 };
+// ==== GET MY QUESTIONS ====
+export const getMyQuestionsAPI = async () => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/question/my-questions`);
+    return response.data;
+};
 // ==== TAGS ====
 export const getAllTag = async () => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/tag`);
