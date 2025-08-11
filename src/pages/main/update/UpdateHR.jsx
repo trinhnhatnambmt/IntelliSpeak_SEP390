@@ -105,7 +105,16 @@ const UpdateHR = () => {
                     formData.cvTitle || `HR_Application_${formData.company}_${Date.now()}`
                 );
 
-                cvUrl = uploadResponse?.imageUrls || "";
+                console.log("uploadResponse", uploadResponse);
+                console.log("uploadResponse?.evaluation?.imageURL", uploadResponse?.evaluation?.imageURL);
+
+                // cvUrl = uploadResponse?.imageUrls || "";
+                cvUrl = uploadResponse?.evaluation?.imageURL ||
+                    uploadResponse?.extractedInfo?.memberCV?.linkToCv || "";
+
+                if (!cvUrl) {
+                    throw new Error("Không thể lấy URL CV từ phản hồi của server");
+                }
                 setIsProcessingCV(false);
             }
 
@@ -117,6 +126,7 @@ const UpdateHR = () => {
                 linkedinUrl: formData.linkedinUrl,
                 cvUrl: cvUrl
             };
+            console.log("applicationData", applicationData);
 
             await applyForHrAPI(applicationData);
 

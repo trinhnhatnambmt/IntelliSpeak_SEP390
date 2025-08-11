@@ -76,7 +76,8 @@ const LoginForm = () => {
                 >
                     <div className="absolute top-5 left-5 cursor-pointer flex items-center gap-2" onClick={() => navigate("/")}>
                         <img src={squarelogo} alt="logo" className="h-10 w-auto" />
-                        <img src={logo} alt="logo" className="h-10 w-auto" /> {/* Thay đổi src bằng biến logo */}
+                        <img src={intellispeak} alt="logo" className="h-10 w-auto block dark:hidden" />
+                        <img src={intellispeakdark} alt="logo" className="h-10 w-auto hidden dark:block" />
                     </div>
                     <h1 className="font-bold text-4xl text-gray-800 dark:text-white">Đăng Nhập</h1>
                     <div className="w-96 mx-auto">

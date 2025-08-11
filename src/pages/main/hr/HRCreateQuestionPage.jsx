@@ -1,31 +1,105 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getAllTopic, getAllTag, postQuestion, connectTopicAndTag, getTagsOfTopic } from "~/apis/index";
+import { toast } from "react-toastify";
 
-const topics = ["Frontend", "Backend", "DevOps", "AI", "Mobile"];
-const tags = ["React", "Node.js", "Python", "System Design", "Algorithms"];
-const difficulties = ["Easy", "Medium", "Hard"];
+const difficulties = [
+    { value: "EASY", label: "Dễ" },
+    { value: "MEDIUM", label: "Trung bình" },
+    { value: "HARD", label: "Khó" },
+];
+
+const initialForm = {
+    topic: "",
+    tag: "",
+    title: "",
+    content: "",
+    difficulty: "",
+    demoAnswer: "",
+};
 
 export default function HRCreateQuestionPage() {
-    const [form, setForm] = useState({
-        topic: "",
-        tag: "",
-        title: "",
-        content: "",
-        difficulty: "",
-        demoAnswer: "",
-    });
+    const [form, setForm] = useState(initialForm);
+    const [topics, setTopics] = useState([]);
+    const [tags, setTags] = useState([]);
     const [success, setSuccess] = useState(false);
+
+    useEffect(() => {
+        getAllTopic().then((res) => {
+            if (Array.isArray(res)) {
+                setTopics(res);
+            } else if (res.data) {
+                setTopics(res.data);
+            }
+        });
+        getAllTag().then((res) => {
+            if (Array.isArray(res)) {
+                setTags(res);
+            } else if (res.data) {
+                setTags(res.data);
+            }
+        });
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Call API to create question
-        setSuccess(true);
-        setTimeout(() => setSuccess(false), 2000);
-        setForm({ topic: "", tag: "", title: "", content: "", difficulty: "", demoAnswer: "" });
+
+        const topicId = Number(form.topic);
+        const tagId = Number(form.tag);
+
+        // Check if tag is already connected to topic
+        let isConnected = false;
+        try {
+            const tagsOfTopic = await getTagsOfTopic(topicId);
+            if (Array.isArray(tagsOfTopic)) {
+                isConnected = tagsOfTopic.some((t) => Number(t.tagId) === tagId);
+            } else if (tagsOfTopic.data) {
+                isConnected = tagsOfTopic.data.some((t) => Number(t.tagId) === tagId);
+            }
+        } catch {
+            // If error, assume not connected and try to connect
+        }
+
+        if (!isConnected) {
+            try {
+                await connectTopicAndTag(topicId, tagId);
+            } catch (err) {
+                console.error("Error connecting topic and tag:", err);
+                toast.error("Kết nối chủ đề và tag thất bại!");
+                return;
+            }
+        }
+
+        const payload = {
+            title: form.title.trim(),
+            content: form.content.trim(),
+            difficulty: form.difficulty,
+            suitableAnswer1: form.demoAnswer.trim(),
+            suitableAnswer2: "",
+            tagIds: [tagId],
+            tags: [],
+            deleted: false,
+        };
+
+        // Log dữ liệu trước khi gửi API
+        console.log("Payload gửi lên API:", JSON.stringify(payload, null, 2));
+
+        try {
+            const res = await postQuestion(payload);
+            console.log("API Response:", res);
+
+            toast.success("Tạo câu hỏi thành công!");
+            setSuccess(true);
+            setTimeout(() => setSuccess(false), 2000);
+            setForm(initialForm);
+        } catch (err) {
+            console.error("Error creating question:", err);
+            toast.error("Tạo câu hỏi thất bại!");
+        }
     };
 
     return (
@@ -43,7 +117,9 @@ export default function HRCreateQuestionPage() {
                     >
                         <option value="">Chọn chủ đề</option>
                         {topics.map((t) => (
-                            <option key={t} value={t}>{t}</option>
+                            <option key={t.topicId || t.id} value={t.topicId || t.id}>
+                                {t.title}
+                            </option>
                         ))}
                     </select>
                 </div>
@@ -58,7 +134,9 @@ export default function HRCreateQuestionPage() {
                     >
                         <option value="">Chọn tag</option>
                         {tags.map((t) => (
-                            <option key={t} value={t}>{t}</option>
+                            <option key={t.tagId || t.id} value={t.tagId || t.id}>
+                                {t.title}
+                            </option>
                         ))}
                     </select>
                 </div>
@@ -95,7 +173,9 @@ export default function HRCreateQuestionPage() {
                     >
                         <option value="">Chọn độ khó</option>
                         {difficulties.map((d) => (
-                            <option key={d} value={d}>{d}</option>
+                            <option key={d.value} value={d.value}>
+                                {d.label}
+                            </option>
                         ))}
                     </select>
                 </div>
@@ -117,7 +197,9 @@ export default function HRCreateQuestionPage() {
                     Tạo câu hỏi
                 </button>
                 {success && (
-                    <div className="text-green-600 text-center font-medium mt-2">Tạo câu hỏi thành công!</div>
+                    <div className="text-green-600 text-center font-medium mt-2">
+                        Tạo câu hỏi thành công!
+                    </div>
                 )}
             </form>
         </div>

@@ -62,14 +62,16 @@ export default function WalletProfile() {
 
         {
             icon: <Briefcase className="w-5 h-5" />,
-            label: "Cập nhật HR",
+            label: "Yêu cầu HR",
             href: "/main/updateHR",
         },
-        {
-            icon: <ClipboardEdit className="w-5 h-5" />,
-            label: "Tạo câu hỏi HR",
-            href: "/main/hr/create-question",
-        },
+        ...(currentUser?.role === "HR"
+            ? [{
+                icon: <ClipboardEdit className="w-5 h-5" />,
+                label: "Tạo câu hỏi HR",
+                href: "/main/hr/create-question",
+            }]
+            : []),
         {
             icon: <BookOpenText className="w-5 h-5" />,
             label: "Bài viết của tôi",

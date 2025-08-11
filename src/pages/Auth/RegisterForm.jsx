@@ -70,7 +70,8 @@ const RegisterForm = () => {
                         onClick={() => navigate("/")}
                     >
                         <img src={squarelogo} alt="logo" className="h-10 w-auto" />
-                        <img src={logo} alt="logo" className="h-10 w-auto" />
+                        <img src={intellispeak} alt="logo" className="h-10 w-auto block dark:hidden" />
+                        <img src={intellispeakdark} alt="logo" className="h-10 w-auto hidden dark:block" />
                     </div>
                     <h1 className="font-bold text-4xl text-gray-800 dark:text-white">Đăng Ký</h1>
                     <div className="w-96 mx-auto">
