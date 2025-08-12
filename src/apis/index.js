@@ -1,3 +1,28 @@
+// ==== GET TAGS OF TOPIC ====
+export const getTagsOfTopic = async (topicId) => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/topic/${topicId}/tags`);
+    return response.data;
+};
+// ==== CONNECT TOPIC AND TAG ====
+export const connectTopicAndTag = async (topicId, tagId) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/topic/${topicId}/tags/${tagId}`);
+    return response.data;
+};
+// ==== POST QUESTION ====
+export const postQuestion = async (data) => {
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/question`, data);
+    return response.data;
+};
+// ==== GET MY QUESTIONS ====
+export const getMyQuestionsAPI = async () => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/question/my-questions`);
+    return response.data;
+};
+// ==== TAGS ====
+export const getAllTag = async () => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/tag`);
+    return response.data;
+};
 // ==== GET ALL COMMENTS FOR A POST ====
 export const getForumPostRepliesAPI = async (postId) => {
     const res = await authorizedAxiosInstance.get(
