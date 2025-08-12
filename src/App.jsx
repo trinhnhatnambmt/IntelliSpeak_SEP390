@@ -18,7 +18,7 @@ import Forum from "./pages/main/forum/Forum";
 import SavedForum from "./pages/main/forum/SavedForum";
 import ForumDetail from "./pages/main/forum/SinglePostPage/SinglePostPage";
 import SinglePostPage from "./pages/main/forum/SinglePostPage/SinglePostPage";
-import NewPostPage from "./pages/main/forum/MyPostPage/MyPostPage";
+import MyPostPage from "./pages/main/forum/MyPostPage/MyPostPage";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "./redux/user/userSlice";
 import UpdateHR from "./pages/main/update/UpdateHR";
@@ -81,7 +81,7 @@ const App = () => {
                         path="singlePostPage/:postId"
                         element={<SinglePostPage />}
                     />
-                    <Route path="myPostPage" element={<NewPostPage />} />
+                    <Route path="myPostPage" element={<MyPostPage />} />
 
                     {/* HR */}
                     <Route path="updateHR" element={<UpdateHR />} />
