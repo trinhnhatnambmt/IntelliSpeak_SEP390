@@ -3,12 +3,17 @@ import { robot } from "~/assets";
 import Button from "~/components/Button/Button";
 import ModalInterview from "../../../components/InterviewModal";
 import InterviewCard from "../../../components/InterviewCard";
-import { useNavigate } from "react-router-dom";
-import { getAllTopicWithTheirTags } from "~/apis";
+import {
+    createInterviewSession,
+    getAllInterviewHistory,
+    getAllTopicWithTheirTags,
+} from "~/apis";
+import { toast } from "react-toastify";
 
 const InterviewPractice = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [topicWithTags, setTopicWithTags] = useState([]);
+    const [interviewCreated, setInterviewCreated] = useState([]);
 
     useEffect(() => {
         getAllTopicWithTheirTags().then((res) => {
@@ -16,13 +21,25 @@ const InterviewPractice = () => {
         });
     }, []);
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        getAllInterviewHistory().then((res) => {
+            console.log(res);
+            setInterviewCreated(res);
+        });
+    }, []);
+
+    // const navigate = useNavigate();
     const showModal = () => {
         setIsModalOpen(true);
     };
-    const handleOk = () => {
-        navigate("interviewPage");
+    const handleOk = (formData) => {
+        // console.log("Form Data:", formData);
         setIsModalOpen(false);
+
+        createInterviewSession(formData).then((res) => {
+            console.log("Interview session created:", res);
+            toast.success("Tạo buổi phỏng vấn thành công!");
+        });
     };
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -77,7 +94,20 @@ const InterviewPractice = () => {
                         Chọn một đề tài phỏng vấn
                     </h2>
                     <div className="mt-5 grid grid-cols-3 gap-5">
-                        <InterviewCard type="main" />
+                        {interviewCreated
+                            ?.filter((item) =>
+                                item?.interviewTitle?.includes(
+                                    "Buổi phỏng vấn ngẫu nhiên"
+                                )
+                            )
+                            ?.map((interview) => (
+                                <InterviewCard
+                                    type="main"
+                                    interviewTitle={interview?.interviewTitle}
+                                    startedAt={interview?.startedAt}
+                                    totalQuestion={interview?.totalQuestion}
+                                />
+                            ))}
                     </div>
                 </div>
             </div>

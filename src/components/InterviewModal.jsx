@@ -2,15 +2,11 @@ import { Form, Modal, Select } from "antd";
 import { useState } from "react";
 
 const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
+    const [form] = Form.useForm();
     const [selectedRole, setSelectedRole] = useState(null);
 
     const handleRoleChange = (value) => {
-        setSelectedRole(value); // value = topicId
-    };
-
-    console.log("🚀 ~ ModalInterview ~ topicWithTags:", topicWithTags);
-    const handleChange = (value) => {
-        console.log(`selected ${value}`);
+        setSelectedRole(value);
     };
 
     const getTagsForSelectedRole = () => {
@@ -18,16 +14,39 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
         return topic?.tags || [];
     };
 
+    const handleSubmit = async () => {
+        try {
+            const values = await form.validateFields();
+            const payload = {
+                numberOfQuestion: Number(values.duration),
+                topicId: values.role,
+                tagIds: values.techStack,
+            };
+            onOk(payload);
+            form.resetFields();
+            setSelectedRole(null);
+        } catch (error) {
+            console.log("Validation failed:", error);
+        }
+    };
+
+    const handleCancelClick = () => {
+        form.resetFields(); // ✅ clear khi bấm close
+        setSelectedRole(null);
+        onCancel();
+    };
+
     return (
         <Modal
-            title="Bắt đầu phỏng vấn"
+            title="Tạo buổi phỏng vấn"
             open={open}
-            onOk={onOk}
-            onCancel={onCancel}
-            okText="Bắt đầu phỏng vấn"
+            onOk={handleSubmit}
+            onCancel={handleCancelClick}
+            okText="Tạo buổi phỏng vấn"
             cancelText="Hủy"
         >
             <Form
+                form={form}
                 name="basic"
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
@@ -85,9 +104,8 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
                     ]}
                 >
                     <Select
-                        defaultValue="5"
+                        placeholder="Chọn số lượng câu hỏi"
                         style={{ width: "100%" }}
-                        onChange={handleChange}
                         options={[
                             {
                                 value: "5",

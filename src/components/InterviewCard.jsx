@@ -42,12 +42,9 @@ const InterviewCard = ({
                 </p>
 
                 {type === "main" && (
-                    <Link
-                        to="#"
-                        className="text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 pt-2 flex gap-1 transition-all duration-300"
-                    >
-                        View Interview
-                    </Link>
+                    <button className="cursor-pointer text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 pt-2 flex gap-1 transition-all duration-300">
+                        Bắt đầu phỏng vấn
+                    </button>
                 )}
 
                 {type === "profile" && (
