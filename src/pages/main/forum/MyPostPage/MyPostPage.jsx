@@ -180,7 +180,7 @@ const MyPostPage = () => {
         let loadingToastId = null;
         try {
             setIsLoading(true);
-            loadingToastId = toast.loading("⏳ Đang đăng bài viết...");
+            loadingToastId = toast.loading("Đang đăng bài viết...");
 
             if (!title.trim() || !content.trim()) {
                 toast.update(loadingToastId, {
@@ -434,8 +434,8 @@ const MyPostPage = () => {
                             >
                                 <Heart
                                     className={`cursor-pointer transition-all duration-200 ${likedPosts[post.postId]
-                                            ? "fill-red-500 text-red-500"
-                                            : "text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-500"
+                                        ? "fill-red-500 text-red-500"
+                                        : "text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-500"
                                         }`}
                                     size={24}
                                 />
@@ -453,121 +453,154 @@ const MyPostPage = () => {
         </div>
     );
 
+
+    // State for modal trigger
+    const [expandForm, setExpandForm] = useState(false);
+
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-[#0e0c15] text-gray-900 dark:text-white transition-colors duration-300 container mx-auto px-4 py-7">
-            {/* New Post Form */}
-            <div className="w-[90%] max-w-3xl mx-auto bg-white dark:bg-[#1e1e2f] border border-neutral-200 dark:border-neutral-700 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300 p-8 relative z-10">
-                <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">✍️ Tạo bài viết mới</h1>
-
-                {/* Cover Image */}
-                <div className="mb-6">
-                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Ảnh bìa</label>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer dark:file:bg-blue-500 dark:hover:file:bg-blue-600"
-                    />
-                    {coverImagePreview && (
-                        <img
-                            src={coverImagePreview}
-                            alt="Preview"
-                            className="mt-4 rounded-lg max-h-64 object-cover w-full border border-gray-300 dark:border-neutral-700"
-                        />
-                    )}
-                </div>
-
-                {/* Topic Select */}
-                <div className="mb-6">
-                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Chọn chủ đề</label>
-                    <select
-                        value={selectedTopicId ?? ""}
-                        onChange={(e) => setSelectedTopicId(Number(e.target.value))}
-                        className="w-full p-3 rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-700 dark:text-neutral-200 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                    >
-                        <option value="" disabled>--Chọn chủ đề--</option>
-                        {topics.length === 0 ? (
-                            <option disabled>Không có chủ đề</option>
-                        ) : (
-                            topics.map((topic) => (
-                                <option key={topic.id} value={Number(topic.id)}>
-                                    {topic.title}
-                                </option>
-                            ))
-                        )}
-                    </select>
-                </div>
-
-                {/* Title */}
-                <input
-                    type="text"
-                    placeholder="📝 Tiêu đề bài viết..."
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="w-full p-4 mb-5 text-xl font-semibold rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                />
-
-                {/* Content Editor */}
-                <ReactQuill
-                    theme="snow"
-                    value={content}
-                    onChange={setContent}
-                    placeholder="✍️ Viết nội dung bài viết ở đây..."
-                    className="mb-6 bg-white dark:bg-[#181818] text-black dark:text-white border-none rounded-md"
-                    modules={{
-                        toolbar: [
-                            [{ header: [1, 2, 3, false] }],
-                            ["bold", "italic", "underline"],
-                            ["blockquote", "code-block"],
-                            [{ list: "ordered" }, { list: "bullet" }],
-                            ["link", "image"],
-                            ["clean"],
-                        ],
-                    }}
-                />
-
-                {/* Publish Button */}
-                <div className="flex justify-between items-center mt-10">
-                    <button
-                        onClick={handlePublish}
-                        disabled={isLoading}
-                        className={`flex items-center justify-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg ${isLoading ? "opacity-50 cursor-not-allowed" : ""
-                            }`}
-                    >
-                        {isLoading ? (
-                            <>
-                                <svg
-                                    className="animate-spin h-5 w-5 text-white"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <circle
-                                        className="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                        className="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                                    ></path>
-                                </svg>
-                                <span>Đang đăng...</span>
-                            </>
-                        ) : (
-                            <span>🚀 Đăng bài</span>
-                        )}
-                    </button>
-                </div>
+            {/* My Posts Section Header with New Post Button */}
+            <div className="w-[90%] max-w-3xl mx-auto flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Bài viết của tôi</h2>
+                <button
+                    className="flex items-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md shadow transition-all duration-300"
+                    onClick={() => setExpandForm(true)}
+                >
+                    <span>✍️ Tạo bài viết</span>
+                </button>
             </div>
 
+            {/* New Post Modal */}
+            {expandForm && (
+                <div
+                    className="fixed inset-0 z-30 flex items-start justify-center pt-16"
+                    style={{
+                        backgroundColor: 'rgba(50, 50, 50, 0.7)',
+                        backdropFilter: 'blur(4px)',
+                        WebkitBackdropFilter: 'blur(4px)'
+                    }}
+                >
+                    <div className="bg-white dark:bg-[#1e1e2f] rounded-xl shadow-lg p-8 w-full max-w-2xl max-h-[calc(100vh-8rem)] overflow-y-auto relative mx-4 mt-10">
+                        <button
+                            className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"
+                            onClick={() => setExpandForm(false)}
+                            title="Đóng"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">✍️ Tạo bài viết mới</h1>
+
+                        {/* Cover Image */}
+                        <div className="mb-6">
+                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Ảnh bìa</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer dark:file:bg-blue-500 dark:hover:file:bg-blue-600"
+                            />
+                            {coverImagePreview && (
+                                <img
+                                    src={coverImagePreview}
+                                    alt="Preview"
+                                    className="mt-4 rounded-lg max-h-64 object-cover w-full border border-gray-300 dark:border-neutral-700"
+                                />
+                            )}
+                        </div>
+
+                        {/* Topic Select */}
+                        <div className="mb-6">
+                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Chọn chủ đề</label>
+                            <select
+                                value={selectedTopicId ?? ""}
+                                onChange={(e) => setSelectedTopicId(Number(e.target.value))}
+                                className="w-full p-3 rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-700 dark:text-neutral-200 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                            >
+                                <option value="" disabled>--Chọn chủ đề--</option>
+                                {topics.length === 0 ? (
+                                    <option disabled>Không có chủ đề</option>
+                                ) : (
+                                    topics.map((topic) => (
+                                        <option key={topic.id} value={Number(topic.id)}>
+                                            {topic.title}
+                                        </option>
+                                    ))
+                                )}
+                            </select>
+                        </div>
+
+                        {/* Title */}
+                        <input
+                            type="text"
+                            placeholder="📝 Tiêu đề bài viết..."
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            className="w-full p-4 mb-5 text-xl font-semibold rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                        />
+
+                        {/* Content Editor */}
+                        <ReactQuill
+                            theme="snow"
+                            value={content}
+                            onChange={setContent}
+                            placeholder="✍️ Viết nội dung bài viết ở đây..."
+                            className="mb-6 bg-white dark:bg-[#181818] text-black dark:text-white border-none rounded-md"
+                            modules={{
+                                toolbar: [
+                                    [{ header: [1, 2, 3, false] }],
+                                    ["bold", "italic", "underline"],
+                                    ["blockquote", "code-block"],
+                                    [{ list: "ordered" }, { list: "bullet" }],
+                                    ["link", "image"],
+                                    ["clean"],
+                                ],
+                            }}
+                        />
+
+                        {/* Publish Button */}
+                        <div className="flex justify-between items-center mt-10">
+                            <button
+                                onClick={async () => { await handlePublish(); setExpandForm(false); }}
+                                disabled={isLoading}
+                                className={`flex items-center justify-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <svg
+                                            className="animate-spin h-5 w-5 text-white"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            ></circle>
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                            ></path>
+                                        </svg>
+                                        <span>Đang đăng...</span>
+                                    </>
+                                ) : (
+                                    <span>🚀 Đăng bài</span>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* My Posts Section */}
-            <div className="w-[90%] max-w-3xl mx-auto mt-12">
-                <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Bài viết của tôi</h2>
+            <div className="w-[90%] max-w-3xl mx-auto">
                 {loadingPosts ? (
                     <div className="text-center text-gray-500 dark:text-gray-400">Đang tải bài viết...</div>
                 ) : myPosts.length === 0 ? (

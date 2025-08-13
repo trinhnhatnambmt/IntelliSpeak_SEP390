@@ -29,7 +29,7 @@ const UpdateHR = () => {
                 setExistingCvs(response || []);
             } catch (error) {
                 console.error("Error loading existing CVs:", error);
-                toast.error("Không thể tải danh sách CV");
+                // toast.error("Không thể tải danh sách CV");
             }
         };
         loadExistingCvs();
@@ -130,7 +130,7 @@ const UpdateHR = () => {
 
             await applyForHrAPI(applicationData);
 
-            toast.success("Đã gửi yêu cầu trở thành HR thành công!");
+            // toast.success("Đã gửi yêu cầu trở thành HR thành công!");
             setFormData({
                 company: "",
                 email: "",
@@ -145,7 +145,7 @@ const UpdateHR = () => {
 
         } catch (error) {
             console.error("Error details:", error.response?.data);
-            toast.error(error.response?.data?.message || "Gửi yêu cầu thất bại. Vui lòng thử lại.");
+            // toast.error(error.response?.data?.message || "Gửi yêu cầu thất bại. Vui lòng thử lại.");
         } finally {
             setIsLoading(false);
             setIsProcessingCV(false);
