@@ -5,10 +5,11 @@ import InterviewCard from "~/components/InterviewCard";
 import Footer from "~/sections/Footer";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getUserProfileAPI } from "~/apis";
+import { getAllInterviewHistory, getUserProfileAPI } from "~/apis";
 
 const Profile = () => {
     const [userProfile, setUserProfile] = useState(null);
+    const [interviews, setInterviews] = useState([]);
 
     const personalInfo = [
         {
@@ -16,17 +17,23 @@ const Profile = () => {
             label: userProfile ? userProfile?.email : "Email chưa cập nhật",
         },
         {
-            icon: <Phone className="w-5 h-5 text-gray-500 dark:text-gray-400" />,
+            icon: (
+                <Phone className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            ),
             label: userProfile?.phone
                 ? userProfile?.phone
                 : "Số điện thoại chưa cập nhật",
         },
         {
-            icon: <MapIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />,
-            label: "Vietnam"
+            icon: (
+                <MapIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            ),
+            label: "Vietnam",
         },
         {
-            icon: <TicketCheck className="w-5 h-5 text-gray-500 dark:text-gray-400" />,
+            icon: (
+                <TicketCheck className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            ),
             label: userProfile?.role ? userProfile?.role : "Chưa cập nhật",
         },
     ];
@@ -34,7 +41,14 @@ const Profile = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        getAllInterviewHistory().then((res) => {
+            setInterviews(res);
+        });
+    }, []);
+
+    useEffect(() => {
         getUserProfileAPI().then((data) => {
+            console.log(data.data);
             setUserProfile(data.data);
         });
     }, []);
@@ -68,9 +82,7 @@ const Profile = () => {
                                     className="flex items-center text-gray-700 dark:text-gray-300"
                                     key={item.label}
                                 >
-                                    <span className="mr-3">
-                                        {item.icon}
-                                    </span>
+                                    <span className="mr-3">{item.icon}</span>
                                     <span>{item.label}</span>
                                 </div>
                             ))}
@@ -105,10 +117,16 @@ const Profile = () => {
                                         Số buổi luyện tập
                                     </p>
                                     <p className="text-xl font-semibold mt-1 text-gray-800 dark:text-white">
-                                        12 buổi
+                                        {
+                                            userProfile?.statistic[0]
+                                                ?.interviewWeeklyCount
+                                        }
                                     </p>
                                     <p className="text-green-500 dark:text-green-400 text-sm mt-1">
-                                        +3 buổi trong tuần
+                                        {
+                                            userProfile?.statistic[0]
+                                                ?.comparedToLastWeek
+                                        }
                                     </p>
                                 </div>
 
@@ -118,10 +136,16 @@ const Profile = () => {
                                         Câu hỏi đã trả lời
                                     </p>
                                     <p className="text-xl font-semibold mt-1 text-gray-800 dark:text-white">
-                                        134 câu
+                                        {
+                                            userProfile?.statistic[0]
+                                                ?.answeredQuestionCount
+                                        }
                                     </p>
                                     <p className="text-green-500 dark:text-green-400 text-sm mt-1">
-                                        +25% so với tuần trước
+                                        {
+                                            userProfile?.statistic[0]
+                                                ?.answeredQuestionComparedToLastWeek
+                                        }
                                     </p>
                                 </div>
 
@@ -131,10 +155,16 @@ const Profile = () => {
                                         Điểm trung bình
                                     </p>
                                     <p className="text-xl font-semibold mt-1 text-gray-800 dark:text-white">
-                                        8.4 / 10
+                                        {
+                                            userProfile?.statistic[0]
+                                                ?.averageInterviewScore
+                                        }
                                     </p>
                                     <p className="text-yellow-500 dark:text-yellow-400 text-sm mt-1">
-                                        Giữ ổn định
+                                        {
+                                            userProfile?.statistic[0]
+                                                ?.scoreEvaluate
+                                        }
                                     </p>
                                 </div>
                             </div>
@@ -147,10 +177,17 @@ const Profile = () => {
                             Lịch sử phỏng vấn của bạn
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <InterviewCard type="profile" />
-                            <InterviewCard type="profile" />
-                            <InterviewCard type="profile" />
-                            <InterviewCard type="profile" />
+                            {interviews?.map((interview) => (
+                                <InterviewCard
+                                    type="profile"
+                                    interviewTitle={interview?.interviewTitle}
+                                    startedAt={interview?.startedAt}
+                                    totalQuestion={interview?.totalQuestion}
+                                    interviewHistoryId={
+                                        interview?.interviewHistoryId
+                                    }
+                                />
+                            ))}
                         </div>
                     </div>
                 </div>

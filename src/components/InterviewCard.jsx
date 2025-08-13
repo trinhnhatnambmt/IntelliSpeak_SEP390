@@ -2,8 +2,16 @@ import React from "react";
 import { ChevronRight } from "lucide-react";
 import { service2 } from "~/assets";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
 
-const InterviewCard = ({ type = "main" }) => {
+const InterviewCard = ({
+    type = "main",
+    interviewTitle,
+    startedAt,
+    totalQuestion,
+    interviewHistoryId,
+}) => {
+    const formattedDate = dayjs(startedAt).format("MMM DD, YYYY – h:mm A");
     return (
         <div className="w-[90%] h-[480px] group mx-auto bg-white dark:bg-[#252525] border border-neutral-200 dark:border-neutral-700 rounded-md text-black dark:text-white shadow-xl hover:shadow-2xl transition-shadow duration-300">
             <figure className="w-full h-80 group-hover:h-72 transition-all duration-300 bg-neutral-100 dark:bg-[#0a121a] p-2 rounded-md relative overflow-hidden">
@@ -24,14 +32,13 @@ const InterviewCard = ({ type = "main" }) => {
             </figure>
             <article className="p-4 space-y-2">
                 <div className="h-8 w-40 bg-[#4393fc] text-white rounded-md flex items-center justify-center mb-2 text-sm font-medium">
-                    Non - Technical
+                    Số câu hỏi: {totalQuestion}
                 </div>
                 <h1 className="text-xl font-semibold capitalize">
-                    Incorporate your company
+                    {interviewTitle}
                 </h1>
                 <p className="text-base leading-[120%] text-neutral-600 dark:text-neutral-300">
-                    Form a legal entity, issue stock, and start accepting
-                    payments.
+                    {formattedDate}
                 </p>
 
                 {type === "main" && (
@@ -40,25 +47,16 @@ const InterviewCard = ({ type = "main" }) => {
                         className="text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 pt-2 flex gap-1 transition-all duration-300"
                     >
                         View Interview
-                        <ChevronRight className="w-4 h-4" />
                     </Link>
                 )}
 
                 {type === "profile" && (
                     <div className="flex flex-col sm:flex-row gap-2 pt-2">
                         <Link
-                            to="#"
+                            to={`/main/feedback/${interviewHistoryId}`}
                             className="text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 flex gap-1 transition-all duration-300"
                         >
-                            Retake Interview
-                            <ChevronRight className="w-4 h-4" />
-                        </Link>
-                        <Link
-                            to="/main/feedback"
-                            className="text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 flex gap-1 transition-all duration-300"
-                        >
-                            View Feedback
-                            <ChevronRight className="w-4 h-4" />
+                            Xem Feedback
                         </Link>
                     </div>
                 )}

@@ -13,7 +13,9 @@ const InterviewPage = () => {
     const [activeUser, setActiveUser] = useState(false);
     const [endingCall, setEndingCall] = useState(false);
     const [conversation, setConversation] = useState([]);
+    const [feedbackSent, setFeedbackSent] = useState(false);
     const vapi = new Vapi(import.meta.env.VITE_VAPI_PUBLIC_KEY);
+
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
@@ -27,10 +29,11 @@ const InterviewPage = () => {
     }, [currentInterviewSession]);
 
     useEffect(() => {
-        if (endingCall && conversation.length > 0) {
+        if (endingCall && conversation.length > 0 && !feedbackSent) {
             generateFeedback();
+            setFeedbackSent(true);
         }
-    }, [conversation]);
+    }, [endingCall, conversation, feedbackSent]);
 
     const startCall = () => {
         let questionList = currentInterviewSession?.questions
@@ -113,7 +116,6 @@ const InterviewPage = () => {
         console.log("Call has end");
         toast.success("Interview ended...");
         setEndingCall(true); // reset lại trạng thái
-        // navigate("/main");
     });
 
     vapi.on("message", (message) => {

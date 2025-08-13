@@ -1,22 +1,35 @@
 // Phần import giữ nguyên
 import dayjs from "dayjs";
 import { CalendarIcon, House, Star } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getInterviewHistoryById } from "~/apis";
 import { selectInterviewFeedback } from "~/redux/interview/feedbackSlice";
-import { selectCurrentInterviewSession } from "~/redux/interview/interviewSessionSlice";
 
 const FeedBack = () => {
     const navigate = useNavigate();
-    const interviewFeedback = useSelector(selectInterviewFeedback);
+    const { id } = useParams();
+
+    const interviewFeedbackRedux = useSelector(selectInterviewFeedback);
+    const [interviewFeedback, setInterviewFeedback] = useState(
+        interviewFeedbackRedux
+    );
+
+    useEffect(() => {
+        if (!interviewFeedbackRedux && id) {
+            getInterviewHistoryById(id).then((data) => {
+                setInterviewFeedback(data);
+            });
+        }
+    }, [id, interviewFeedbackRedux]);
+
     const formattedDate = dayjs(interviewFeedback?.startedAt).format(
         "MMM DD, YYYY – h:mm A"
     );
 
-        // const currentInterviewSession = useSelector(selectCurrentInterviewSession);
-        // console.log("🚀 ~ FeedBack ~ currentInterviewSession:", currentInterviewSession)
-    
+    // const currentInterviewSession = useSelector(selectCurrentInterviewSession);
+    // console.log("🚀 ~ FeedBack ~ currentInterviewSession:", currentInterviewSession)
 
     return (
         <div className="max-w-5xl mx-auto px-6 py-20">
