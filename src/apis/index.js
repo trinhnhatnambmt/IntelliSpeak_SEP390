@@ -1,21 +1,30 @@
 // ==== GET TAGS OF TOPIC ====
 export const getTagsOfTopic = async (topicId) => {
-    const response = await authorizedAxiosInstance.get(`${API_ROOT}/topic/${topicId}/tags`);
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/topic/${topicId}/tags`
+    );
     return response.data;
 };
 // ==== CONNECT TOPIC AND TAG ====
 export const connectTopicAndTag = async (topicId, tagId) => {
-    const response = await authorizedAxiosInstance.put(`${API_ROOT}/topic/${topicId}/tags/${tagId}`);
+    const response = await authorizedAxiosInstance.put(
+        `${API_ROOT}/topic/${topicId}/tags/${tagId}`
+    );
     return response.data;
 };
 // ==== POST QUESTION ====
 export const postQuestion = async (data) => {
-    const response = await authorizedAxiosInstance.post(`${API_ROOT}/question`, data);
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/question`,
+        data
+    );
     return response.data;
 };
 // ==== GET MY QUESTIONS ====
 export const getMyQuestionsAPI = async () => {
-    const response = await authorizedAxiosInstance.get(`${API_ROOT}/question/my-questions`);
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/question/my-questions`
+    );
     return response.data;
 };
 // ==== TAGS ====
@@ -330,6 +339,21 @@ export const getInterviewHistoryById = async (id) => {
     );
 
     return response.data;
+};
+
+export const createInterviewSession = async (data) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/interview-sessions/random-questions`,
+        data
+    );
+    return response.data;
+};
+
+export const getInterviewSessionWhenCreated = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/interview-sessions/get-random-generated-questions-session`
+    );
+    return response.data.data;
 };
 
 // ==== HR APPLICATION ====

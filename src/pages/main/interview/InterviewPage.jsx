@@ -1,8 +1,8 @@
 import { Mic, MicOff, PhoneOff, Repeat } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { robot_assistant, service1 } from "~/assets";
+import { useNavigate } from "react-router-dom";
+import { robot_assistant } from "~/assets";
 import { selectCurrentInterviewSession } from "~/redux/interview/interviewSessionSlice";
 import Vapi from "@vapi-ai/web";
 import { selectCurrentUser } from "~/redux/user/userSlice";
@@ -93,6 +93,14 @@ const InterviewPage = () => {
         if (endingCall) return; // tránh double click
 
         setEndingCall(true);
+
+        if (vapi.localStream) {
+            vapi.localStream.getAudioTracks().forEach((track) => {
+                track.stop();
+            });
+            console.log("Mic muted immediately");
+        }
+
         vapi.stop();
         toast.info("Đang kết thúc cuộc gọi...");
     };

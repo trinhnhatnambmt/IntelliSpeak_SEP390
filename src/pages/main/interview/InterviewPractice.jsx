@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { robot } from "~/assets";
 import Button from "~/components/Button/Button";
-import ModalInterview from "../../../components/InterviewModal";
-import InterviewCard from "../../../components/InterviewCard";
-import { useNavigate } from "react-router-dom";
-import { getAllTopicWithTheirTags } from "~/apis";
+import {
+    createInterviewSession,
+    getAllTopicWithTheirTags,
+    getInterviewSessionWhenCreated,
+} from "~/apis";
+import { toast } from "react-toastify";
+import InterviewCard from "~/components/InterviewCard";
+import ModalInterview from "~/components/InterviewModal";
 
 const InterviewPractice = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [topicWithTags, setTopicWithTags] = useState([]);
+    const [interviewCreated, setInterviewCreated] = useState([]);
 
     useEffect(() => {
         getAllTopicWithTheirTags().then((res) => {
@@ -16,13 +21,26 @@ const InterviewPractice = () => {
         });
     }, []);
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        getInterviewSessionWhenCreated().then((res) => {
+            console.log(res);
+            setInterviewCreated(res);
+        });
+    }, []);
+
+    // const navigate = useNavigate();
     const showModal = () => {
         setIsModalOpen(true);
     };
-    const handleOk = () => {
-        navigate("interviewPage");
+    const handleOk = (formData) => {
+        // console.log("Form Data:", formData);
         setIsModalOpen(false);
+
+        createInterviewSession(formData).then((res) => {
+            // console.log("Interview session created:", res);
+            toast.success("Tạo buổi phỏng vấn thành công!");
+            setInterviewCreated((prev) => [res, ...prev]);
+        });
     };
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -77,7 +95,17 @@ const InterviewPractice = () => {
                         Chọn một đề tài phỏng vấn
                     </h2>
                     <div className="mt-5 grid grid-cols-3 gap-5">
-                        <InterviewCard type="main" />
+                        {interviewCreated?.map((interview, index) => (
+                            <InterviewCard
+                                type="main"
+                                key={index}
+                                interviewTitle={interview?.interviewTitle}
+                                interviewSessionId={
+                                    interview?.interviewSessionId
+                                }
+                                totalQuestion={interview?.totalQuestion}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>
