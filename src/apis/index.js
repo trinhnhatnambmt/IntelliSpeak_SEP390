@@ -291,6 +291,22 @@ export const getAllTopicWithTheirTags = async () => {
     return response.data.data;
 };
 
+export const getAllInterviewHistory = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/interview-history`
+    );
+
+    return response.data;
+};
+
+export const getInterviewHistoryById = async (id) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/interview-history/${id}`
+    );
+
+    return response.data;
+};
+
 // ==== HR APPLICATION ====
 export const applyForHrAPI = async ({
     company,
