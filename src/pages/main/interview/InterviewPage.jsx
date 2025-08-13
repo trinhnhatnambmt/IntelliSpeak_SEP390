@@ -93,6 +93,14 @@ const InterviewPage = () => {
         if (endingCall) return; // tránh double click
 
         setEndingCall(true);
+
+        if (vapi.localStream) {
+            vapi.localStream.getAudioTracks().forEach((track) => {
+                track.stop();
+            });
+            console.log("Mic muted immediately");
+        }
+
         vapi.stop();
         toast.info("Đang kết thúc cuộc gọi...");
     };

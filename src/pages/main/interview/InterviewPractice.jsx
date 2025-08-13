@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { robot } from "~/assets";
 import Button from "~/components/Button/Button";
-import ModalInterview from "../../../components/InterviewModal";
-import InterviewCard from "../../../components/InterviewCard";
 import {
     createInterviewSession,
-    getAllInterviewHistory,
     getAllTopicWithTheirTags,
+    getInterviewSessionWhenCreated,
 } from "~/apis";
 import { toast } from "react-toastify";
+import InterviewCard from "~/components/InterviewCard";
+import ModalInterview from "~/components/InterviewModal";
 
 const InterviewPractice = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,7 +22,7 @@ const InterviewPractice = () => {
     }, []);
 
     useEffect(() => {
-        getAllInterviewHistory().then((res) => {
+        getInterviewSessionWhenCreated().then((res) => {
             console.log(res);
             setInterviewCreated(res);
         });
@@ -37,8 +37,9 @@ const InterviewPractice = () => {
         setIsModalOpen(false);
 
         createInterviewSession(formData).then((res) => {
-            console.log("Interview session created:", res);
+            // console.log("Interview session created:", res);
             toast.success("Tạo buổi phỏng vấn thành công!");
+            setInterviewCreated((prev) => [res, ...prev]);
         });
     };
     const handleCancel = () => {
@@ -94,20 +95,17 @@ const InterviewPractice = () => {
                         Chọn một đề tài phỏng vấn
                     </h2>
                     <div className="mt-5 grid grid-cols-3 gap-5">
-                        {interviewCreated
-                            ?.filter((item) =>
-                                item?.interviewTitle?.includes(
-                                    "Buổi phỏng vấn ngẫu nhiên"
-                                )
-                            )
-                            ?.map((interview) => (
-                                <InterviewCard
-                                    type="main"
-                                    interviewTitle={interview?.interviewTitle}
-                                    startedAt={interview?.startedAt}
-                                    totalQuestion={interview?.totalQuestion}
-                                />
-                            ))}
+                        {interviewCreated?.map((interview, index) => (
+                            <InterviewCard
+                                type="main"
+                                key={index}
+                                interviewTitle={interview?.interviewTitle}
+                                interviewSessionId={
+                                    interview?.interviewSessionId
+                                }
+                                totalQuestion={interview?.totalQuestion}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>

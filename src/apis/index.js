@@ -349,6 +349,13 @@ export const createInterviewSession = async (data) => {
     return response.data;
 };
 
+export const getInterviewSessionWhenCreated = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/interview-sessions/get-random-generated-questions-session`
+    );
+    return response.data.data;
+};
+
 // ==== HR APPLICATION ====
 export const applyForHrAPI = async ({
     company,
