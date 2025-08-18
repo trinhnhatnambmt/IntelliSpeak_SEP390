@@ -8,6 +8,7 @@ import Vapi from "@vapi-ai/web";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import { toast } from "react-toastify";
 import { interviewFeedbackAPI } from "~/redux/interview/feedbackSlice";
+import Agent from "~/components/agent/Agent";
 
 const InterviewPage = () => {
     const [activeUser, setActiveUser] = useState(false);
@@ -173,13 +174,12 @@ const InterviewPage = () => {
                 </div>
 
                 {/* Video Containers */}
-                <div className="flex items-center justify-center gap-5 mb-5">
-                    {/* Left Box (Robot) */}
+                <Agent userAvatar={currentUser?.avatar} />
+
+                {/* <div className="flex items-center justify-center gap-5 mb-5">
                     <div className="w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-purple-300 dark:border-purple-400 relative overflow-hidden">
-                        {/* Light Mode Gradient */}
                         <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
 
-                        {/* Dark Mode Gradient */}
                         <div
                             className="absolute inset-0 hidden dark:block"
                             style={{
@@ -188,7 +188,6 @@ const InterviewPage = () => {
                             }}
                         />
 
-                        {/* Pulsing Circles */}
                         {!activeUser && (
                             <>
                                 <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
@@ -197,7 +196,6 @@ const InterviewPage = () => {
                             </>
                         )}
 
-                        {/* Robot Avatar */}
                         <div
                             className="w-[120px] h-[120px] rounded-full flex items-center justify-center z-10"
                             style={{
@@ -213,12 +211,9 @@ const InterviewPage = () => {
                         </div>
                     </div>
 
-                    {/* Right Box (User) */}
                     <div className="w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-gray-300 dark:border-[#4B4D4F66] relative overflow-hidden">
-                        {/* Light Mode Gradient */}
                         <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
 
-                        {/* Dark Mode Gradient */}
                         <div
                             className="absolute inset-0 hidden dark:block"
                             style={{
@@ -232,9 +227,9 @@ const InterviewPage = () => {
                             className="w-[120px] h-[120px] rounded-full z-10"
                         />
                     </div>
-                </div>
+                </div> */}
 
-                <div className="flex items-center justify-center gap-5">
+                {/* <div className="flex items-center justify-center gap-5">
                     <button
                         className={`px-6 py-3 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer 
                             bg-green-500 hover:bg-green-60`}
@@ -256,7 +251,7 @@ const InterviewPage = () => {
                         <PhoneOff className="mr-2 h-4 w-4" />
                         {endingCall ? "Đang kết thúc..." : "Rời khỏi phỏng vấn"}
                     </button>
-                </div>
+                </div> */}
             </div>
         </div>
     );

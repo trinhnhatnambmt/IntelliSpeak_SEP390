@@ -17,7 +17,9 @@ const Hero = () => {
             id="hero"
         >
             <div className="hero-text relative z-1 max-w-[62rem] text-center mb-[3.875rem]">
-                <h1 className="text-n-8 dark:text-white transition-colors duration-500">Thực hành phỏng vấn với AI </h1>
+                <h1 className="text-n-8 dark:text-white transition-colors duration-500">
+                    Thực hành phỏng vấn với AI{" "}
+                </h1>
                 <h1>
                     <span className="slide">
                         <span className="wrapper">
@@ -31,14 +33,18 @@ const Hero = () => {
                                         alt={word.text}
                                         className="xl:size-12 md:size-10 size-7 md:p-2 p-1 rounded-full bg-emerald-500"
                                     />
-                                    <span className="text-n-8 dark:text-white transition-colors duration-500">{word.text}</span>
+                                    <span className="text-n-8 dark:text-white transition-colors duration-500">
+                                        {word.text}
+                                    </span>
                                 </span>
                             ))}
                         </span>
                     </span>
                 </h1>
                 <h1 className="flex items-center justify-center gap-4">
-                    <div className="text-n-8 dark:text-white transition-colors duration-500">cùng</div>
+                    <div className="text-n-8 dark:text-white transition-colors duration-500">
+                        cùng
+                    </div>
                     <div>
                         <GradientText
                             colors={[
@@ -52,7 +58,7 @@ const Hero = () => {
                             showBorder={false}
                             className="custom-class"
                         >
-                            ItelliSpeak
+                            IntelliSpeak
                         </GradientText>
                     </div>
                 </h1>
@@ -71,7 +77,7 @@ const Hero = () => {
                 >
                     Xem Chi Tiết Gói
                 </Button>
-                <Button className="px-4 py-2 bg-white text-lg before:bg-emerald-500 text-n-8 dark:text-white shadow-md border border-emerald-400 hover:bg-emerald-50 transition-colors duration-300">
+                <Button className="px-4 py-2 bg-white  text-lg before:bg-emerald-500 text-n-8 dark:text-black shadow-md border border-emerald-400 hover:bg-emerald-50 transition-colors duration-300">
                     Trải nghiệm miễn phí
                 </Button>
             </div>
