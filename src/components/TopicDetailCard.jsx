@@ -26,6 +26,7 @@ const TopicDetailCard = ({
                     navigate(`/main/interviewPage/${interviewSessionId}`);
                 }
             });
+        navigate(`/main/interviewPage/${interviewSessionId}`);
     };
     return (
         <div className="w-full rounded-2xl p-[16px] flex gap-5 bg-white dark:bg-[#252525] shadow-md dark:shadow-none transition-colors duration-300">

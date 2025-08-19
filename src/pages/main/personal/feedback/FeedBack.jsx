@@ -54,7 +54,7 @@ const FeedBack = () => {
             <div className="border-t border-gray-300 dark:border-gray-600 mb-8"></div>
 
             <p className="text-lg leading-relaxed text-center text-gray-800 dark:text-gray-300 mb-12">
-                {interviewFeedback?.aiOverallEvaluate}
+                {/* {interviewFeedback?.aiOverallEvaluate} */}
             </p>
 
             <div>

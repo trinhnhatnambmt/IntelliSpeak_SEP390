@@ -1,7 +1,12 @@
 import { Eye, EyeOff } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { authThumb, squarelogo, intellispeakdark, intellispeak } from "~/assets"; // Thêm intellispeak
+import {
+    authThumb,
+    squarelogo,
+    intellispeakdark,
+    intellispeak,
+} from "~/assets"; // Thêm intellispeak
 import { useForm } from "react-hook-form";
 import {
     EMAIL_RULE,
@@ -17,7 +22,7 @@ import { loginUserAPI } from "~/redux/user/userSlice";
 
 const LoginForm = () => {
     const [isVisible, setIsVisible] = useState(false);
-    const [logo, setLogo] = useState(intellispeak); // Khởi tạo logo mặc định là intellispeak
+    const [logo, setLogo] = useState(intellispeak);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -29,7 +34,7 @@ const LoginForm = () => {
 
     // Sử dụng useEffect để lắng nghe sự thay đổi của theme
     useEffect(() => {
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
         const handleChange = (e) => {
             setLogo(e.matches ? intellispeakdark : intellispeak);
@@ -39,10 +44,10 @@ const LoginForm = () => {
         handleChange(mediaQuery);
 
         // Lắng nghe sự kiện thay đổi của theme
-        mediaQuery.addEventListener('change', handleChange);
+        mediaQuery.addEventListener("change", handleChange);
 
         // Cleanup function để gỡ bỏ event listener khi component unmount
-        return () => mediaQuery.removeEventListener('change', handleChange);
+        return () => mediaQuery.removeEventListener("change", handleChange);
     }, []);
 
     const submitLogin = (data) => {
@@ -74,14 +79,34 @@ const LoginForm = () => {
                     onSubmit={handleSubmit(submitLogin)}
                     className="relative flex flex-col gap-5 justify-center items-center w-1/2 bg-gray-50 dark:bg-gray-900"
                 >
-                    <div className="absolute top-5 left-5 cursor-pointer flex items-center gap-2" onClick={() => navigate("/")}>
-                        <img src={squarelogo} alt="logo" className="h-10 w-auto" />
-                        <img src={intellispeak} alt="logo" className="h-10 w-auto block dark:hidden" />
-                        <img src={intellispeakdark} alt="logo" className="h-10 w-auto hidden dark:block" />
+                    <div
+                        className="absolute top-5 left-5 cursor-pointer flex items-center gap-2"
+                        onClick={() => navigate("/")}
+                    >
+                        <img
+                            src={squarelogo}
+                            alt="logo"
+                            className="h-10 w-auto"
+                        />
+                        <img
+                            src={intellispeak}
+                            alt="logo"
+                            className="h-10 w-auto block dark:hidden"
+                        />
+                        <img
+                            src={intellispeakdark}
+                            alt="logo"
+                            className="h-10 w-auto hidden dark:block"
+                        />
                     </div>
-                    <h1 className="font-bold text-4xl text-gray-800 dark:text-white">Đăng Nhập</h1>
+                    <h1 className="font-bold text-4xl text-gray-800 dark:text-white">
+                        Đăng Nhập
+                    </h1>
                     <div className="w-96 mx-auto">
-                        <label htmlFor="pass" className="text-sm font-normal text-gray-700 dark:text-gray-300">
+                        <label
+                            htmlFor="pass"
+                            className="text-sm font-normal text-gray-700 dark:text-gray-300"
+                        >
                             Email
                         </label>
                         <div className="relative mt-1">
@@ -104,7 +129,10 @@ const LoginForm = () => {
                         </div>
                     </div>
                     <div className="w-96 mx-auto">
-                        <label htmlFor="pass" className="text-sm font-normal text-gray-700 dark:text-gray-300">
+                        <label
+                            htmlFor="pass"
+                            className="text-sm font-normal text-gray-700 dark:text-gray-300"
+                        >
                             Password
                         </label>
                         <div className="relative mt-1">
@@ -143,7 +171,9 @@ const LoginForm = () => {
                     </div>
                     <div className="w-96 mx-auto my-4 flex items-center">
                         <div className="flex-grow h-[0.5px] bg-gray-300 dark:bg-gray-600" />
-                        <span className="px-3 text-sm text-gray-500 dark:text-gray-400">hoặc</span>
+                        <span className="px-3 text-sm text-gray-500 dark:text-gray-400">
+                            hoặc
+                        </span>
                         <div className="flex-grow h-[0.5px] bg-gray-300 dark:bg-gray-600" />
                     </div>
 
