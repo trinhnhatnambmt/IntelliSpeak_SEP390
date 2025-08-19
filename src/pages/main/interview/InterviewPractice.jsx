@@ -23,7 +23,7 @@ const InterviewPractice = () => {
 
     useEffect(() => {
         getInterviewSessionWhenCreated().then((res) => {
-            console.log(res);
+            // console.log(res);
             setInterviewCreated(res);
         });
     }, []);

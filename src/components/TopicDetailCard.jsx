@@ -26,6 +26,7 @@ const TopicDetailCard = ({
                     navigate(`/main/interviewPage/${interviewSessionId}`);
                 }
             });
+        navigate(`/main/interviewPage/${interviewSessionId}`);
     };
     return (
         <div className="w-full rounded-2xl p-[16px] flex gap-5 bg-white dark:bg-[#252525] shadow-md dark:shadow-none transition-colors duration-300">
@@ -51,7 +52,7 @@ const TopicDetailCard = ({
                     {description}
                 </p>
                 <button
-                    // onClick={submitInterviewSession}
+                    onClick={submitInterviewSession}
                     className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer"
                 >
                     Bắt đầu phỏng vấn

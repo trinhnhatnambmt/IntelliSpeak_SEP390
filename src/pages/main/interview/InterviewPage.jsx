@@ -25,141 +25,141 @@ const InterviewPage = () => {
 
     const currentUser = useSelector(selectCurrentUser);
 
-    useEffect(() => {
-        currentInterviewSession && startCall();
-    }, [currentInterviewSession]);
+    // useEffect(() => {
+    //     currentInterviewSession && startCall();
+    // }, [currentInterviewSession]);
 
-    useEffect(() => {
-        if (endingCall && conversation.length > 0 && !feedbackSent) {
-            generateFeedback();
-            setFeedbackSent(true);
-        }
-    }, [endingCall, conversation, feedbackSent]);
+    // useEffect(() => {
+    //     if (endingCall && conversation.length > 0 && !feedbackSent) {
+    //         generateFeedback();
+    //         setFeedbackSent(true);
+    //     }
+    // }, [endingCall, conversation, feedbackSent]);
 
-    const startCall = () => {
-        let questionList = currentInterviewSession?.questions
-            .map((q) => q.content)
-            .join(", ");
-        const assistantOptions = {
-            name: "AI Recruiter",
-            firstMessage: `Chào ${currentUser?.userName}, bạn đã sẵn sàng cho buổi ${currentInterviewSession?.title} chưa?`,
+    // const startCall = () => {
+    //     let questionList = currentInterviewSession?.questions
+    //         .map((q) => q.content)
+    //         .join(", ");
+    //     const assistantOptions = {
+    //         name: "AI Recruiter",
+    //         firstMessage: `Chào ${currentUser?.userName}, bạn đã sẵn sàng cho buổi ${currentInterviewSession?.title} chưa?`,
 
-            transcriber: {
-                provider: "11labs",
-                model: "scribe_v1",
-                language: "vi",
-            },
-            voice: {
-                provider: "11labs",
-                voiceId: "iSFxP4Z6YNcx9OXl62Ic",
-                model: "eleven_flash_v2_5",
-                language: "vi",
-            },
-            model: {
-                provider: "openai",
-                model: "gpt-5",
-                messages: [
-                    {
-                        role: "system",
-                        content: `
-                        Bạn là một trợ lý AI giọng nói thực hiện các buổi phỏng vấn bằng tiếng Việt. 
-                        Nhiệm vụ của bạn là hỏi các câu hỏi phỏng vấn đã được cung cấp, đánh giá câu trả lời của ứng viên, 
-                        và dẫn dắt cuộc trò chuyện với phần giới thiệu thân thiện, tạo không khí thoải mái nhưng vẫn chuyên nghiệp. 
-                        Ví dụ: 'Chào bạn! Chào mừng đến với buổi phỏng vấn ${currentInterviewSession?.title}. Cùng bắt đầu nào!' 
-                        Hỏi từng câu một và chờ phản hồi từ ứng viên trước khi tiếp tục. 
-                        Đặt câu hỏi rõ ràng, ngắn gọn. Danh sách câu hỏi: ${questionList}. 
-                        Nếu ứng viên lúng túng, hãy đưa ra gợi ý hoặc diễn đạt lại câu hỏi mà không tiết lộ đáp án. 
-                        Ví dụ: 'Cần gợi ý không? Hãy nghĩ về cách React quản lý việc cập nhật component!' 
-                        Đưa ra phản hồi ngắn gọn, khích lệ sau mỗi câu trả lời. 
-                        Ví dụ: 'Hay lắm! Câu trả lời rất tốt.' 
-                        Giữ cuộc trò chuyện tự nhiên, gần gũi—sử dụng các cụm từ như 'Nào, câu tiếp theo nhé...' hoặc 'Câu này hơi thử thách đây!' 
-                        Sau 5-7 câu hỏi, kết thúc buổi phỏng vấn một cách tự nhiên bằng cách tóm tắt hiệu suất của ứng viên. 
-                        Ví dụ: 'Tuyệt vời! Bạn đã trả lời rất tốt, đặc biệt là với những câu khó. Hãy tiếp tục rèn luyện nhé!' 
-                        Kết thúc bằng một câu tích cực: 'Cảm ơn bạn đã tham gia! Chúc bạn sớm bứt phá trong các dự án!' 
-                        Hướng dẫn chính: 
-                        ✓ Thân thiện, gần gũi, và dí dỏm 
-                        ✓ Giữ câu trả lời ngắn gọn, tự nhiên như cuộc trò chuyện thật 
-                        ✓ Điều chỉnh dựa trên mức độ tự tin của ứng viên 
-                        ✓ Đảm bảo buổi phỏng vấn tập trung vào những nội dung thuộc câu hỏi đã nêu ra
-                    `.trim(),
-                    },
-                ],
-            },
-        };
+    //         transcriber: {
+    //             provider: "11labs",
+    //             model: "scribe_v1",
+    //             language: "vi",
+    //         },
+    //         voice: {
+    //             provider: "11labs",
+    //             voiceId: "iSFxP4Z6YNcx9OXl62Ic",
+    //             model: "eleven_flash_v2_5",
+    //             language: "vi",
+    //         },
+    //         model: {
+    //             provider: "openai",
+    //             model: "gpt-5",
+    //             messages: [
+    //                 {
+    //                     role: "system",
+    //                     content: `
+    //                     Bạn là một trợ lý AI giọng nói thực hiện các buổi phỏng vấn bằng tiếng Việt. 
+    //                     Nhiệm vụ của bạn là hỏi các câu hỏi phỏng vấn đã được cung cấp, đánh giá câu trả lời của ứng viên, 
+    //                     và dẫn dắt cuộc trò chuyện với phần giới thiệu thân thiện, tạo không khí thoải mái nhưng vẫn chuyên nghiệp. 
+    //                     Ví dụ: 'Chào bạn! Chào mừng đến với buổi phỏng vấn ${currentInterviewSession?.title}. Cùng bắt đầu nào!' 
+    //                     Hỏi từng câu một và chờ phản hồi từ ứng viên trước khi tiếp tục. 
+    //                     Đặt câu hỏi rõ ràng, ngắn gọn. Danh sách câu hỏi: ${questionList}. 
+    //                     Nếu ứng viên lúng túng, hãy đưa ra gợi ý hoặc diễn đạt lại câu hỏi mà không tiết lộ đáp án. 
+    //                     Ví dụ: 'Cần gợi ý không? Hãy nghĩ về cách React quản lý việc cập nhật component!' 
+    //                     Đưa ra phản hồi ngắn gọn, khích lệ sau mỗi câu trả lời. 
+    //                     Ví dụ: 'Hay lắm! Câu trả lời rất tốt.' 
+    //                     Giữ cuộc trò chuyện tự nhiên, gần gũi—sử dụng các cụm từ như 'Nào, câu tiếp theo nhé...' hoặc 'Câu này hơi thử thách đây!' 
+    //                     Sau 5-7 câu hỏi, kết thúc buổi phỏng vấn một cách tự nhiên bằng cách tóm tắt hiệu suất của ứng viên. 
+    //                     Ví dụ: 'Tuyệt vời! Bạn đã trả lời rất tốt, đặc biệt là với những câu khó. Hãy tiếp tục rèn luyện nhé!' 
+    //                     Kết thúc bằng một câu tích cực: 'Cảm ơn bạn đã tham gia! Chúc bạn sớm bứt phá trong các dự án!' 
+    //                     Hướng dẫn chính: 
+    //                     ✓ Thân thiện, gần gũi, và dí dỏm 
+    //                     ✓ Giữ câu trả lời ngắn gọn, tự nhiên như cuộc trò chuyện thật 
+    //                     ✓ Điều chỉnh dựa trên mức độ tự tin của ứng viên 
+    //                     ✓ Đảm bảo buổi phỏng vấn tập trung vào những nội dung thuộc câu hỏi đã nêu ra
+    //                 `.trim(),
+    //                 },
+    //             ],
+    //         },
+    //     };
 
-        vapi.start(assistantOptions);
-    };
+    //     vapi.start(assistantOptions);
+    // };
 
-    const stopInterView = () => {
-        if (endingCall) return; // tránh double click
+    // const stopInterView = () => {
+    //     if (endingCall) return; // tránh double click
 
-        setEndingCall(true);
+    //     setEndingCall(true);
 
-        if (vapi.localStream) {
-            vapi.localStream.getAudioTracks().forEach((track) => {
-                track.stop();
-            });
-            console.log("Mic muted immediately");
-        }
+    //     if (vapi.localStream) {
+    //         vapi.localStream.getAudioTracks().forEach((track) => {
+    //             track.stop();
+    //         });
+    //         console.log("Mic muted immediately");
+    //     }
 
-        vapi.stop();
-        toast.info("Đang kết thúc cuộc gọi...");
-    };
+    //     vapi.stop();
+    //     toast.info("Đang kết thúc cuộc gọi...");
+    // };
 
-    vapi.on("call-start", () => {
-        console.log("Call has started");
-        toast.success("Call connected...");
-    });
+    // vapi.on("call-start", () => {
+    //     console.log("Call has started");
+    //     toast.success("Call connected...");
+    // });
 
-    vapi.on("speech-start", () => {
-        console.log("Assistant speech has started");
-        setActiveUser(false);
-    });
+    // vapi.on("speech-start", () => {
+    //     console.log("Assistant speech has started");
+    //     setActiveUser(false);
+    // });
 
-    vapi.on("speech-end", () => {
-        console.log("Assistant speech has end");
-        setActiveUser(true);
-    });
+    // vapi.on("speech-end", () => {
+    //     console.log("Assistant speech has end");
+    //     setActiveUser(true);
+    // });
 
-    vapi.on("call-end", () => {
-        console.log("Call has end");
-        toast.success("Interview ended...");
-        setEndingCall(true); // reset lại trạng thái
-    });
+    // vapi.on("call-end", () => {
+    //     console.log("Call has end");
+    //     toast.success("Interview ended...");
+    //     setEndingCall(true); // reset lại trạng thái
+    // });
 
-    vapi.on("message", (message) => {
-        if (Array.isArray(message?.conversation)) {
-            console.log(message.conversation);
+    // vapi.on("message", (message) => {
+    //     if (Array.isArray(message?.conversation)) {
+    //         console.log(message.conversation);
 
-            setConversation(message.conversation.slice(1));
-        }
-    });
+    //         setConversation(message.conversation.slice(1));
+    //     }
+    // });
 
-    const generateFeedback = () => {
-        console.log("Sending feedback with conversation:", conversation);
-        toast
-            .promise(
-                dispatch(
-                    interviewFeedbackAPI({
-                        interviewSession: currentInterviewSession,
-                        chatHistory: conversation,
-                    })
-                ),
-                {
-                    pending: "Đang chờ để gửi feedback...",
-                }
-            )
-            .then((res) => {
-                if (!res.error) {
-                    toast.success(
-                        "Tạo xong feedback rồi nhé mời bạn đọc và cải thiện nha."
-                    );
-                }
-                navigate(
-                    `/main/feedback/${currentInterviewSession?.interviewSessionId}`
-                );
-            });
-    };
+    // const generateFeedback = () => {
+    //     console.log("Sending feedback with conversation:", conversation);
+    //     toast
+    //         .promise(
+    //             dispatch(
+    //                 interviewFeedbackAPI({
+    //                     interviewSession: currentInterviewSession,
+    //                     chatHistory: conversation,
+    //                 })
+    //             ),
+    //             {
+    //                 pending: "Đang chờ để gửi feedback...",
+    //             }
+    //         )
+    //         .then((res) => {
+    //             if (!res.error) {
+    //                 toast.success(
+    //                     "Tạo xong feedback rồi nhé mời bạn đọc và cải thiện nha."
+    //                 );
+    //             }
+    //             navigate(
+    //                 `/main/feedback/${currentInterviewSession?.interviewSessionId}`
+    //             );
+    //         });
+    // };
     return (
         <div className="h-full w-full transition-colors duration-300">
             <div className="container mx-auto px-5 relative z-10">
@@ -174,7 +174,11 @@ const InterviewPage = () => {
                 </div>
 
                 {/* Video Containers */}
-                <Agent userAvatar={currentUser?.avatar} />
+                <Agent
+                    userAvatar={currentUser?.avatar}
+                    currentInterviewSession={currentInterviewSession}
+                    currentUser={currentUser}
+                />
 
                 {/* <div className="flex items-center justify-center gap-5 mb-5">
                     <div className="w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-purple-300 dark:border-purple-400 relative overflow-hidden">
