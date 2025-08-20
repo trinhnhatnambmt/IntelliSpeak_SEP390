@@ -10,8 +10,8 @@ const GuideSection = () => {
             id="guide"
         >
             <Heading
-                tag="Trải nghiệm phỏng vấn ảo cực dễ"
-                title="Lộ trình luyện tập phỏng vấn với ItelliSpeak"
+                tag="Effortless Virtual Interview Experience"
+                title="Your Interview Practice Roadmap with IntelliSpeak"
             />
 
             <Stepper
@@ -20,30 +20,30 @@ const GuideSection = () => {
                     console.log(step);
                 }}
                 onFinalStepCompleted={() => console.log("All steps completed!")}
-                backButtonText="Quay lại"
-                nextButtonText="Tiếp theo"
+                backButtonText="Previous"
+                nextButtonText="Next"
             >
                 <Step>
-                    <div className="flex flex-col items-start gap-4 p-6 border-1 border-[#252134] rounded-2xl  transition-all duration-300 hover:border-[#00d8ff]">
+                    <div className="flex flex-col items-start gap-4 p-6 border-1 border-[#252134] rounded-2xl transition-all duration-300 hover:border-[#00d8ff]">
                         <h2 className="text-2xl font-bold text-white">
-                            Bước 1
+                            Step 1
                         </h2>
                         <p className="text-lg font-semibold text-[#00d8ff]">
-                            Đăng ký & đăng nhập
+                            Sign Up & Log In
                         </p>
                         <p className="text-base text-gray-400 leading-relaxed">
-                            Người dùng tạo tài khoản, xác minh và đăng nhập vào
-                            nền tảng.
+                            Create your account, verify, and log into the
+                            platform.
                         </p>
                     </div>
                 </Step>
                 <Step>
-                    <div className="flex flex-col items-start gap-4 p-6 border-1 border-[#252134] rounded-2xl  transition-all duration-300 hover:border-[#00d8ff]">
+                    <div className="flex flex-col items-start gap-4 p-6 border-1 border-[#252134] rounded-2xl transition-all duration-300 hover:border-[#00d8ff]">
                         <h2 className="text-2xl font-bold text-white">
-                            Bước 2
+                            Step 2
                         </h2>
                         <p className="text-lg font-semibold text-[#00d8ff]">
-                            Tham gia phỏng vấn ảo
+                            Join a Virtual Interview
                         </p>
                         <img
                             src={howItWork1}
@@ -57,18 +57,18 @@ const GuideSection = () => {
                             }}
                         />
                         <p className="text-base text-gray-400 leading-relaxed">
-                            Bắt đầu buổi phỏng vấn ảo với các câu hỏi mô phỏng
-                            thực tế.
+                            Start a mock interview with realistic, job-focused
+                            questions.
                         </p>
                     </div>
                 </Step>
                 <Step>
-                    <div className="flex flex-col gap-4 p-6 border-1 border-[#252134] rounded-2xl  transition-all duration-300 hover:border-[#00d8ff]">
+                    <div className="flex flex-col gap-4 p-6 border-1 border-[#252134] rounded-2xl transition-all duration-300 hover:border-[#00d8ff]">
                         <h2 className="text-2xl font-bold text-white">
-                            Bước 3
+                            Step 3
                         </h2>
                         <p className="text-lg font-semibold text-[#00d8ff]">
-                            Xem kết quả đánh giá
+                            Review Your Results
                         </p>
 
                         <img
@@ -84,35 +84,36 @@ const GuideSection = () => {
                         />
 
                         <p className="text-base text-gray-400 leading-relaxed">
-                            Sau khi phỏng vấn, AI sẽ đưa ra đánh giá tổng quan.
+                            After the session, AI provides a detailed
+                            performance summary.
                         </p>
                     </div>
                 </Step>
                 <Step>
-                    <div className="flex flex-col items-start gap-4 p-6 border-1 border-[#252134] rounded-2xl  transition-all duration-300 hover:border-[#00d8ff]">
+                    <div className="flex flex-col items-start gap-4 p-6 border-1 border-[#252134] rounded-2xl transition-all duration-300 hover:border-[#00d8ff]">
                         <h2 className="text-2xl font-bold text-white">
-                            Bước 4
+                            Step 4
                         </h2>
                         <p className="text-lg font-semibold text-[#00d8ff]">
-                            Nhận đề xuất cải thiện
+                            Get Improvement Suggestions
                         </p>
                         <p className="text-base text-gray-400 leading-relaxed">
-                            Hệ thống đề xuất những điểm cần cải thiện trong cách
-                            trả lời.
+                            The system highlights areas where you can improve
+                            your answers.
                         </p>
                     </div>
                 </Step>
                 <Step>
-                    <div className="flex flex-col items-start gap-4 p-6 border-1 border-[#252134] rounded-2xl  transition-all duration-300 hover:border-[#00d8ff]">
+                    <div className="flex flex-col items-start gap-4 p-6 border-1 border-[#252134] rounded-2xl transition-all duration-300 hover:border-[#00d8ff]">
                         <h2 className="text-2xl font-bold text-white">
-                            Bước 5
+                            Step 5
                         </h2>
                         <p className="text-lg font-semibold text-[#00d8ff]">
-                            Luyện tập hoặc lưu lịch sử
+                            Practice Again or Save History
                         </p>
                         <p className="text-base text-gray-400 leading-relaxed">
-                            Người dùng có thể luyện tập lại hoặc lưu lại kết quả
-                            để theo dõi tiến bộ.
+                            Rehearse your interview again or save your results
+                            to track progress over time.
                         </p>
                     </div>
                 </Step>

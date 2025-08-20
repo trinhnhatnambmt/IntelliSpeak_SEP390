@@ -10,15 +10,15 @@ const DirectMeetSection = () => {
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                 <div className="md:w-1/2 space-y-6">
                     <h1 className="text-4xl md:text-5xl font-bold text-n-8 dark:text-white leading-tight tracking-tight transition-colors duration-500">
-                        Kết nối các nhà tuyển dụng thực sự trên toàn thế giới
+                        Connect with Real Recruiters Worldwide
                     </h1>
                     <p className="text-lg md:text-xl font-light text-gray-600 dark:text-gray-300 leading-relaxed transition-colors duration-500">
-                        Tăng cơ hội nghề nghiệp của bạn. Trải nghiệm luyện tập
-                        thực tế và kết nối trực tiếp với các nhà tuyển dụng uy
-                        tín trên toàn cầu.
+                        Expand your career opportunities. Gain real interview
+                        practice and connect directly with trusted recruiters
+                        across the globe.
                     </p>
-                    <button className="mt-6 px-6 py-3 bg-emerald-500 text-white font-semibold rounded-full hover:bg-emerald-600 dark:hover:bg-emerald-400 transition-colors duration-300 shadow-md">
-                        Tham gia ngay
+                    <button className="mt-6 px-6 py-3 cursor-pointer bg-emerald-500 text-white font-semibold rounded-full hover:bg-emerald-600 dark:hover:bg-emerald-400 transition-colors duration-300 shadow-md">
+                        Join Now
                     </button>
                 </div>
                 <div className="md:w-1/2 flex justify-center">

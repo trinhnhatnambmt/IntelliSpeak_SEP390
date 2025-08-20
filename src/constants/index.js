@@ -13,14 +13,14 @@ import {
 } from "~/assets";
 
 const words = [
-    { text: "Đổi mới", imgPath: "/images/ideas.svg" },
-    { text: "Phân Tích", imgPath: "/images/concepts.svg" },
-    { text: "Góp ý", imgPath: "/images/designs.svg" },
-    { text: "Cải thiện", imgPath: "/images/code.svg" },
-    { text: "Đổi mới", imgPath: "/images/ideas.svg" },
-    { text: "Phân Tích", imgPath: "/images/concepts.svg" },
-    { text: "Góp ý", imgPath: "/images/designs.svg" },
-    { text: "Cải thiện", imgPath: "/images/code.svg" },
+    { text: "Innovation", imgPath: "/images/ideas.svg" },
+    { text: "Analysis", imgPath: "/images/concepts.svg" },
+    { text: "Feedback", imgPath: "/images/designs.svg" },
+    { text: "Enhancement", imgPath: "/images/code.svg" },
+    { text: "Innovation", imgPath: "/images/ideas.svg" },
+    { text: "Analysis", imgPath: "/images/concepts.svg" },
+    { text: "Feedback", imgPath: "/images/designs.svg" },
+    { text: "Enhancement", imgPath: "/images/code.svg" },
 ];
 
 const logoIconsList = [
@@ -61,34 +61,34 @@ const logoIconsList = [
 const roadmap = [
     {
         id: "0",
-        title: "Phỏng vấn ảo như thật, kết quả chi tiết",
-        text: "Trải nghiệm buổi phỏng vấn ảo, lưu lịch sử, nhận đánh giá chi tiết và đề xuất cải thiện kỹ năng.",
-        date: "02 / 05 / 2025",
+        title: "Realistic Mock Interviews with Detailed Feedback",
+        text: "Experience lifelike mock interviews, track your history, and receive in-depth evaluations with personalized improvement tips.",
+        date: "05 / 02 / 2025",
         status: "done",
         imageUrl: roadmap1,
         colorful: true,
     },
     {
         id: "1",
-        title: "Phân tích & chỉnh sửa CV bằng AI",
-        text: "Tải lên CV của bạn và nhận ngay gợi ý chỉnh sửa từ AI giúp bạn tối ưu nội dung và hình thức.",
-        date: "02 / 05 / 2025",
+        title: "AI-Powered Resume Analysis & Editing",
+        text: "Upload your resume and instantly get AI suggestions to optimize both content and presentation.",
+        date: "05 / 02 / 2025",
         status: "progress",
         imageUrl: roadmap2,
     },
     {
         id: "2",
-        title: "Phân tích JD thông minh",
-        text: "Tải lên mô tả công việc (JD) để hệ thống AI phân tích và tạo ra bộ câu hỏi phỏng vấn sát với vị trí bạn đang ứng tuyển.",
-        date: "02 / 05 / 2025",
+        title: "Smart Job Description Analysis",
+        text: "Upload a job description and let AI generate tailored interview questions for the exact role you’re applying for.",
+        date: "05 / 02 / 2025",
         status: "done",
         imageUrl: roadmap3,
     },
     {
         id: "3",
-        title: "Kết nối nhà tuyển dụng & ứng viên",
-        text: "Nhà tuyển dụng có thể đăng câu hỏi phỏng vấn và xem thông tin các ứng viên tiềm năng.",
-        date: "02 / 05 / 2025",
+        title: "Connecting Recruiters & Candidates",
+        text: "Recruiters can post interview questions and explore profiles of potential candidates.",
+        date: "05 / 02 / 2025",
         status: "progress",
         imageUrl: roadmap4,
         colorful: true,
@@ -321,6 +321,75 @@ const resumes = [
 
 const heroIcons = [homeSmile, file02, searchMd, plusSquare];
 const notificationImages = [notification4, notification3, notification2];
+
+export const interviewer = (
+    currentUser,
+    currentInterviewSession,
+    questionList
+) => ({
+    name: "Interviewer",
+    firstMessage: `Hello ${currentUser?.userName},Thank you for taking the time to speak with me today. I'm excited to learn more about you and your experience.
+    Are you ready for the ${currentInterviewSession?.title}?`,
+
+    transcriber: {
+        provider: "deepgram",
+        model: "nova-2",
+        language: "en",
+    },
+    // voice: {
+    //     provider: "11labs",
+    //     voiceId: "iSFxP4Z6YNcx9OXl62Ic",
+    //     model: "eleven_flash_v2_5",
+    //     language: "vi",
+    // },
+    voice: {
+        provider: "11labs",
+        voiceId: "sarah",
+        stability: 0.4,
+        similarityBoost: 0.8,
+        speed: 0.9,
+        style: 0.5,
+        useSpeakerBoost: true,
+    },
+    model: {
+        provider: "openai",
+        model: "gpt-5",
+        messages: [
+            {
+                role: "system",
+                content: `
+You are a voice-based AI assistant conducting interviews in English.
+Your task is to ask the provided interview questions, evaluate the candidate’s answers,
+and guide the conversation with a friendly introduction, keeping the atmosphere relaxed yet professional.
+
+Example: "Hello! Welcome to the ${currentInterviewSession?.title} interview. Let’s get started!"
+
+Ask one question at a time and wait for the candidate’s response before continuing.
+Make your questions clear and concise. Use the following question list: ${questionList}.
+
+If the candidate seems stuck, provide hints or rephrase the question without giving away the answer.
+Example: "Need a hint? Think about how React handles component updates."
+
+After each response, give short, encouraging feedback.
+Example: "Great! That was a strong answer."
+
+Keep the conversation natural and engaging—use phrases like "Alright, let’s move to the next one..." or "This one’s a bit more challenging!"
+
+After 5–7 questions, close the interview naturally by summarizing the candidate’s performance.
+Example: "Excellent! You did really well, especially on the tougher questions. Keep practicing!"
+
+End with a positive closing remark: "Thank you for joining! I wish you great success in your future projects."
+
+Main guidelines:
+✓ Be friendly, approachable, and slightly witty
+✓ Keep your responses short and natural, like in a real conversation
+✓ Adjust based on the candidate’s confidence level
+✓ Ensure the interview stays focused on the provided questions
+                `.trim(),
+            },
+        ],
+    },
+});
 
 export {
     words,

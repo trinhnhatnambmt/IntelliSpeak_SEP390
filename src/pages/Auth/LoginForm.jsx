@@ -6,14 +6,12 @@ import {
     squarelogo,
     intellispeakdark,
     intellispeak,
-} from "~/assets"; // Thêm intellispeak
+} from "~/assets";
 import { useForm } from "react-hook-form";
 import {
     EMAIL_RULE,
     EMAIL_RULE_MESSAGE,
     FIELD_REQUIRED_MESSAGE,
-    PASSWORD_RULE,
-    PASSWORD_RULE_MESSAGE,
 } from "~/utils/validators";
 import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
 import { useDispatch } from "react-redux";
@@ -32,21 +30,13 @@ const LoginForm = () => {
         formState: { errors },
     } = useForm();
 
-    // Sử dụng useEffect để lắng nghe sự thay đổi của theme
     useEffect(() => {
         const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
         const handleChange = (e) => {
             setLogo(e.matches ? intellispeakdark : intellispeak);
         };
-
-        // Thiết lập logo ban đầu
         handleChange(mediaQuery);
-
-        // Lắng nghe sự kiện thay đổi của theme
         mediaQuery.addEventListener("change", handleChange);
-
-        // Cleanup function để gỡ bỏ event listener khi component unmount
         return () => mediaQuery.removeEventListener("change", handleChange);
     }, []);
 
@@ -61,11 +51,10 @@ const LoginForm = () => {
                     })
                 ),
                 {
-                    pending: "Đang đăng nhập tài khoản...",
+                    pending: "Signing into your account...",
                 }
             )
             .then((res) => {
-                // console.log(res);
                 if (!res.error) {
                     navigate("/main");
                 }
@@ -75,10 +64,12 @@ const LoginForm = () => {
     return (
         <div className="relative mx-auto">
             <div className="flex justify-between">
+                {/* FORM SECTION */}
                 <form
                     onSubmit={handleSubmit(submitLogin)}
                     className="relative flex flex-col gap-5 justify-center items-center w-1/2 bg-gray-50 dark:bg-gray-900"
                 >
+                    {/* Logo */}
                     <div
                         className="absolute top-5 left-5 cursor-pointer flex items-center gap-2"
                         onClick={() => navigate("/")}
@@ -99,12 +90,15 @@ const LoginForm = () => {
                             className="h-10 w-auto hidden dark:block"
                         />
                     </div>
+
                     <h1 className="font-bold text-4xl text-gray-800 dark:text-white">
-                        Đăng Nhập
+                        Login
                     </h1>
+
+                    {/* Email Field */}
                     <div className="w-96 mx-auto">
                         <label
-                            htmlFor="pass"
+                            htmlFor="email"
                             className="text-sm font-normal text-gray-700 dark:text-gray-300"
                         >
                             Email
@@ -112,7 +106,7 @@ const LoginForm = () => {
                         <div className="relative mt-1">
                             <input
                                 id="email"
-                                placeholder="Email"
+                                placeholder="Enter your email"
                                 className="w-full outline-none focus-within:border-blue-500 rounded-md p-2 border-[1px] border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                 {...register("email", {
                                     required: FIELD_REQUIRED_MESSAGE,
@@ -128,6 +122,8 @@ const LoginForm = () => {
                             />
                         </div>
                     </div>
+
+                    {/* Password Field */}
                     <div className="w-96 mx-auto">
                         <label
                             htmlFor="pass"
@@ -139,7 +135,7 @@ const LoginForm = () => {
                             <input
                                 type={isVisible ? "text" : "password"}
                                 id="pass"
-                                placeholder="password"
+                                placeholder="Enter your password"
                                 className="w-full outline-none focus-within:border-blue-500 rounded-md p-2 border-[1px] border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                 {...register("password", {
                                     required: FIELD_REQUIRED_MESSAGE,
@@ -161,73 +157,55 @@ const LoginForm = () => {
                             />
                         </div>
                     </div>
+
+                    {/* Submit */}
                     <div className="w-96 mx-auto mt-4">
                         <button
                             type="submit"
                             className="interceptor-loading w-full bg-blue-600 hover:bg-blue-700 text-white border border-blue-700 dark:border-blue-800 py-2 rounded-md font-medium transition duration-500 cursor-pointer"
                         >
-                            Đăng Nhập
+                            Sign In
                         </button>
                     </div>
+
+                    {/* OR Divider */}
                     <div className="w-96 mx-auto my-4 flex items-center">
                         <div className="flex-grow h-[0.5px] bg-gray-300 dark:bg-gray-600" />
                         <span className="px-3 text-sm text-gray-500 dark:text-gray-400">
-                            hoặc
+                            or
                         </span>
                         <div className="flex-grow h-[0.5px] bg-gray-300 dark:bg-gray-600" />
                     </div>
 
-                    <button className="cursor-pointer w-96 text-gray-700 dark:text-gray-300 flex justify-center gap-2 items-center bg-white dark:bg-gray-800 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all ease-in duration-200 border border-gray-300 dark:border-gray-600">
-                        <svg
-                            viewBox="0 0 48 48"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-6"
-                        >
-                            <path
-                                d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
-                                fill="#FFC107"
-                            />
-                            <path
-                                d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
-                                fill="#FF3D00"
-                            />
-                            <path
-                                d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
-                                fill="#4CAF50"
-                            />
-                            <path
-                                d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
-                                fill="#1976D2"
-                            />
-                        </svg>
-                        Continue with Google
-                    </button>
+                    {/* Register Redirect */}
                     <div className="w-96 mx-auto my-4 flex items-center">
                         <span className="px-3 text-sm text-gray-600 dark:text-gray-400">
-                            Bạn chưa có tài khoản trước đó sao?{" "}
+                            Don’t have an account?{" "}
                             <Link
                                 to="/register"
                                 className="underline ml-1 font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                             >
-                                Đăng Ký
+                                Sign Up
                             </Link>
                         </span>
                     </div>
                 </form>
+
+                {/* IMAGE SECTION */}
                 <div className="w-1/2 relative">
                     <img
                         src={authThumb}
                         alt="Authentication Background"
                         className="w-full h-screen object-cover"
                     />
-                    <div className="absolute bottom-10 left-10 flex flex-col text-white  bg-opacity-40">
+                    <div className="absolute bottom-10 left-10 flex flex-col text-white bg-opacity-40">
                         <h2 className="text-3xl font-bold mb-2">
-                            ✨ Khởi Đầu Hành Trình Sự Nghiệp Của Bạn ✨
+                            ✨ Kickstart Your Career Journey ✨
                         </h2>
                         <p className="text-lg max-w-xl text-gray-200 ml-12">
-                            Đăng nhập để bước vào không gian phỏng vấn ảo hiện
-                            đại, được cá nhân hóa bởi AI và kết nối với nhà
-                            tuyển dụng toàn cầu.
+                            Log in to enter an AI-powered virtual interview
+                            space, tailored to you, and connect with global
+                            recruiters.
                         </p>
                     </div>
                 </div>

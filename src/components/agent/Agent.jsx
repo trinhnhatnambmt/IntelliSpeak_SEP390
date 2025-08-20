@@ -1,9 +1,9 @@
-import { Mic, PhoneOff } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { robot_assistant } from "~/assets";
+import { interviewer } from "~/constants";
 import { cn } from "~/lib/utils";
 import { vapi } from "~/lib/vapi.sdk";
 import { interviewFeedbackAPI } from "~/redux/interview/feedbackSlice";
@@ -93,18 +93,22 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
                         })
                     ),
                     {
-                        pending: "Đang chờ để gửi feedback...",
+                        pending: "Waiting to send feedback...",
                     }
                 )
                 .then((res) => {
                     if (!res.error) {
                         toast.success(
-                            "Tạo xong feedback rồi nhé mời bạn đọc và cải thiện nha."
+                            "Created feedback, please read and improve."
+                        );
+                        navigate(
+                            `/main/feedback/${currentInterviewSession?.interviewSessionId}`
+                        );
+                    } else {
+                        toast.error(
+                            "An error occurred while creating feedback, please try again later!!"
                         );
                     }
-                    navigate(
-                        `/main/feedback/${currentInterviewSession?.interviewSessionId}`
-                    );
                 });
         };
 
@@ -119,52 +123,11 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
             .map((q) => q.content)
             .join(", ");
 
-        const assistantOptions = {
-            name: "AI Recruiter",
-            firstMessage: `Chào ${currentUser?.userName}, bạn đã sẵn sàng cho buổi ${currentInterviewSession?.title} chưa?`,
-
-            transcriber: {
-                provider: "11labs",
-                model: "scribe_v1",
-                language: "vi",
-            },
-            voice: {
-                provider: "11labs",
-                voiceId: "iSFxP4Z6YNcx9OXl62Ic",
-                model: "eleven_flash_v2_5",
-                language: "vi",
-            },
-            model: {
-                provider: "openai",
-                model: "gpt-5",
-                messages: [
-                    {
-                        role: "system",
-                        content: `
-                        Bạn là một trợ lý AI giọng nói thực hiện các buổi phỏng vấn bằng tiếng Việt. 
-                        Nhiệm vụ của bạn là hỏi các câu hỏi phỏng vấn đã được cung cấp, đánh giá câu trả lời của ứng viên, 
-                        và dẫn dắt cuộc trò chuyện với phần giới thiệu thân thiện, tạo không khí thoải mái nhưng vẫn chuyên nghiệp. 
-                        Ví dụ: 'Chào bạn! Chào mừng đến với buổi phỏng vấn ${currentInterviewSession?.title}. Cùng bắt đầu nào!' 
-                        Hỏi từng câu một và chờ phản hồi từ ứng viên trước khi tiếp tục. 
-                        Đặt câu hỏi rõ ràng, ngắn gọn. Danh sách câu hỏi: ${questionList}. 
-                        Nếu ứng viên lúng túng, hãy đưa ra gợi ý hoặc diễn đạt lại câu hỏi mà không tiết lộ đáp án. 
-                        Ví dụ: 'Cần gợi ý không? Hãy nghĩ về cách React quản lý việc cập nhật component!' 
-                        Đưa ra phản hồi ngắn gọn, khích lệ sau mỗi câu trả lời. 
-                        Ví dụ: 'Hay lắm! Câu trả lời rất tốt.' 
-                        Giữ cuộc trò chuyện tự nhiên, gần gũi—sử dụng các cụm từ như 'Nào, câu tiếp theo nhé...' hoặc 'Câu này hơi thử thách đây!' 
-                        Sau 5-7 câu hỏi, kết thúc buổi phỏng vấn một cách tự nhiên bằng cách tóm tắt hiệu suất của ứng viên. 
-                        Ví dụ: 'Tuyệt vời! Bạn đã trả lời rất tốt, đặc biệt là với những câu khó. Hãy tiếp tục rèn luyện nhé!' 
-                        Kết thúc bằng một câu tích cực: 'Cảm ơn bạn đã tham gia! Chúc bạn sớm bứt phá trong các dự án!' 
-                        Hướng dẫn chính: 
-                        ✓ Thân thiện, gần gũi, và dí dỏm 
-                        ✓ Giữ câu trả lời ngắn gọn, tự nhiên như cuộc trò chuyện thật 
-                        ✓ Điều chỉnh dựa trên mức độ tự tin của ứng viên 
-                        ✓ Đảm bảo buổi phỏng vấn tập trung vào những nội dung thuộc câu hỏi đã nêu ra
-                    `.trim(),
-                    },
-                ],
-            },
-        };
+        const assistantOptions = interviewer(
+            currentUser,
+            currentInterviewSession,
+            questionList
+        );
 
         await vapi.start(assistantOptions);
     };
@@ -174,8 +137,6 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
         vapi.stop();
     };
 
-    // const latestMessage = messages[messages.length - 1]?.content;
-    console.log("messages", messages);
     const isCallInactiveOrFinished =
         callStatus === CallStatus.INACTIVE ||
         callStatus === CallStatus.FINISHED;
@@ -183,7 +144,13 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
     return (
         <div>
             <div className="flex items-center justify-center gap-5 mb-5">
-                <div className="w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-purple-300 dark:border-purple-300 relative overflow-hidden">
+                <div
+                    className={cn(
+                        `w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border border-purple-200 dark:border-purple-200 relative overflow-hidden`,
+                        isSpeaking &&
+                            "border-2 border-purple-400 dark:border-purple-400"
+                    )}
+                >
                     <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
 
                     <div
@@ -247,8 +214,7 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
                 >
                     <p
                         className={cn(
-                            "text-lg text-center text-white transition-opacity duration-500 opacity-0",
-                            "animate-fadeIn opacity-100"
+                            "text-lg text-center text-white opacity-0 animate-smoothFadeIn"
                         )}
                     >
                         {lastMessage}

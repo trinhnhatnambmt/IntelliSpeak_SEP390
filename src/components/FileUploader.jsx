@@ -77,15 +77,14 @@ const FileUploader = ({ onFileSelect, file }) => {
                             <Upload className="w-15 h-15 text-gray-400" />
                         </div>
                         <p className="text-lg text-gray-800 dark:text-white font-medium">
-                            Click để{" "}
+                            Click to{" "}
                             <span className="text-blue-600 font-bold">
-                                tải lên
+                                upload
                             </span>{" "}
-                            hoặc kéo thả tệp PDF vào đây
+                            or drag and drop PDF file
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Chỉ những file PDF (giới hạn{" "}
-                            {formatSize(maxFileSize)})
+                            Only PDF file (limits {formatSize(maxFileSize)})
                         </p>
                     </div>
                 )}

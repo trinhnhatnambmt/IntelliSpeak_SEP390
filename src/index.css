@@ -98,19 +98,18 @@ body.dark,
         }
     }
 
-    .animate-fadeIn {
-        animation: fadeIn 0.3s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-        from {
+    @keyframes smoothFadeIn {
+        0% {
             opacity: 0;
-            transform: translateY(5px);
+            transform: translateY(10px);
         }
-        to {
+        100% {
             opacity: 1;
             transform: translateY(0);
         }
+    }
+    .animate-smoothFadeIn {
+        animation: smoothFadeIn 0.7s ease-out forwards;
     }
 }
 

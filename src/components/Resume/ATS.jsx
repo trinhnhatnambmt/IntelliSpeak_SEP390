@@ -1,7 +1,6 @@
 import React from "react";
 
 const ATS = ({ score, suggestions }) => {
-    // Determine background gradient based on score
     const gradientClass =
         score > 69
             ? "from-green-100"
@@ -9,7 +8,6 @@ const ATS = ({ score, suggestions }) => {
             ? "from-yellow-100"
             : "from-red-100";
 
-    // Determine icon based on score
     const iconSrc =
         score > 69
             ? "/icons/ats-good.svg"
@@ -17,13 +15,12 @@ const ATS = ({ score, suggestions }) => {
             ? "/icons/ats-warning.svg"
             : "/icons/ats-bad.svg";
 
-    // Determine subtitle based on score
     const subtitle =
         score > 69
-            ? "Bạn đã làm rất tốt"
+            ? "Great job!"
             : score > 49
-            ? "Khởi đầu không tệ"
-            : "Cần cải thiện thêm";
+            ? "Not a bad start"
+            : "Needs improvement";
 
     return (
         <div
@@ -45,8 +42,9 @@ const ATS = ({ score, suggestions }) => {
                     {subtitle}
                 </h3>
                 <p className="text-gray-600 mb-4">
-                    Điểm số này thể hiện mức độ hiệu quả của CV của bạn khi được
-                    hệ thống lọc hồ sơ (ATS) của nhà tuyển dụng đánh giá.
+                    This score reflects how effective your resume is when
+                    evaluated by an Applicant Tracking System (ATS) used by
+                    employers.
                 </p>
 
                 {/* Suggestions list */}
@@ -82,8 +80,8 @@ const ATS = ({ score, suggestions }) => {
 
             {/* Closing encouragement */}
             <p className="text-gray-700 italic">
-                Hãy tiếp tục hoàn thiện CV của bạn để tăng cơ hội vượt qua hệ
-                thống lọc ATS và tiếp cận nhà tuyển dụng.
+                Keep improving your resume to increase your chances of passing
+                ATS filters and reaching recruiters.
             </p>
         </div>
     );

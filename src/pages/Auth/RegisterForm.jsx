@@ -1,7 +1,12 @@
 import { Eye, EyeOffIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { authThumb2, squarelogo, intellispeakdark, intellispeak } from "~/assets";
+import {
+    authThumb2,
+    squarelogo,
+    intellispeakdark,
+    intellispeak,
+} from "~/assets";
 import {
     EMAIL_RULE,
     EMAIL_RULE_MESSAGE,
@@ -29,7 +34,7 @@ const RegisterForm = () => {
     } = useForm();
 
     useEffect(() => {
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
         const handleChange = (e) => {
             setLogo(e.matches ? intellispeakdark : intellispeak);
@@ -37,9 +42,9 @@ const RegisterForm = () => {
 
         handleChange(mediaQuery);
 
-        mediaQuery.addEventListener('change', handleChange);
+        mediaQuery.addEventListener("change", handleChange);
 
-        return () => mediaQuery.removeEventListener('change', handleChange);
+        return () => mediaQuery.removeEventListener("change", handleChange);
     }, []);
 
     const submitRegister = (data) => {
@@ -69,13 +74,30 @@ const RegisterForm = () => {
                         className="absolute top-5 left-5 cursor-pointer flex items-center gap-2"
                         onClick={() => navigate("/")}
                     >
-                        <img src={squarelogo} alt="logo" className="h-10 w-auto" />
-                        <img src={intellispeak} alt="logo" className="h-10 w-auto block dark:hidden" />
-                        <img src={intellispeakdark} alt="logo" className="h-10 w-auto hidden dark:block" />
+                        <img
+                            src={squarelogo}
+                            alt="logo"
+                            className="h-10 w-auto"
+                        />
+                        <img
+                            src={intellispeak}
+                            alt="logo"
+                            className="h-10 w-auto block dark:hidden"
+                        />
+                        <img
+                            src={intellispeakdark}
+                            alt="logo"
+                            className="h-10 w-auto hidden dark:block"
+                        />
                     </div>
-                    <h1 className="font-bold text-4xl text-gray-800 dark:text-white">Đăng Ký</h1>
+                    <h1 className="font-bold text-4xl text-gray-800 dark:text-white">
+                        Sign Up
+                    </h1>
                     <div className="w-96 mx-auto">
-                        <label htmlFor="email" className="text-sm font-normal text-gray-700 dark:text-gray-300">
+                        <label
+                            htmlFor="email"
+                            className="text-sm font-normal text-gray-700 dark:text-gray-300"
+                        >
                             Email
                         </label>
                         <div className="relative mt-1">
@@ -99,7 +121,10 @@ const RegisterForm = () => {
                         </div>
                     </div>
                     <div className="w-96 mx-auto">
-                        <label htmlFor="pass" className="text-sm font-normal text-gray-700 dark:text-gray-300">
+                        <label
+                            htmlFor="pass"
+                            className="text-sm font-normal text-gray-700 dark:text-gray-300"
+                        >
                             Password
                         </label>
                         <div className="relative mt-1">
@@ -133,7 +158,10 @@ const RegisterForm = () => {
                         </div>
                     </div>
                     <div className="w-96 mx-auto">
-                        <label htmlFor="confirmPass" className="text-sm font-normal text-gray-700 dark:text-gray-300">
+                        <label
+                            htmlFor="confirmPass"
+                            className="text-sm font-normal text-gray-700 dark:text-gray-300"
+                        >
                             Confirm Password
                         </label>
                         <div className="relative mt-1">
@@ -172,16 +200,18 @@ const RegisterForm = () => {
                             type="submit"
                             className="interceptor-loading w-full bg-blue-600 hover:bg-blue-700 text-white border border-blue-700 dark:border-blue-800 py-2 rounded-md font-medium transition duration-500 cursor-pointer"
                         >
-                            Đăng Ký
+                            Sign Up
                         </button>
                     </div>
                     <div className="w-96 mx-auto my-4 flex items-center">
                         <div className="flex-grow h-[0.5px] bg-gray-300 dark:bg-gray-600" />
-                        <span className="px-3 text-sm text-gray-500 dark:text-gray-400">hoặc</span>
+                        <span className="px-3 text-sm text-gray-500 dark:text-gray-400">
+                            or
+                        </span>
                         <div className="flex-grow h-[0.5px] bg-gray-300 dark:bg-gray-600" />
                     </div>
 
-                    <button className="cursor-pointer w-96 text-gray-700 dark:text-gray-300 flex justify-center gap-2 items-center bg-white dark:bg-gray-800 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all ease-in duration-200 border border-gray-300 dark:border-gray-600">
+                    {/* <button className="cursor-pointer w-96 text-gray-700 dark:text-gray-300 flex justify-center gap-2 items-center bg-white dark:bg-gray-800 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all ease-in duration-200 border border-gray-300 dark:border-gray-600">
                         <svg
                             viewBox="0 0 48 48"
                             xmlns="http://www.w3.org/2000/svg"
@@ -205,15 +235,15 @@ const RegisterForm = () => {
                             />
                         </svg>
                         Continue with Google
-                    </button>
+                    </button> */}
                     <div className="w-96 mx-auto my-4 flex items-center">
                         <span className="px-3 text-sm text-gray-600 dark:text-gray-400">
-                            Bạn đã có tài khoản trước đó rồi sao?{" "}
+                            Already have an account?{" "}
                             <Link
                                 to="/login"
                                 className="underline ml-1 font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                             >
-                                Đăng nhập
+                                Login
                             </Link>
                         </span>
                     </div>
@@ -227,12 +257,12 @@ const RegisterForm = () => {
                     />
                     <div className="absolute bottom-10 left-5 flex flex-col text-white bg-n-9/40 backdrop-blur border border-n-1/10 rounded-2xl p-5">
                         <h2 className="text-3xl font-bold mb-2">
-                            ✨Gia Nhập Nền Tảng Phỏng Vấn Tương Lai✨
+                            ✨Join the Future of Interviewing✨
                         </h2>
                         <p className="text-lg max-w-xl text-gray-200 ml-12">
-                            Tạo tài khoản miễn phí để bắt đầu hành trình rèn
-                            luyện kỹ năng phỏng vấn, nhận phản hồi từ AI và khám
-                            phá cơ hội nghề nghiệp phù hợp với bạn.
+                            Create a free account to start practicing your
+                            interview skills, receive instant AI feedback, and
+                            discover career opportunities tailored to you.
                         </p>
                     </div>
                 </div>

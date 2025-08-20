@@ -12,7 +12,7 @@ const Resume = () => {
 
     useEffect(() => {
         getResumeFeedbackAPI(id).then((res) => {
-            console.log("🚀 ~ Resume ~ res:", res);
+            // console.log("🚀 ~ Resume ~ res:", res);
             setFeedback(res);
         });
     }, [id]);
@@ -35,7 +35,7 @@ const Resume = () => {
                         className="w-2.5 h-2.5"
                     />
                     <span className="text-gray-800 text-sm font-semibold">
-                        Trở về trang chủ
+                        Back to Home
                     </span>
                 </Link>
             </nav>
@@ -66,9 +66,7 @@ const Resume = () => {
                     </div>
                 </section>
                 <section className="feedback-section">
-                    <h2 className="text-4xl text-white font-bold">
-                        Đánh giá tổng quan
-                    </h2>
+                    <h2 className="text-4xl text-white font-bold">Overview</h2>
                     {feedback ? (
                         <div className="flex flex-col gap-8 animate-in fade-in duration-1000">
                             <Summary feedback={feedback || mockFeedback} />

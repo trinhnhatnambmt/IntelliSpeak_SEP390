@@ -28,25 +28,43 @@ const Analyze = () => {
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-[#0e0c15] text-gray-900 dark:text-white transition-colors duration-300 container mx-auto py-10 px-4">
             <TabContext value={activeTab}>
-                <Box sx={{ borderBottom: 1, borderColor: "divider", bgcolor: 'transparent' }}>
+                <Box
+                    sx={{
+                        borderBottom: 1,
+                        borderColor: "divider",
+                        bgcolor: "transparent",
+                    }}
+                >
                     <TabList onChange={handleChangeTab}>
                         <Tab
-                            label={<span className="text-gray-900 dark:text-white font-bold">Tải CV</span>}
+                            label={
+                                <span className="text-gray-900 dark:text-white font-bold">
+                                    Upload CV
+                                </span>
+                            }
                             value={TABS.CV}
-                            icon={<PersonStandingIcon className="text-gray-900 dark:text-white" />}
+                            icon={
+                                <PersonStandingIcon className="text-gray-900 dark:text-white" />
+                            }
                             iconPosition="start"
                             component={Link}
                             to="/main/analyze/CV"
-                            sx={{ color: 'inherit', fontWeight: 'bold' }}
+                            sx={{ color: "inherit", fontWeight: "bold" }}
                         />
                         <Tab
-                            label={<span className="text-gray-900 dark:text-white">Tải JD</span>}
+                            label={
+                                <span className="text-gray-900 dark:text-white">
+                                    Upload JD
+                                </span>
+                            }
                             value={TABS.JD}
-                            icon={<NotepadText className="text-gray-900 dark:text-white" />}
+                            icon={
+                                <NotepadText className="text-gray-900 dark:text-white" />
+                            }
                             iconPosition="start"
                             component={Link}
                             to="/main/analyze/JD"
-                            sx={{ color: 'inherit' }}
+                            sx={{ color: "inherit" }}
                         />
                     </TabList>
                 </Box>

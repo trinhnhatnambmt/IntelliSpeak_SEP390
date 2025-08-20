@@ -57,18 +57,19 @@ const InterviewPractice = () => {
                         <div className="flex items-center justify-between h-full px-15 py-6 gap-2">
                             <div className="flex flex-col gap-5 w-1/2 ">
                                 <h1 className="text-4xl font-bold text-white mb-4">
-                                    Rèn Luyện Phỏng Vấn – Tự Tin Ghi Điểm
+                                    Master Interviews – Build Confidence to
+                                    Impress
                                 </h1>
                                 <p className="text-lg text-gray-300 mb-10">
-                                    Mô phỏng buổi phỏng vấn thực tế với AI, nhận
-                                    phản hồi chi tiết và cải thiện kỹ năng giao
-                                    tiếp để chinh phục nhà tuyển dụng.
+                                    Simulate real interview sessions with AI,
+                                    receive detailed feedback, and sharpen your
+                                    communication skills to win over recruiters.
                                 </p>
                                 <Button
                                     className="absolute bottom-5 left-15 py-2 px-4 text-black bg-[#CAC5FE] before:bg-purple-400 mt-5"
                                     onClick={showModal}
                                 >
-                                    Bắt đầu luyện tập
+                                    Start Practicing
                                 </Button>
                                 <ModalInterview
                                     open={isModalOpen}
@@ -80,7 +81,7 @@ const InterviewPractice = () => {
                             <div>
                                 <img
                                     src={robot}
-                                    alt=""
+                                    alt="AI Interview Assistant"
                                     width="441px"
                                     height="322px"
                                     className="object-cover"
@@ -92,7 +93,7 @@ const InterviewPractice = () => {
 
                 <div className="w-full py-10 ">
                     <h2 className="font-extrabold text-3xl">
-                        Chọn một đề tài phỏng vấn
+                        Choose an Interview Topic
                     </h2>
                     <div className="mt-5 grid grid-cols-3 gap-5">
                         {interviewCreated?.map((interview, index) => (

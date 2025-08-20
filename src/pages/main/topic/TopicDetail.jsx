@@ -15,15 +15,15 @@ const TopicDetail = () => {
     return (
         <div className="container mx-auto px-5 mt-30">
             <h1 className="font-extrabold text-4xl">
-                Phỏng vấn chủ đề {interviewSessions?.title}
+                Interview Topic: {interviewSessions?.title}
             </h1>
             <h2 className="mt-5 text-lg w-[80%]">
                 {interviewSessions?.description}
             </h2>
             <p className="mt-5 text-lg w-[80%]">
-                Dưới đây là các buổi phỏng vấn mô phỏng IntelliSpeak đã tạo ra
-                dành cho bất cứ ai theo đuổi sự nghiệp trở thành một lập trình
-                viên {interviewSessions?.title}.
+                Below are the mock interview sessions created by IntelliSpeak,
+                designed for anyone pursuing a career as a{" "}
+                {interviewSessions?.title} developer.
             </p>
 
             <div className="mt-10 mb-10 w-[80%] relative z-10 flex flex-col gap-5">

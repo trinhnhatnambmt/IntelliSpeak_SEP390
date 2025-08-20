@@ -44,12 +44,12 @@ const JobDescription = () => {
                         className="w-2.5 h-2.5"
                     />
                     <span className="text-gray-800 text-sm font-semibold">
-                        Trở về trang chủ
+                        Back to Home
                     </span>
                 </Link>
             </nav>
 
-            <div className="relative max-w-4xl mx-auto rounded-[2.5rem] border-1 border-[#252134] bg-white dark:bg-[#161321]  shadow-lg p-6 sm:p-10 space-y-6 mt-10">
+            <div className="relative max-w-4xl mx-auto rounded-[2.5rem] border-1 border-[#252134] bg-white dark:bg-[#161321] shadow-lg p-6 sm:p-10 space-y-6 mt-10">
                 <div className="absolute inset-0 max-w-full z-0">
                     <img
                         className="w-full"
@@ -68,26 +68,26 @@ const JobDescription = () => {
                         {summary}
                     </p>
                     <p className="text-sm text-gray-400 mt-2">
-                        Ngày tạo: {new Date(createAt).toLocaleDateString()}
+                        Created on: {new Date(createAt).toLocaleDateString()}
                     </p>
                 </div>
 
                 {/* Skills & Info */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <InfoCard
-                        title="🎯 Kỹ năng bắt buộc"
+                        title="🎯 Required Skills"
                         content={mustHaveSkills}
                     />
                     <InfoCard
-                        title="✨ Kỹ năng nên có"
+                        title="✨ Nice-to-Have Skills"
                         content={niceToHaveSkills}
                     />
                     <InfoCard
-                        title="📈 Trình độ phù hợp"
+                        title="📈 Suitable Level"
                         content={suitableLevel}
                     />
                     <InfoCard
-                        title="📚 Gợi ý học tập"
+                        title="📚 Learning Recommendations"
                         content={recommendedLearning}
                     />
                 </div>
@@ -95,7 +95,7 @@ const JobDescription = () => {
                 {/* JD Questions */}
                 <div>
                     <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                        <MessageCircleQuestion /> Câu hỏi phỏng vấn gợi ý
+                        <MessageCircleQuestion /> Suggested Interview Questions
                     </h2>
                     <div className="space-y-4">
                         {jdEvaluates?.length > 0 ? (
@@ -108,22 +108,26 @@ const JobDescription = () => {
                                         {q.question}
                                     </h3>
                                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                                        🛠 Kỹ năng:{" "}
+                                        🛠 Skill:{" "}
                                         <span className="font-medium">
                                             {q.skillNeeded}
                                         </span>{" "}
-                                        | 💡 Độ khó:{" "}
+                                        | 💡 Difficulty:{" "}
                                         <span className="font-medium">
                                             {q.difficultyLevel}
                                         </span>
                                     </p>
                                     <div className="text-md text-gray-700 dark:text-gray-300 space-y-1">
                                         <p>
-                                            <strong>💡 Gợi ý trả lời 1:</strong>{" "}
+                                            <strong>
+                                                💡 Suggested Answer 1:
+                                            </strong>{" "}
                                             {q.suitableAnswer1}
                                         </p>
                                         <p>
-                                            <strong>💡 Gợi ý trả lời 2:</strong>{" "}
+                                            <strong>
+                                                💡 Suggested Answer 2:
+                                            </strong>{" "}
                                             {q.suitableAnswer2}
                                         </p>
                                     </div>
@@ -131,7 +135,7 @@ const JobDescription = () => {
                             ))
                         ) : (
                             <p className="text-gray-600 dark:text-gray-400">
-                                Không có câu hỏi phỏng vấn.
+                                No interview questions available.
                             </p>
                         )}
                     </div>

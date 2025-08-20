@@ -14,7 +14,7 @@ const Profile = () => {
     const personalInfo = [
         {
             icon: <Mail className="w-5 h-5 text-gray-500 dark:text-gray-400" />,
-            label: userProfile ? userProfile?.email : "Email chưa cập nhật",
+            label: userProfile ? userProfile?.email : "Email not updated",
         },
         {
             icon: (
@@ -22,7 +22,7 @@ const Profile = () => {
             ),
             label: userProfile?.phone
                 ? userProfile?.phone
-                : "Số điện thoại chưa cập nhật",
+                : "Phone number not updated",
         },
         {
             icon: (
@@ -34,7 +34,7 @@ const Profile = () => {
             icon: (
                 <TicketCheck className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             ),
-            label: userProfile?.role ? userProfile?.role : "Chưa cập nhật",
+            label: userProfile?.role ? userProfile?.role : "Not updated",
         },
     ];
 
@@ -67,14 +67,14 @@ const Profile = () => {
                         <p className="text-gray-500 dark:text-gray-400 mt-1">
                             {userProfile?.firstName && userProfile?.lastName
                                 ? `${userProfile.firstName} ${userProfile.lastName}`
-                                : "Chưa cập nhật tên đầy đủ"}
+                                : "Full name not updated"}
                         </p>
                     </div>
 
                     {/* Info card */}
                     <div className="bg-white dark:bg-[#1e1e2f] rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
                         <h2 className="font-bold text-xl mb-4 text-gray-800 dark:text-white">
-                            Thông tin cá nhân
+                            Personal Information
                         </h2>
                         <div className="space-y-3">
                             {personalInfo.map((item) => (
@@ -93,7 +93,7 @@ const Profile = () => {
                             onClick={() => navigate("/main/updateHR")}
                             icon={<Glasses className="w-4 h-4" />}
                         >
-                            Trở thành người đánh giá
+                            Become an Evaluator
                         </Button>
                     </div>
                 </div>
@@ -108,13 +108,13 @@ const Profile = () => {
                             transition={{ duration: 0.5 }}
                         >
                             <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-                                Thống kê luyện phỏng vấn
+                                Interview Practice Statistics
                             </h2>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 {/* Practice Sessions */}
                                 <div className="bg-gray-50 dark:bg-[#23233a] rounded-xl p-4 transition-all shadow hover:shadow-lg border border-gray-200 dark:border-gray-700">
                                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        Số buổi luyện tập
+                                        Practice Sessions
                                     </p>
                                     <p className="text-xl font-semibold mt-1 text-gray-800 dark:text-white">
                                         {
@@ -133,7 +133,7 @@ const Profile = () => {
                                 {/* Questions Answered */}
                                 <div className="bg-gray-50 dark:bg-[#23233a] rounded-xl p-4 transition-all shadow hover:shadow-lg border border-gray-200 dark:border-gray-700">
                                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        Câu hỏi đã trả lời
+                                        Questions Answered
                                     </p>
                                     <p className="text-xl font-semibold mt-1 text-gray-800 dark:text-white">
                                         {
@@ -152,7 +152,7 @@ const Profile = () => {
                                 {/* Average Score */}
                                 <div className="bg-gray-50 dark:bg-[#23233a] rounded-xl p-4 transition-all shadow hover:shadow-lg border border-gray-200 dark:border-gray-700">
                                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        Điểm trung bình
+                                        Average Score
                                     </p>
                                     <p className="text-xl font-semibold mt-1 text-gray-800 dark:text-white">
                                         {
@@ -174,7 +174,7 @@ const Profile = () => {
                     {/* Interview History */}
                     <div className="pb-10">
                         <h2 className="font-extrabold text-3xl mb-6 text-gray-800 dark:text-white">
-                            Lịch sử phỏng vấn của bạn
+                            Your Interview History
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                             {interviews?.map((interview) => (

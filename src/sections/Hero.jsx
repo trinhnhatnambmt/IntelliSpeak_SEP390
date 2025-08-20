@@ -18,7 +18,7 @@ const Hero = () => {
         >
             <div className="hero-text relative z-1 max-w-[62rem] text-center mb-[3.875rem]">
                 <h1 className="text-n-8 dark:text-white transition-colors duration-500">
-                    Thực hành phỏng vấn với AI{" "}
+                    AI-Powered Interview Practice
                 </h1>
                 <h1>
                     <span className="slide">
@@ -43,7 +43,7 @@ const Hero = () => {
                 </h1>
                 <h1 className="flex items-center justify-center gap-4">
                     <div className="text-n-8 dark:text-white transition-colors duration-500">
-                        cùng
+                        with
                     </div>
                     <div>
                         <GradientText
@@ -64,10 +64,9 @@ const Hero = () => {
                 </h1>
 
                 <p className="md:text-xl relative z-10 pointer-events-none text-n-6 dark:text-white-50 transition-colors duration-500">
-                    Tự tin hơn trong mỗi buổi phỏng vấn🧑‍🎓 - Nơi bạn có thể luyện
-                    tập kỹ năng nói, ghi âm câu trả lời, và nhận phản hồi từ AI
-                    để cải thiện giọng nói, tốc độ, độ rõ ràng và cảm xúc của
-                    chính bản thân
+                    Boost your confidence in every interview 🧑‍🎓 – Practice your
+                    speaking skills, record answers, and get feedback to improve
+                    your voice, clarity, pace, and delivery
                 </p>
             </div>
             <div className="flex items-center gap-4">
@@ -75,10 +74,10 @@ const Hero = () => {
                     className="px-4 py-2 bg-emerald-400 text-lg before:bg-emerald-500 text-white dark:text-white shadow-md hover:bg-emerald-500 transition-colors duration-300"
                     onClick={() => navigate("/upgrade-plan")}
                 >
-                    Xem Chi Tiết Gói
+                    See plans
                 </Button>
                 <Button className="px-4 py-2 bg-white  text-lg before:bg-emerald-500 text-n-8 dark:text-black shadow-md border border-emerald-400 hover:bg-emerald-50 transition-colors duration-300">
-                    Trải nghiệm miễn phí
+                    Start for free
                 </Button>
             </div>
             <div className="relative max-w-[23rem] mx-auto md:max-w-5xl xl:mb-24">

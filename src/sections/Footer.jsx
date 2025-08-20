@@ -6,7 +6,7 @@ const Footer = () => {
     return (
         <footer className="w-full mx-auto bg-white dark:bg-[#0e0c15] text-n-8 dark:text-white py-12 px-5 relative z-10 transition-colors duration-500">
             <div className="container mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
-                {/* Logo và Mô tả */}
+                {/* Logo & Description */}
                 <div className="flex flex-col items-start gap-4 md:w-1/3">
                     <Link to="/" className="flex items-center gap-2">
                         <img
@@ -26,15 +26,15 @@ const Footer = () => {
                         />
                     </Link>
                     <p className="text-gray-500 dark:text-gray-300 text-sm leading-relaxed transition-colors duration-500">
-                        ItelliSpeak - Nền tảng luyện tập phỏng vấn và kết nối
-                        với các nhà tuyển dụng uy tín trên toàn cầu.
+                        IntelliSpeak – The platform to practice interviews and
+                        connect with trusted recruiters worldwide.
                     </p>
                 </div>
 
-                {/* Điều hướng */}
+                {/* Navigation */}
                 <div className="flex flex-col gap-4">
                     <h3 className="text-lg font-semibold text-n-8 dark:text-white transition-colors duration-500">
-                        Điều hướng
+                        Navigation
                     </h3>
                     <ul className="flex flex-col gap-2">
                         <li>
@@ -72,10 +72,10 @@ const Footer = () => {
                     </ul>
                 </div>
 
-                {/* Liên hệ */}
+                {/* Contact */}
                 <div className="flex flex-col gap-4">
                     <h3 className="text-lg font-semibold text-n-8 dark:text-white transition-colors duration-500">
-                        Liên hệ
+                        Contact
                     </h3>
                     <ul className="flex flex-col gap-2">
                         <li>
@@ -105,10 +105,10 @@ const Footer = () => {
                     </ul>
                 </div>
 
-                {/* Mạng xã hội */}
+                {/* Social Media */}
                 <div className="flex flex-col gap-4">
                     <h3 className="text-lg font-semibold text-n-8 dark:text-white transition-colors duration-500">
-                        Theo dõi chúng tôi
+                        Follow Us
                     </h3>
                     <div className="flex gap-4">
                         <a
@@ -139,7 +139,7 @@ const Footer = () => {
                 </div>
             </div>
 
-            {/* Dòng bản quyền */}
+            {/* Copyright */}
             <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-gray-400 dark:text-gray-500 text-sm transition-colors duration-500">
                 &copy; {new Date().getFullYear()} ItelliSpeak. All rights
                 reserved.
