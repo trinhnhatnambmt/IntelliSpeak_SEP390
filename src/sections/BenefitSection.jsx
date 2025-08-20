@@ -9,10 +9,7 @@ import { roadmap } from "~/constants";
 const BenefitSection = () => {
     return (
         <div className="container mx-auto my-12 px-10 md:pb-10" id="benefit">
-            <Heading
-                tag="Sẵn sàng để bắt đầu"
-                title="Những tính năng nổi bật"
-            />
+            <Heading tag="Ready to Begin" title="Key Features" />
             <div className="relative grid gap-6 md:grid-cols-2 md:gap-4 md:pb-[7rem]">
                 {roadmap.map((item) => {
                     const status =

@@ -18,7 +18,7 @@ const TopicDetailCard = ({
             .promise(
                 dispatch(interViewSessionQuestionForAiAPI(interviewSessionId)),
                 {
-                    pending: "Đang chờ để chuyển qua phỏng vấn...",
+                    pending: "Preparing your interview session...",
                 }
             )
             .then((res) => {
@@ -42,10 +42,10 @@ const TopicDetailCard = ({
                     {title}
                 </h3>
                 <span className="text-lg text-orange-500 dark:text-orange-400 mt-4 block">
-                    Độ khó: {difficulty}
+                    Difficulty: {difficulty}
                 </span>
                 <p className="mt-2 text-gray-700 dark:text-gray-300">
-                    Số lượng câu hỏi: {totalQuestion}
+                    Total questions: {totalQuestion}
                 </p>
 
                 <p className="mt-2 text-gray-700 dark:text-gray-300">
@@ -55,7 +55,7 @@ const TopicDetailCard = ({
                     onClick={submitInterviewSession}
                     className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer"
                 >
-                    Bắt đầu phỏng vấn
+                    Start Interview
                 </button>
             </div>
         </div>

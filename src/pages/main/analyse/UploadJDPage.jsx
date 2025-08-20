@@ -29,7 +29,7 @@ const UploadJDPage = () => {
             }
             navigate(`/jd/${res?.jdId}`);
         });
-        setStatusText("Đang phân tích JD của bạn...");
+        setStatusText("Analyzing your JD...");
     };
 
     const handleSubmit = (e) => {
@@ -45,7 +45,7 @@ const UploadJDPage = () => {
             <section className="main-section">
                 <div className="page-heading py-5">
                     <h1 className="text-6xl font-semibold">
-                        Phân tích JD để khám phá công việc phù hợp nhất với bạn
+                        Analyze Job Descriptions to discover the best-fit roles
                     </h1>
                     {isProcessing ? (
                         <>
@@ -57,8 +57,8 @@ const UploadJDPage = () => {
                         </>
                     ) : (
                         <h2 className="text-2xl font-medium text-shadow-gray-50">
-                            Tải mô tả công việc (JD) để nhận phân tích chi tiết
-                            và đề xuất phù hợp
+                            Upload a Job Description (JD) to receive detailed
+                            analysis and personalized recommendations
                         </h2>
                     )}
                     {!isProcessing && (
@@ -79,7 +79,7 @@ const UploadJDPage = () => {
                                 className="relative z-10 cursor-pointer flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
                             >
                                 <SquareChartGantt className="w-5 h-5" />
-                                Phân tích JD
+                                Analyze JD
                             </button>
                         </form>
                     )}

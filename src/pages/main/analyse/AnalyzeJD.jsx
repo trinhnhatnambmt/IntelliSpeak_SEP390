@@ -18,17 +18,17 @@ const AnalyzeJD = () => {
             <section className="main-section">
                 <div className="page-heading text-center mb-10">
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                        Khám phá mô tả công việc phù hợp với bạn
+                        Discover job descriptions that match you
                     </h1>
                     <h2 className="text-lg sm:text-xl text-gray-600 dark:text-gray-300">
-                        Xem chi tiết yêu cầu tuyển dụng và lựa chọn công việc lý tưởng.
+                        View detailed requirements and choose your ideal job.
                     </h2>
                     <button
                         onClick={() => navigate("/main/uploadJD")}
                         className="cursor-pointer inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 mt-4"
                     >
                         <Upload className="w-5 h-5" />
-                        Tải JD lên
+                        Upload JD
                     </button>
                 </div>
 

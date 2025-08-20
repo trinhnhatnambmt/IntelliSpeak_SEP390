@@ -33,7 +33,7 @@ const UploadPage = () => {
             }
             navigate(`/resume/${res?.evaluation?.id}`);
         });
-        setStatusText("Đang phân tích CV của bạn...");
+        setStatusText("Analyzing your CV...");
     };
 
     const handleSubmit = (e) => {
@@ -49,7 +49,7 @@ const UploadPage = () => {
             <section className="main-section">
                 <div className="page-heading py-5">
                     <h1 className="text-6xl font-semibold">
-                        Phản hồi thông minh cho công việc mơ ước của bạn
+                        Smart feedback for your dream job
                     </h1>
                     {isProcessing ? (
                         <>
@@ -61,8 +61,8 @@ const UploadPage = () => {
                         </>
                     ) : (
                         <h2 className="text-2xl font-medium text-shadow-gray-50">
-                            Tải CV của bạn để xem điểm ATS và nhận các mẹo cải
-                            thiện
+                            Upload your resume to see your ATS score and get
+                            improvement tips
                         </h2>
                     )}
                     {!isProcessing && (
@@ -76,14 +76,14 @@ const UploadPage = () => {
                                     htmlFor="title"
                                     className="block text-gray-800 dark:text-white font-medium mb-1"
                                 >
-                                    Tiêu đề CV:
+                                    Resume title:
                                 </label>
                                 <input
                                     type="text"
                                     id="title"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="VD: CV Frontend Developer"
+                                    placeholder="e.g., Frontend Developer Resume"
                                     required
                                     className="relative z-10 w-full bg-white dark:bg-[#0e0c15] border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
@@ -98,7 +98,7 @@ const UploadPage = () => {
                                 className="relative z-10 cursor-pointer flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
                             >
                                 <SquareChartGantt className="w-5 h-5" />
-                                Phân tích CV
+                                Analyze Resume
                             </button>
                         </form>
                     )}

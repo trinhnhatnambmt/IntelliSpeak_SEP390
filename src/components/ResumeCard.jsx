@@ -20,7 +20,7 @@ const ResumeCard = ({
                     ) : null}
 
                     <h3 className="text-lg text-gray-500 dark:text-gray-300 break-words">
-                        Ngày tạo: {createAt}
+                        Created at: {createAt}
                     </h3>
                 </div>
                 <div className="shrink-0">

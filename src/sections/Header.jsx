@@ -21,32 +21,58 @@ const Header = ({ authenticated = false }) => {
     });
 
     const items = [
-        { label: "Luyện tập phỏng vấn", href: "/main" },
-        { label: "Chủ đề", href: "/main/topic" },
-        { label: "Phân tích", href: "/main/analyze/CV" },
-        { label: "Kết nối", href: "/main/forum" },
+        { label: "Interview Practice", href: "/main" },
+        { label: "Topics", href: "/main/topic" },
+        { label: "Analysis", href: "/main/analyze/CV" },
+        { label: "Community", href: "/main/forum" },
     ];
+
     return (
         <header
             className={clsx(
                 "fixed top-0 left-0 z-50 w-full px-5 py-5 transition-all duration-500 max-lg:py-4 bg-white dark:bg-[#0e0c15] border-b border-neutral-200 dark:border-neutral-800",
-                hasScrolled && "py-2 bg-white/80 dark:bg-[#0e0c15]/80 backdrop-blur-[8px] border-b border-neutral-200 dark:border-neutral-800"
+                hasScrolled &&
+                    "py-2 bg-white/80 dark:bg-[#0e0c15]/80 backdrop-blur-[8px] border-b border-neutral-200 dark:border-neutral-800"
             )}
         >
             <div className="relative container mx-auto flex items-center justify-between">
                 {/* Logo: show intellispeak (light) in light mode, intellispeakdark in dark mode */}
                 {!authenticated && (
                     <a href="/" className="flex items-center gap-2">
-                        <img src={squarelogo} alt="logo" className="h-10 w-auto" />
-                        <img src={intellispeak} alt="logo" className="h-10 w-auto block dark:hidden" />
-                        <img src={intellispeakdark} alt="logo" className="h-10 w-auto hidden dark:block" />
+                        <img
+                            src={squarelogo}
+                            alt="logo"
+                            className="h-10 w-auto"
+                        />
+                        <img
+                            src={intellispeak}
+                            alt="logo"
+                            className="h-10 w-auto block dark:hidden"
+                        />
+                        <img
+                            src={intellispeakdark}
+                            alt="logo"
+                            className="h-10 w-auto hidden dark:block"
+                        />
                     </a>
                 )}
                 {authenticated && (
                     <a href="/main" className="flex items-center gap-2 mr-15">
-                        <img src={squarelogo} alt="logo" className="h-10 w-auto" />
-                        <img src={intellispeak} alt="logo" className="h-10 w-auto block dark:hidden" />
-                        <img src={intellispeakdark} alt="logo" className="h-10 w-auto hidden dark:block" />
+                        <img
+                            src={squarelogo}
+                            alt="logo"
+                            className="h-10 w-auto"
+                        />
+                        <img
+                            src={intellispeak}
+                            alt="logo"
+                            className="h-10 w-auto block dark:hidden"
+                        />
+                        <img
+                            src={intellispeakdark}
+                            alt="logo"
+                            className="h-10 w-auto hidden dark:block"
+                        />
                     </a>
                 )}
 
@@ -55,22 +81,22 @@ const Header = ({ authenticated = false }) => {
                         <ul className="flex gap-10">
                             <li>
                                 <a href="#hero" className="font-extrabold">
-                                    Trang Chủ
+                                    Home
                                 </a>
                             </li>
                             <li>
                                 <a href="#benefit" className="font-extrabold">
-                                    Tính năng
+                                    Features
                                 </a>
                             </li>
                             <li>
                                 <a href="#guide" className="font-extrabold">
-                                    Lộ trình
+                                    Roadmap
                                 </a>
                             </li>
                             <li>
                                 <a href="#highlight" className="font-extrabold">
-                                    Kết Nối
+                                    Connect
                                 </a>
                             </li>
                         </ul>
@@ -95,11 +121,11 @@ const Header = ({ authenticated = false }) => {
                     {!authenticated && (
                         <ul className="flex gap-4 items-center">
                             <li>
-                                <Link to="/login">Đăng Nhập</Link>
+                                <Link to="/login">Login</Link>
                             </li>
                             <li>
                                 <GitHubButton>
-                                    <Link to="/register">Đăng Ký</Link>
+                                    <Link to="/register">Sign Up</Link>
                                 </GitHubButton>
                             </li>
                         </ul>

@@ -38,12 +38,12 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
 
     return (
         <Modal
-            title="Tạo buổi phỏng vấn"
+            title="Create Interview Session"
             open={open}
             onOk={handleSubmit}
             onCancel={handleCancelClick}
-            okText="Tạo buổi phỏng vấn"
-            cancelText="Hủy"
+            okText="Create Interview"
+            cancelText="Cancel"
         >
             <Form
                 form={form}
@@ -54,17 +54,17 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
                 autoComplete="off"
             >
                 <Form.Item
-                    label="Bạn đang tập trung vào vai trò nào?"
+                    label="Which role are you focusing on?"
                     name="role"
                     rules={[
                         {
                             required: true,
-                            message: "Chọn vai trò phỏng vấn!",
+                            message: "Please select a role!",
                         },
                     ]}
                 >
                     <Select
-                        placeholder="Chọn vai trò"
+                        placeholder="Select role"
                         style={{ width: "100%" }}
                         onChange={handleRoleChange}
                         options={topicWithTags.map((topic) => ({
@@ -74,18 +74,18 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
                     />
                 </Form.Item>
                 <Form.Item
-                    label="Bạn muốn luyện tập với tech stack nào?"
+                    label="Which tech stack would you like to practice with?"
                     name="techStack"
                     rules={[
                         {
                             required: true,
-                            message: "Chọn tech stack!",
+                            message: "Please select at least one tech stack!",
                         },
                     ]}
                 >
                     <Select
                         mode="multiple"
-                        placeholder="Chọn tech stack"
+                        placeholder="Select tech stack"
                         style={{ width: "100%" }}
                         options={getTagsForSelectedRole().map((tag) => ({
                             value: tag.tagId,
@@ -94,30 +94,30 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
                     />
                 </Form.Item>
                 <Form.Item
-                    label="Số lượng câu hỏi bạn muốn đặt ra trong bài phỏng vấn"
+                    label="How many questions do you want in the interview?"
                     name="duration"
                     rules={[
                         {
                             required: true,
-                            message: "Chọn số lượng câu hỏi!",
+                            message: "Please choose the number of questions!",
                         },
                     ]}
                 >
                     <Select
-                        placeholder="Chọn số lượng câu hỏi"
+                        placeholder="Select number of questions"
                         style={{ width: "100%" }}
                         options={[
                             {
                                 value: "5",
-                                label: "5 câu",
+                                label: "5 questions",
                             },
                             {
                                 value: "10",
-                                label: "10 câu",
+                                label: "10 questions",
                             },
                             {
                                 value: "15",
-                                label: "15 câu",
+                                label: "15 questions",
                             },
                         ]}
                     />
