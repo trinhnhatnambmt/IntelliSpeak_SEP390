@@ -32,7 +32,7 @@ const Forum = () => {
           setSelectedTopicId(null);
         }
       } catch (err) {
-        toast.error("Lỗi khi tải danh sách chủ đề.");
+        toast.error("Error loading topic list.");
       }
     };
     fetchTopics();
@@ -77,11 +77,11 @@ const Forum = () => {
     let loadingToastId = null;
     try {
       setIsLoading(true);
-      loadingToastId = toast.loading("Đang đăng bài viết...");
+      loadingToastId = toast.loading("Posting your article...");
 
       if (!title.trim() || !content.trim()) {
         toast.update(loadingToastId, {
-          render: "Tiêu đề và nội dung không được để trống!",
+          render: "Title and content cannot be empty!",
           type: "error",
           isLoading: false,
           autoClose: 3000,
@@ -91,7 +91,7 @@ const Forum = () => {
 
       if (!selectedTopicId || isNaN(selectedTopicId)) {
         toast.update(loadingToastId, {
-          render: "Bạn phải chọn một chủ đề hợp lệ!",
+          render: "You must select a valid topic!",
           type: "error",
           isLoading: false,
           autoClose: 3000,
@@ -126,7 +126,7 @@ const Forum = () => {
       await postForumAPI(payload);
 
       toast.update(loadingToastId, {
-        render: "Bài viết đã được đăng thành công!",
+        render: "Post published successfully!",
         type: "success",
         isLoading: false,
         autoClose: 3000,
@@ -144,7 +144,7 @@ const Forum = () => {
     } catch (err) {
       console.error(err);
       toast.update(loadingToastId, {
-        render: "Đăng bài thất bại. Vui lòng thử lại.",
+        render: "Failed to publish post. Please try again.",
         type: "error",
         isLoading: false,
         autoClose: 3000,
@@ -167,7 +167,7 @@ const Forum = () => {
         });
         setLikedPosts(initialLikedState);
       } catch (error) {
-        console.error("Lỗi khi lấy bài viết:", error);
+        console.error("Error fetching posts:", error);
       }
     };
     fetchPosts();
@@ -204,7 +204,7 @@ const Forum = () => {
       toast.success(response.message);
     } catch (error) {
       console.error("Lỗi khi like/unlike bài viết:", error);
-      toast.error("Thao tác thất bại");
+      toast.error("Action failed");
     }
   };
 
@@ -283,7 +283,7 @@ const Forum = () => {
                     : "text-gray-600 dark:text-gray-300 hover:underline"
                     }`}
                 >
-                  Khám phá
+                  Explore
                 </button>
               </Link>
 
@@ -294,7 +294,7 @@ const Forum = () => {
                     : "text-gray-600 dark:text-gray-300 hover:underline"
                     }`}
                 >
-                  Đã lưu
+                  Saved
                 </button>
               </Link>
             </div>
@@ -302,7 +302,7 @@ const Forum = () => {
               className="flex items-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md shadow transition-all duration-300"
               onClick={() => setExpandForm(true)}
             >
-              <span>✍️ Tạo bài viết</span>
+              <span>✍️ Create Post</span>
             </button>
           </div>
 
@@ -320,18 +320,18 @@ const Forum = () => {
                 <button
                   className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"
                   onClick={() => setExpandForm(false)}
-                  title="Đóng"
+                  title="Close"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
 
-                <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">✍️ Tạo bài viết mới</h2>
+                <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">✍️ Create New Post</h2>
 
                 {/* Cover Image */}
                 <div className="mb-6">
-                  <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Ảnh bìa</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Cover Image</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -349,15 +349,15 @@ const Forum = () => {
 
                 {/* Topic Select */}
                 <div className="mb-6">
-                  <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Chọn chủ đề</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Select Topic</label>
                   <select
                     value={selectedTopicId ?? ""}
                     onChange={(e) => setSelectedTopicId(Number(e.target.value))}
                     className="w-full p-3 rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-700 dark:text-neutral-200 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                   >
-                    <option value="" disabled>--Chọn chủ đề--</option>
+                    <option value="" disabled>--Select Topic--</option>
                     {topics.length === 0 ? (
-                      <option disabled>Không có chủ đề</option>
+                      <option disabled>No topics available</option>
                     ) : (
                       topics.map((topic) => (
                         <option key={topic.id} value={Number(topic.id)}>
@@ -371,7 +371,7 @@ const Forum = () => {
                 {/* Title */}
                 <input
                   type="text"
-                  placeholder="📝 Tiêu đề bài viết..."
+                  placeholder="📝 Post title..."
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="w-full p-4 mb-5 text-xl font-semibold rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
@@ -382,7 +382,7 @@ const Forum = () => {
                   theme="snow"
                   value={content}
                   onChange={setContent}
-                  placeholder="✍️ Viết nội dung bài viết ở đây..."
+                  placeholder="✍️ Write your post content here..."
                   className="mb-6 bg-white dark:bg-[#181818] text-black dark:text-white border-none rounded-md"
                   modules={{
                     toolbar: [
@@ -425,10 +425,10 @@ const Forum = () => {
                             d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                           ></path>
                         </svg>
-                        <span>Đang đăng...</span>
+                        <span>Posting...</span>
                       </>
                     ) : (
-                      <span>🚀 Đăng bài</span>
+                      <span>🚀 Publish</span>
                     )}
                   </button>
                 </div>
@@ -439,7 +439,7 @@ const Forum = () => {
           {/* Forum Posts List */}
           {posts.length === 0 ? (
             <div className="text-center text-gray-500 dark:text-gray-400">
-              Chưa có bài viết nào.
+              No posts yet.
             </div>
           ) : (
             posts.map((post) => <PostCard key={post.postId} post={post} />)

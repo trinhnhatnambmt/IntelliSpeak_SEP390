@@ -67,12 +67,12 @@ export default function WalletProfile() {
         },
         ...(currentUser?.role === "HR"
             ? [
-                  {
-                      icon: <ClipboardEdit className="w-5 h-5" />,
-                      label: "Create HR Questions",
-                      href: "/main/hr/create-question",
-                  },
-              ]
+                {
+                    icon: <ClipboardEdit className="w-5 h-5" />,
+                    label: "Manage Interviews Templates",
+                    href: "/main/hr/create-question",
+                },
+            ]
             : []),
         {
             icon: <BookOpenText className="w-5 h-5" />,
@@ -181,11 +181,10 @@ export default function WalletProfile() {
                                 {menuItems.map((item, index) => (
                                     <motion.div
                                         key={index}
-                                        className={`flex items-center justify-between p-2 rounded-lg transition-all duration-200 cursor-pointer ${
-                                            item.danger
-                                                ? "text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:pl-6"
-                                                : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 hover:pl-6"
-                                        }`}
+                                        className={`flex items-center justify-between p-2 rounded-lg transition-all duration-200 cursor-pointer ${item.danger
+                                            ? "text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:pl-6"
+                                            : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 hover:pl-6"
+                                            }`}
                                         whileTap={{ scale: 0.98 }}
                                         transition={{
                                             type: "spring",
@@ -226,11 +225,10 @@ export default function WalletProfile() {
                             <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
                                 <div className="flex bg-neutral-100 dark:bg-neutral-700 rounded-lg p-1">
                                     <motion.button
-                                        className={`flex-1 flex items-center justify-center py-2 px-4 rounded-md ${
-                                            theme === "light"
-                                                ? "bg-white dark:bg-neutral-600 shadow-sm"
-                                                : ""
-                                        }`}
+                                        className={`flex-1 flex items-center justify-center py-2 px-4 rounded-md ${theme === "light"
+                                            ? "bg-white dark:bg-neutral-600 shadow-sm"
+                                            : ""
+                                            }`}
                                         onClick={() => setTheme("light")}
                                         whileHover={{
                                             scale: theme !== "light" ? 1.03 : 1,
@@ -243,11 +241,10 @@ export default function WalletProfile() {
                                         }}
                                     >
                                         <Sun
-                                            className={`w-4 h-4 mr-2 ${
-                                                theme === "light"
-                                                    ? "text-amber-500"
-                                                    : "text-neutral-500 dark:text-neutral-400"
-                                            }`}
+                                            className={`w-4 h-4 mr-2 ${theme === "light"
+                                                ? "text-amber-500"
+                                                : "text-neutral-500 dark:text-neutral-400"
+                                                }`}
                                         />
                                         <span
                                             className={
@@ -260,11 +257,10 @@ export default function WalletProfile() {
                                         </span>
                                     </motion.button>
                                     <motion.button
-                                        className={`flex-1 flex items-center justify-center py-2 px-4 rounded-md ${
-                                            theme === "dark"
-                                                ? "bg-neutral-600 shadow-sm"
-                                                : ""
-                                        }`}
+                                        className={`flex-1 flex items-center justify-center py-2 px-4 rounded-md ${theme === "dark"
+                                            ? "bg-neutral-600 shadow-sm"
+                                            : ""
+                                            }`}
                                         onClick={() => setTheme("dark")}
                                         whileHover={{
                                             scale: theme !== "dark" ? 1.03 : 1,
@@ -277,11 +273,10 @@ export default function WalletProfile() {
                                         }}
                                     >
                                         <Moon
-                                            className={`w-4 h-4 mr-2 ${
-                                                theme === "dark"
-                                                    ? "text-indigo-300"
-                                                    : "text-neutral-500 dark:text-neutral-400"
-                                            }`}
+                                            className={`w-4 h-4 mr-2 ${theme === "dark"
+                                                ? "text-indigo-300"
+                                                : "text-neutral-500 dark:text-neutral-400"
+                                                }`}
                                         />
                                         <span
                                             className={

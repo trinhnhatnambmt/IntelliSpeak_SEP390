@@ -34,13 +34,13 @@ const FeedBack = () => {
     return (
         <div className="max-w-5xl mx-auto px-6 py-20">
             <h1 className="text-4xl font-bold text-center mb-8 text-gray-900 dark:text-white">
-                Feedback — Sau khi luyện tập phỏng vấn
+                Feedback — After Interview Practice
             </h1>
 
             <div className="flex flex-wrap justify-center gap-6 mb-10 text-lg font-medium">
                 <div className="flex items-center gap-2 text-gray-700 dark:text-gray-200">
                     <Star className="text-yellow-500" />
-                    Kết quả tổng quan:
+                    Overall result:
                     <span className="font-bold text-indigo-600 dark:text-indigo-400">
                         {interviewFeedback?.averageScore}/10
                     </span>
@@ -59,7 +59,7 @@ const FeedBack = () => {
 
             <div>
                 <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">
-                    Đánh giá theo từng câu hỏi:
+                    Feedback by question:
                 </h2>
                 {interviewFeedback?.results?.map((result, index) => (
                     <div
@@ -72,49 +72,46 @@ const FeedBack = () => {
 
                         <div className="space-y-3 text-gray-700 dark:text-gray-300">
                             <p>
-                                <strong>Câu trả lời gợi ý 1:</strong>{" "}
-                                {result.suitableAnswer1 ||
-                                    "Không có câu trả lời"}
+                                <strong>Suggested answer 1:</strong>{" "}
+                                {result.suitableAnswer1 || "No answer"}
                             </p>
                             <p>
-                                <strong>Câu trả lời gợi ý 2:</strong>{" "}
-                                {result.suitableAnswer2 ||
-                                    "Không có câu trả lời"}
+                                <strong>Suggested answer 2:</strong>{" "}
+                                {result.suitableAnswer2 || "No answer"}
                             </p>
                             <p>
-                                <strong>Câu trả lời của bạn:</strong>{" "}
-                                {result.userAnswer || "Không có câu trả lời"}
+                                <strong>Your answer:</strong>{" "}
+                                {result.userAnswer || "No answer"}
                             </p>
                             <p>
-                                <strong>Độ chính xác:</strong>{" "}
+                                <strong>Correctness:</strong>{" "}
                                 {result.feedback.knowledge.correctness}
                             </p>
                             <p>
-                                <strong>Độ rõ ràng:</strong>{" "}
+                                <strong>Clarity:</strong>{" "}
                                 {result.feedback.communication.clarity}
                             </p>
                             <p>
-                                <strong>Tính súc tích:</strong>{" "}
+                                <strong>Conciseness:</strong>{" "}
                                 {result.feedback.communication.conciseness}
                             </p>
                             <p>
-                                <strong> Cách dùng từ ngữ chuyên môn:</strong>{" "}
+                                <strong>Use of terminology:</strong>{" "}
                                 {result.feedback.communication.terminology}
                             </p>
                             <p>
-                                <strong>Điểm mạnh:</strong>{" "}
-                                {result.feedback.knowledge.strengths ||
-                                    "Không có"}
+                                <strong>Strengths:</strong>{" "}
+                                {result.feedback.knowledge.strengths || "None"}
                             </p>
                             <p>
-                                <strong>Cần cải thiện:</strong>{" "}
+                                <strong>Needs improvement:</strong>{" "}
                                 {result.feedback.knowledge.improvement}
                             </p>
                         </div>
 
                         <div className="mt-6">
                             <h4 className="text-lg font-semibold mb-2 text-red-500">
-                                Kết luận:
+                                Conclusion:
                             </h4>
                             <div className="bg-red-100 dark:bg-red-900 rounded-xl px-4 py-2 inline-block text-red-700 dark:text-red-300 font-semibold mb-2">
                                 Not Recommended
@@ -134,7 +131,7 @@ const FeedBack = () => {
                 >
                     <div className="flex items-center gap-2">
                         <House className="h-5 w-5" />
-                        Trở lại trang chủ
+                        Back to Home
                     </div>
                 </button>
             </div>

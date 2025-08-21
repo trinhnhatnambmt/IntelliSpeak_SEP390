@@ -1,3 +1,14 @@
+// ==== GET HR APPLICATION STATUS ====
+export const getHrApplicationStatusAPI = async () => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/hr/application/status`);
+    return response.data;
+};
+// Get all companies
+export const getAllCompaniesToReqHR = async () => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/company/all`);
+    // console.log("Fetched companies:", response.data);
+    return response.data;
+};
 // ==== GET TAGS OF TOPIC ====
 export const getTagsOfTopic = async (topicId) => {
     const response = await authorizedAxiosInstance.get(
@@ -97,7 +108,7 @@ export const registerUserAPI = async (data) => {
         data
     );
     toast.success(
-        "Đăng ký thành công! Vui lòng check email để kích hoạt tài khoản."
+        "Registration successful! Please check your email to activate your account."
     );
     return response.data;
 };
@@ -260,6 +271,14 @@ export const uploadImageAPI = async (filesOrBase64Array) => {
     return res.data; // Trả về list url
 };
 
+// Upload PDF
+export const uploadPDF = async (file) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/pdf-converter/upload`,
+        file
+    );
+    return response.data;
+};
 // Upload CV
 export const uploadResumeAPI = async (file, title) => {
     const response = await authorizedAxiosInstance.post(
@@ -370,7 +389,8 @@ export const getCompanyDetailAPI = async (id) => {
 
 // ==== HR APPLICATION ====
 export const applyForHrAPI = async ({
-    company,
+    companyId,
+    companyNameIfNotExist,
     phone,
     country,
     experienceYears,
@@ -380,7 +400,8 @@ export const applyForHrAPI = async ({
     const response = await authorizedAxiosInstance.post(
         `${API_ROOT}/hr/apply`,
         {
-            company,
+            companyId,
+            companyNameIfNotExist,
             phone,
             country,
             experienceYears,

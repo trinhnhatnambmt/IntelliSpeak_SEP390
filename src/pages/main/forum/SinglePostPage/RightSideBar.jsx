@@ -10,7 +10,7 @@ const RightSideBar = () => {
                             Teamcamp
                         </h4>
                         <button className="text-xs text-blue-600 hover:underline">
-                            Theo dõi
+                            Follow
                         </button>
                     </div>
                     <img
@@ -23,7 +23,7 @@ const RightSideBar = () => {
                 <hr className="border-gray-200 dark:border-gray-700" />
 
                 <h5 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Bài viết khác từ Teamcamp
+                    More posts from Teamcamp
                 </h5>
                 <ul className="text-sm space-y-2">
                     <li className="hover:underline cursor-pointer">
