@@ -356,6 +356,11 @@ export const getInterviewSessionWhenCreated = async () => {
     return response.data.data;
 };
 
+export const getAllCompaniesAPI = async () => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/company`);
+    return response.data.data;
+};
+
 // ==== HR APPLICATION ====
 export const applyForHrAPI = async ({
     company,
