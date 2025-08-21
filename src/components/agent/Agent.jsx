@@ -18,6 +18,7 @@ const CallStatus = {
 const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
     const navigate = useNavigate();
     const [isSpeaking, setIsSpeaking] = useState(false);
+    const [isUserSpeaking, setIsUserSpeaking] = useState(false);
     const [callStatus, setCallStatus] = useState(CallStatus.INACTIVE);
 
     const [messages, setMessages] = useState([]);
@@ -44,6 +45,10 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
                     content: message.transcript,
                 };
                 setMessages((prev) => [...prev, newMessage]);
+                if (message.role === "user") {
+                    setIsUserSpeaking(true); // Đánh dấu người dùng đang nói
+                    setTimeout(() => setIsUserSpeaking(false), 1000); // Tắt hiệu ứng sau 1s
+                }
             }
         };
 
@@ -140,6 +145,7 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
     const isCallInactiveOrFinished =
         callStatus === CallStatus.INACTIVE ||
         callStatus === CallStatus.FINISHED;
+    console.log(messages);
 
     return (
         <div>
@@ -183,8 +189,18 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
                     </h1>
                 </div>
 
-                <div className="w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-gray-300 dark:border-[#4B4D4F66] relative overflow-hidden">
+                <div
+                    className={cn(
+                        "w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-gray-300 dark:border-[#4B4D4F66] relative overflow-hidden",
+                        isUserSpeaking &&
+                            "border-2 border-purple-400 dark:border-purple-400"
+                    )}
+                >
                     <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
+
+                    {isUserSpeaking && (
+                        <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-10"></div>
+                    )}
 
                     <div
                         className="absolute inset-0 hidden dark:block"

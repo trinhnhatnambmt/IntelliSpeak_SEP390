@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getAllCompaniesAPI } from "~/apis";
 
 const Companies = () => {
@@ -7,7 +8,7 @@ const Companies = () => {
 
     useEffect(() => {
         getAllCompaniesAPI().then((res) => {
-            console.log(res);
+            // console.log(res);
             setCompanies(res);
         });
     }, []);
@@ -49,12 +50,15 @@ const Companies = () => {
                             <img
                                 src={company?.logoUrl}
                                 alt={company?.name}
-                                className="w-12 h-12 object-contain rounded-md border"
+                                className="w-12 h-12 object-cover rounded-full"
                             />
                             <div>
-                                <h2 className="text-base font-semibold">
+                                <Link
+                                    to={`/main/company/${company?.companyId}`}
+                                    className="text-base font-semibold"
+                                >
                                     {company?.name}
-                                </h2>
+                                </Link>
                                 <p className="text-sm text-gray-400 dark:text-gray-500">
                                     {company?.shortName}
                                 </p>
