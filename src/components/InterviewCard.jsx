@@ -23,10 +23,12 @@ const InterviewCard = ({
             .promise(
                 dispatch(interViewSessionQuestionForAiAPI(interviewSessionId)),
                 {
-                    pending: "Đang chờ để chuyển qua phỏng vấn...",
+                    pending: "Waiting to move on to interview...",
                 }
             )
             .then((res) => {
+                // console.log("🚀 ~ submitInterviewSession ~ res:", res);
+
                 if (!res.error) {
                     navigate(`/main/interviewPage/${interviewSessionId}`);
                 }

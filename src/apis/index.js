@@ -361,6 +361,13 @@ export const getAllCompaniesAPI = async () => {
     return response.data.data;
 };
 
+export const getCompanyDetailAPI = async (id) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/company/${id}`
+    );
+    return response.data.data;
+};
+
 // ==== HR APPLICATION ====
 export const applyForHrAPI = async ({
     company,

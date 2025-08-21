@@ -30,6 +30,7 @@ import UploadJDPage from "./pages/main/analyse/UploadJDPage";
 import JobDescription from "./pages/main/analyse/JobDescription";
 import HRCreateQuestionPage from "./pages/main/hr/HRCreateQuestionPage";
 import Companies from "./pages/main/companies/Companies";
+import CompanyDetail from "./pages/main/companies/CompanyDetail";
 
 const ProtectedRoutes = ({ user }) => {
     if (!user) return <Navigate to="/" replace={true} />;
@@ -77,6 +78,7 @@ const App = () => {
 
                     {/* Companies */}
                     <Route path="companies" element={<Companies />} />
+                    <Route path="company/:id" element={<CompanyDetail />} />
 
                     <Route path="payment" element={<Payment />} />
                     <Route path="settings" element={<Settings />} />
