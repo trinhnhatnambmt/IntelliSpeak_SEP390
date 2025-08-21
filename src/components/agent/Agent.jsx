@@ -145,7 +145,7 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
     const isCallInactiveOrFinished =
         callStatus === CallStatus.INACTIVE ||
         callStatus === CallStatus.FINISHED;
-    console.log(messages);
+    // console.log(messages);
 
     return (
         <div>

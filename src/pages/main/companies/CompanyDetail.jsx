@@ -63,7 +63,7 @@ const CompanyDetail = () => {
                                     className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-[#1e1e2f] shadow-sm hover:shadow-md transition"
                                 >
                                     <p className="font-medium">
-                                        Name: {hr.company}
+                                        Name: {hr.name}
                                     </p>
                                     <p className="text-sm text-gray-500 dark:text-gray-400">
                                         Phone: {hr.phone}
