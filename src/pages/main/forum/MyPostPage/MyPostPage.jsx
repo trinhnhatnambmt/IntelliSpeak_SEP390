@@ -50,7 +50,7 @@ const MyPostPage = () => {
                     setSelectedTopicId(null);
                 }
             } catch (err) {
-                toast.error("Lỗi khi tải danh sách chủ đề.");
+                toast.error("Error loading topic list.");
             }
         };
         fetchTopics();
@@ -75,7 +75,7 @@ const MyPostPage = () => {
             }
         } catch (err) {
             setMyPosts([]);
-            toast.error("Lỗi khi tải bài viết của bạn.");
+            toast.error("Error loading your posts.");
         } finally {
             setLoadingPosts(false);
         }
@@ -119,8 +119,8 @@ const MyPostPage = () => {
 
             toast.success(response.message);
         } catch (error) {
-            console.error("Lỗi khi like/unlike bài viết:", error);
-            toast.error("Thao tác thất bại");
+            console.error("Error liking/unliking post:", error);
+            toast.error("Action failed");
             // Revert UI on error
             setLikedPosts(prev => ({
                 ...prev,
@@ -180,11 +180,11 @@ const MyPostPage = () => {
         let loadingToastId = null;
         try {
             setIsLoading(true);
-            loadingToastId = toast.loading("Đang đăng bài viết...");
+            loadingToastId = toast.loading("Posting your article...");
 
             if (!title.trim() || !content.trim()) {
                 toast.update(loadingToastId, {
-                    render: "Tiêu đề và nội dung không được để trống!",
+                    render: "Title and content cannot be empty!",
                     type: "error",
                     isLoading: false,
                     autoClose: 3000,
@@ -194,7 +194,7 @@ const MyPostPage = () => {
 
             if (!selectedTopicId || isNaN(selectedTopicId)) {
                 toast.update(loadingToastId, {
-                    render: "Bạn phải chọn một chủ đề hợp lệ!",
+                    render: "You must select a valid topic!",
                     type: "error",
                     isLoading: false,
                     autoClose: 3000,
@@ -229,7 +229,7 @@ const MyPostPage = () => {
             await postForumAPI(payload);
 
             toast.update(loadingToastId, {
-                render: "Bài viết đã được đăng thành công!",
+                render: "Post published successfully!",
                 type: "success",
                 isLoading: false,
                 autoClose: 3000,
@@ -245,7 +245,7 @@ const MyPostPage = () => {
         } catch (err) {
             console.error(err);
             toast.update(loadingToastId, {
-                render: "Đăng bài thất bại. Vui lòng thử lại.",
+                render: "Failed to publish post. Please try again.",
                 type: "error",
                 isLoading: false,
                 autoClose: 3000,
@@ -269,32 +269,32 @@ const MyPostPage = () => {
 
     // Handle delete post
     const handleDelete = async (postId) => {
-        const confirmed = window.confirm("Bạn có chắc chắn muốn xóa bài viết này?");
+        const confirmed = window.confirm("Are you sure you want to delete this post?");
         if (!confirmed) return;
 
         try {
             await deleteForumPostAPI(postId);
-            toast.success("Xóa bài viết thành công!");
+            toast.success("Post deleted successfully!");
             await fetchMyPosts();
         } catch (error) {
-            toast.error("Xóa bài viết thất bại!");
+            toast.error("Failed to delete post!");
         }
     };
 
     // Handle save edited post
     const handleSaveEdit = async () => {
         if (!editTitle.trim() || !editContent.trim()) {
-            toast.error("Tiêu đề và nội dung không được để trống!");
+            toast.error("Title and content cannot be empty!");
             return;
         }
 
         if (!editTopicId || isNaN(editTopicId)) {
-            toast.error("Bạn phải chọn một chủ đề hợp lệ!");
+            toast.error("You must select a valid topic!");
             return;
         }
 
         setEditLoading(true);
-        const loadingToastId = toast.loading("Đang cập nhật bài viết...");
+        const loadingToastId = toast.loading("Updating post...");
 
         try {
             // Process content images
@@ -348,7 +348,7 @@ const MyPostPage = () => {
             await updateForumPostAPI(editPost.postId, payload);
 
             toast.update(loadingToastId, {
-                render: "Cập nhật bài viết thành công!",
+                render: "Post updated successfully!",
                 type: "success",
                 isLoading: false,
                 autoClose: 3000,
@@ -359,7 +359,7 @@ const MyPostPage = () => {
         } catch (err) {
             console.error(err);
             toast.update(loadingToastId, {
-                render: "Cập nhật bài viết thất bại!",
+                render: "Failed to update post!",
                 type: "error",
                 isLoading: false,
                 autoClose: 3000,
@@ -390,7 +390,7 @@ const MyPostPage = () => {
                                 handleEdit(post);
                             }}
                         >
-                            Chỉnh sửa
+                            Edit
                         </button>
                         <button
                             className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -399,7 +399,7 @@ const MyPostPage = () => {
                                 handleDelete(post.postId);
                             }}
                         >
-                            Xóa
+                            Delete
                         </button>
                     </div>
                 )}
@@ -461,12 +461,12 @@ const MyPostPage = () => {
         <div className="min-h-screen bg-gray-100 dark:bg-[#0e0c15] text-gray-900 dark:text-white transition-colors duration-300 container mx-auto px-4 py-7">
             {/* My Posts Section Header with New Post Button */}
             <div className="w-[90%] max-w-3xl mx-auto flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Bài viết của tôi</h2>
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">My Posts</h2>
                 <button
                     className="flex items-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md shadow transition-all duration-300"
                     onClick={() => setExpandForm(true)}
                 >
-                    <span>✍️ Tạo bài viết</span>
+                    <span>✍️ Create Post</span>
                 </button>
             </div>
 
@@ -484,17 +484,17 @@ const MyPostPage = () => {
                         <button
                             className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"
                             onClick={() => setExpandForm(false)}
-                            title="Đóng"
+                            title="Close"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
-                        <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">✍️ Tạo bài viết mới</h1>
+                        <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">✍️ Create New Post</h1>
 
                         {/* Cover Image */}
                         <div className="mb-6">
-                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Ảnh bìa</label>
+                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Cover Image</label>
                             <input
                                 type="file"
                                 accept="image/*"
@@ -512,15 +512,15 @@ const MyPostPage = () => {
 
                         {/* Topic Select */}
                         <div className="mb-6">
-                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Chọn chủ đề</label>
+                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Select Topic</label>
                             <select
                                 value={selectedTopicId ?? ""}
                                 onChange={(e) => setSelectedTopicId(Number(e.target.value))}
                                 className="w-full p-3 rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-700 dark:text-neutral-200 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                             >
-                                <option value="" disabled>--Chọn chủ đề--</option>
+                                <option value="" disabled>--Select Topic--</option>
                                 {topics.length === 0 ? (
-                                    <option disabled>Không có chủ đề</option>
+                                    <option disabled>No topics available</option>
                                 ) : (
                                     topics.map((topic) => (
                                         <option key={topic.id} value={Number(topic.id)}>
@@ -534,7 +534,7 @@ const MyPostPage = () => {
                         {/* Title */}
                         <input
                             type="text"
-                            placeholder="📝 Tiêu đề bài viết..."
+                            placeholder="📝 Post title..."
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             className="w-full p-4 mb-5 text-xl font-semibold rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
@@ -545,7 +545,7 @@ const MyPostPage = () => {
                             theme="snow"
                             value={content}
                             onChange={setContent}
-                            placeholder="✍️ Viết nội dung bài viết ở đây..."
+                            placeholder="✍️ Write your post content here..."
                             className="mb-6 bg-white dark:bg-[#181818] text-black dark:text-white border-none rounded-md"
                             modules={{
                                 toolbar: [
@@ -588,10 +588,10 @@ const MyPostPage = () => {
                                                 d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                                             ></path>
                                         </svg>
-                                        <span>Đang đăng...</span>
+                                        <span>Posting...</span>
                                     </>
                                 ) : (
-                                    <span>🚀 Đăng bài</span>
+                                    <span>🚀 Publish</span>
                                 )}
                             </button>
                         </div>
@@ -602,9 +602,9 @@ const MyPostPage = () => {
             {/* My Posts Section */}
             <div className="w-[90%] max-w-3xl mx-auto">
                 {loadingPosts ? (
-                    <div className="text-center text-gray-500 dark:text-gray-400">Đang tải bài viết...</div>
+                    <div className="text-center text-gray-500 dark:text-gray-400">Loading posts...</div>
                 ) : myPosts.length === 0 ? (
-                    <div className="text-center text-gray-500 dark:text-gray-400">Bạn chưa có bài viết nào.</div>
+                    <div className="text-center text-gray-500 dark:text-gray-400">You have no posts yet.</div>
                 ) : (
                     myPosts.map((post) => <PostCard key={post.postId} post={post} />)
                 )}
@@ -630,11 +630,11 @@ const MyPostPage = () => {
                             </svg>
                         </button>
 
-                        <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Chỉnh sửa bài viết</h2>
+                        <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Edit Post</h2>
 
-                        {/* Ảnh bìa */}
+                        {/* Cover Image */}
                         <div className="mb-6">
-                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Ảnh bìa</label>
+                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Cover Image</label>
                             <input
                                 type="file"
                                 accept="image/*"
@@ -650,15 +650,15 @@ const MyPostPage = () => {
                             )}
                         </div>
 
-                        {/* Chủ đề */}
+                        {/* Topic */}
                         <div className="mb-6">
-                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Chọn chủ đề</label>
+                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Select Topic</label>
                             <select
                                 value={editTopicId ?? ""}
                                 onChange={(e) => setEditTopicId(Number(e.target.value))}
                                 className="w-full p-3 rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-700 dark:text-neutral-200 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                             >
-                                <option value="" disabled>--Chọn chủ đề--</option>
+                                <option value="" disabled>--Select Topic--</option>
                                 {topics.map((topic) => (
                                     <option key={topic.id} value={Number(topic.id)}>
                                         {topic.title}
@@ -667,21 +667,21 @@ const MyPostPage = () => {
                             </select>
                         </div>
 
-                        {/* Tiêu đề */}
+                        {/* Title */}
                         <input
                             type="text"
-                            placeholder="📝 Tiêu đề bài viết..."
+                            placeholder="📝 Post title..."
                             value={editTitle}
                             onChange={(e) => setEditTitle(e.target.value)}
                             className="w-full p-4 mb-5 text-xl font-semibold rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                         />
 
-                        {/* Nội dung */}
+                        {/* Content */}
                         <ReactQuill
                             theme="snow"
                             value={editContent}
                             onChange={setEditContent}
-                            placeholder="✍️ Viết nội dung bài viết ở đây..."
+                            placeholder="✍️ Write your post content here..."
                             className="mb-6 bg-white dark:bg-[#181818] text-black dark:text-white border-none rounded-md"
                             modules={{
                                 toolbar: [
@@ -725,10 +725,10 @@ const MyPostPage = () => {
                                                 d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                                             ></path>
                                         </svg>
-                                        <span>Đang lưu...</span>
+                                        <span>Saving...</span>
                                     </>
                                 ) : (
-                                    <span>💾 Lưu thay đổi</span>
+                                    <span>💾 Save Changes</span>
                                 )}
                             </button>
                         </div>

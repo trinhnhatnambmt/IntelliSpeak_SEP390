@@ -17,24 +17,24 @@ const RightSidebar = () => {
     return (
         <aside className="w-72 h-fit hidden xl:block bg-white dark:bg-[#1e1e2f] p-6 rounded-2xl shadow-md dark:shadow-none relative z-10">
             <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-                💬 Thảo luận sôi nổi
+                💬 Trending Discussions
             </h3>
             <ul className="space-y-3">
                 <DiscussionItem
-                    title="Thành tựu của bạn tuần này là gì?"
+                    title="What is your achievement this week?"
                     comments={38}
                 />
-                <DiscussionItem title="Giới thiệu về PYJSX" comments={3} />
+                <DiscussionItem title="Introduction to PYJSX" comments={3} />
                 <DiscussionItem
-                    title="Người chiến thắng cuộc thi CMS"
+                    title="CMS Contest Winners"
                     comments={14}
                 />
                 <DiscussionItem
-                    title="Git & GitHub: Những bước đầu tiên"
+                    title="Git & GitHub: Getting Started"
                     comments={2}
                 />
                 <DiscussionItem
-                    title="Thêm một chút chia sẻ nữa..."
+                    title="A little more sharing..."
                     comments={1}
                 />
             </ul>

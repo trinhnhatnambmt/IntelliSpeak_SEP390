@@ -27,7 +27,7 @@ export const logoutUserAPI = createAsyncThunk(
             `${API_ROOT}/auth/logout`
         );
         if (showSuccessMessage) {
-            toast.success("Đăng xuất thành công!");
+            toast.success("Log out successfully!");
         }
         return response.data;
     }

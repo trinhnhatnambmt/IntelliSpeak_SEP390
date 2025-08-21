@@ -13,11 +13,10 @@ import React from "react";
 const SideBar = () => {
     const NavItem = ({ icon, text, badge, active }) => (
         <div
-            className={`flex items-center justify-between px-3 py-2 rounded-md cursor-pointer ${
-                active
+            className={`flex items-center justify-between px-3 py-2 rounded-md cursor-pointer ${active
                     ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold"
                     : "hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
+                }`}
         >
             <div className="flex items-center space-x-2">
                 {icon}
@@ -34,7 +33,7 @@ const SideBar = () => {
         <div>
             <aside className="w-64 h-[fit-content] bg-white dark:bg-[#1e1e2f] p-6  hidden lg:block relative z-10 rounded-2xl">
                 <div className="mb-6">
-                    <h2 className="text-xl font-semibold">🏠 Trang chủ</h2>
+                    <h2 className="text-xl font-semibold">🏠 Home</h2>
                 </div>
                 <nav className="space-y-2">
                     <NavItem

@@ -57,7 +57,7 @@ const RegisterForm = () => {
                     confirmPassword: password_Confirmation,
                 }),
                 {
-                    pending: "Đang đăng ký tài khoản...",
+                    pending: "Registering account...",
                 }
             )
             .then(() => navigate("/login"));
