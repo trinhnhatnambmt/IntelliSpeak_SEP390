@@ -24,6 +24,7 @@ const Header = ({ authenticated = false }) => {
         { label: "Interview Practice", href: "/main" },
         { label: "Topics", href: "/main/topic" },
         { label: "Analysis", href: "/main/analyze/CV" },
+        { label: "Companies", href: "/main/companies" },
         { label: "Community", href: "/main/forum" },
     ];
 
