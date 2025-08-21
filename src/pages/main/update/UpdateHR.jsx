@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { applyForHrAPI, getAllCvAPI, getAllCompaniesAPI, uploadPDF } from "~/apis";
+import { applyForHrAPI, getAllCvAPI, uploadPDF, getAllCompaniesToReqHR } from "~/apis";
 import HrApplicationStatus from "~/components/HrApplicationStatus";
 import FileUploader from "~/components/FileUploader";
 import { SquareChartGantt, Upload, FileText, Clock, CheckCircle, XCircle, AlertCircle, Building2, Phone, Globe, Linkedin, FileText as FileTextIcon, Calendar, Eye, ChevronLeft, ChevronRight } from "lucide-react";
@@ -20,14 +20,11 @@ const UpdateHR = () => {
     });
 
     const [companies, setCompanies] = useState([]);
-    // HR Application Status is now handled in HrApplicationStatus component
-
-    // HR Application Status is now handled in HrApplicationStatus component
 
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
-                const res = await getAllCompaniesAPI();
+                const res = await getAllCompaniesToReqHR();
                 console.log("Fetched companies:", res);
                 setCompanies(res.data || []);
             } catch (error) {

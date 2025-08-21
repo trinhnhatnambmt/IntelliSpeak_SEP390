@@ -4,8 +4,8 @@ export const getHrApplicationStatusAPI = async () => {
     return response.data;
 };
 // Get all companies
-export const getAllCompaniesAPI = async () => {
-    const response = await authorizedAxiosInstance.get(`${API_ROOT}/company`);
+export const getAllCompaniesToReqHR = async () => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/company/all`);
     // console.log("Fetched companies:", response.data);
     return response.data;
 };
