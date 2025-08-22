@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getCompanyDetailAPI } from "~/apis";
 import InterviewTemplate from "./InterviewTemplate";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    getCompanyDetailAPI,
+    selectCurrentCompany,
+} from "~/redux/company/companySlice";
 
 const CompanyDetail = () => {
     const { id } = useParams();
-    const [companyDetail, setCompanyDetail] = useState(null);
+    const companyDetail = useSelector(selectCurrentCompany);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        getCompanyDetailAPI(id).then((res) => {
-            console.log(res);
-            setCompanyDetail(res);
-        });
-    }, [id]);
+        dispatch(getCompanyDetailAPI(id));
+    }, [id, dispatch]);
 
     return (
         <div className="container mx-auto px-6 py-8 min-h-screen  text-gray-800 dark:text-gray-200 relative z-10">

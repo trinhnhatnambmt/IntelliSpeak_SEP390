@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { robot_assistant } from "~/assets";
-import { interviewer } from "~/constants";
+import { interviewer, interviewer2 } from "~/constants";
 import { cn } from "~/lib/utils";
 import { vapi } from "~/lib/vapi.sdk";
+import { selectCurrentCompany } from "~/redux/company/companySlice";
 import { interviewFeedbackAPI } from "~/redux/interview/feedbackSlice";
 
 const CallStatus = {
@@ -23,6 +24,10 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
 
     const [messages, setMessages] = useState([]);
     const [lastMessage, setLastMessage] = useState("");
+
+    const companyDetail = useSelector(selectCurrentCompany);
+    const companyLogo = companyDetail?.logoUrl;
+    const companyName = companyDetail?.name;
 
     const dispatch = useDispatch();
 
@@ -128,11 +133,14 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
             .map((q) => q.content)
             .join(", ");
 
-        const assistantOptions = interviewer(
-            currentUser,
-            currentInterviewSession,
-            questionList
-        );
+        const assistantOptions = currentInterviewSession?.companyId
+            ? interviewer2(
+                  currentUser,
+                  currentInterviewSession,
+                  questionList,
+                  companyDetail
+              )
+            : interviewer(currentUser, currentInterviewSession, questionList);
 
         await vapi.start(assistantOptions);
     };
@@ -179,13 +187,19 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
                         }}
                     >
                         <img
-                            src={robot_assistant}
+                            src={
+                                currentInterviewSession?.companyId
+                                    ? companyLogo || robot_assistant
+                                    : robot_assistant
+                            }
                             alt="robot"
-                            className="w-[66px] h-[66px] object-cover"
+                            className="w-[66px] h-[66px] object-cover rounded-full"
                         />
                     </div>
                     <h1 className="absolute bottom-[70px] text-lg font-semibold text-gray-800 dark:text-gray-200">
-                        AI Assistant
+                        {currentInterviewSession?.companyId
+                            ? companyName
+                            : "AI Assistant"}
                     </h1>
                 </div>
 
