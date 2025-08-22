@@ -110,12 +110,10 @@ const FeedBack = () => {
                         </div>
 
                         <div className="mt-6">
-                            <h4 className="text-lg font-semibold mb-2 text-red-500">
+                            <h4 className="text-lg font-semibold mb-2 text-green-500">
                                 Conclusion:
                             </h4>
-                            <div className="bg-red-100 dark:bg-red-900 rounded-xl px-4 py-2 inline-block text-red-700 dark:text-red-300 font-semibold mb-2">
-                                Not Recommended
-                            </div>
+
                             <p className="text-gray-600 dark:text-gray-400 mt-1">
                                 {result.feedback.conclusion}
                             </p>

@@ -23,7 +23,7 @@ const InterviewTemplate = ({
             )
             .then((res) => {
                 if (!res.error) {
-                    navigate(`/main/interviewPage/${interviewSessionId}`);
+                navigate(`/main/interviewPage/${interviewSessionId}`);
                 }
             });
     };
