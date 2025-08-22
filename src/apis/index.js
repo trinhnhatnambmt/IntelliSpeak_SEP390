@@ -180,17 +180,11 @@ export const likeOrUnlikePostAPI = async ({ postId, liked }) => {
 // ==== SAVE / UNSAVE ====
 
 export const savePostAPI = async (postId) => {
-    try {
-        const response = await authorizedAxiosInstance.post(
-            `${API_ROOT}/saved-post/${postId}`
-        );
-        toast.success(response.data.message || "Đã lưu bài viết");
-        return response.data;
-    } catch (error) {
-        toast.error("Không thể lưu bài viết");
-        console.error("Lỗi khi lưu bài viết:", error);
-        throw error;
-    }
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/saved-post/${postId}`
+    );
+    toast.success(response.data.message);
+    return response.data;
 };
 
 export const unsavePostAPI = async (postId) => {
