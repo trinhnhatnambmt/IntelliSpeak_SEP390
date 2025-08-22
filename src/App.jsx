@@ -31,6 +31,7 @@ import JobDescription from "./pages/main/analyse/JobDescription";
 import HRCreateQuestionPage from "./pages/main/hr/HRCreateQuestionPage";
 import Companies from "./pages/main/companies/Companies";
 import CompanyDetail from "./pages/main/companies/CompanyDetail";
+import ChooseLanguage from "./pages/main/interview/ChooseLanguage";
 
 const ProtectedRoutes = ({ user }) => {
     if (!user) return <Navigate to="/" replace={true} />;
@@ -63,6 +64,8 @@ const App = () => {
                         path="interviewPage/:id"
                         element={<InterviewPage />}
                     />
+                    <Route path="language" element={<ChooseLanguage />} />
+
                     <Route path="topic" element={<Topic />} />
                     <Route path="topicDetail/:id" element={<TopicDetail />} />
                     <Route path="profile" element={<Profile />} />
