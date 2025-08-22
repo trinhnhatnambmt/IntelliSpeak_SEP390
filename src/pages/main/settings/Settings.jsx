@@ -13,31 +13,29 @@ const Settings = () => {
                 <aside className="w-full md:w-1/4">
                     <div className="bg-white dark:bg-[#1e1b2e] rounded-lg shadow p-4 relative z-10">
                         <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
-                            Cài đặt tài khoản
+                            Account Settings
                         </h2>
                         <ul className="space-y-2">
                             <li>
                                 <button
                                     onClick={() => setActiveTab("personal")}
-                                    className={`w-full text-left px-4 py-2 rounded font-medium ${
-                                        activeTab === "personal"
+                                    className={`w-full text-left px-4 py-2 rounded font-medium ${activeTab === "personal"
                                             ? "bg-blue-600 text-white"
                                             : "text-gray-700 dark:text-gray-300 hover:text-blue-500"
-                                    }`}
+                                        }`}
                                 >
-                                    Thông tin cá nhân
+                                    Personal Information
                                 </button>
                             </li>
                             <li>
                                 <button
                                     onClick={() => setActiveTab("security")}
-                                    className={`w-full text-left px-4 py-2 rounded font-medium ${
-                                        activeTab === "security"
+                                    className={`w-full text-left px-4 py-2 rounded font-medium ${activeTab === "security"
                                             ? "bg-blue-600 text-white"
                                             : "text-gray-700 dark:text-gray-300 hover:text-blue-500"
-                                    }`}
+                                        }`}
                                 >
-                                    Mật khẩu và bảo mật
+                                    Password & Security
                                 </button>
                             </li>
                         </ul>

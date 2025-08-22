@@ -26,8 +26,8 @@ const UpgradePlan = () => {
             </div>
             <div className="mt-10 relative w-[1400px] mx-auto">
                 <Heading
-                    title="Dịch vụ của chúng tôi "
-                    tag="Bắt đầu với ItelliSpeak"
+                    title="Our Services"
+                    tag="Get Started with ItelliSpeak"
                 />
                 <PricingList />
                 <LeftLine />

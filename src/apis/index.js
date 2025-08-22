@@ -1,8 +1,20 @@
+// import axios from "axios";
+// export const getAllPackagesAPI = async () => {
+//     const response = await axios.get(`${API_ROOT}/package`);
+//     return response.data;
+// };
+// ==== GET ALL PACKAGES ====
+export const getAllPackagesAPI = async () => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/package`);
+    console.log('getAllPackagesAPI', response.data);
+    return response.data;
+};
 // ==== GET HR APPLICATION STATUS ====
 export const getHrApplicationStatusAPI = async () => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/hr/application/status`);
     return response.data;
 };
+
 // Get all companies
 export const getAllCompaniesToReqHR = async () => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/company/all`);
@@ -180,17 +192,11 @@ export const likeOrUnlikePostAPI = async ({ postId, liked }) => {
 // ==== SAVE / UNSAVE ====
 
 export const savePostAPI = async (postId) => {
-    try {
-        const response = await authorizedAxiosInstance.post(
-            `${API_ROOT}/saved-post/${postId}`
-        );
-        toast.success(response.data.message || "Đã lưu bài viết");
-        return response.data;
-    } catch (error) {
-        toast.error("Không thể lưu bài viết");
-        console.error("Lỗi khi lưu bài viết:", error);
-        throw error;
-    }
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/saved-post/${postId}`
+    );
+    toast.success(response.data.message);
+    return response.data;
 };
 
 export const unsavePostAPI = async (postId) => {
