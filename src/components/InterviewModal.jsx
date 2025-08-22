@@ -31,7 +31,7 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
     };
 
     const handleCancelClick = () => {
-        form.resetFields(); // ✅ clear khi bấm close
+        form.resetFields();
         setSelectedRole(null);
         onCancel();
     };
