@@ -1,8 +1,20 @@
+// import axios from "axios";
+// export const getAllPackagesAPI = async () => {
+//     const response = await axios.get(`${API_ROOT}/package`);
+//     return response.data;
+// };
+// ==== GET ALL PACKAGES ====
+export const getAllPackagesAPI = async () => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/package`);
+    console.log('getAllPackagesAPI', response.data);
+    return response.data;
+};
 // ==== GET HR APPLICATION STATUS ====
 export const getHrApplicationStatusAPI = async () => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/hr/application/status`);
     return response.data;
 };
+
 // Get all companies
 export const getAllCompaniesToReqHR = async () => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/company/all`);

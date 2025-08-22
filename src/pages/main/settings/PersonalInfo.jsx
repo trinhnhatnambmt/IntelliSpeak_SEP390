@@ -44,7 +44,7 @@ const PersonalInfo = () => {
 
             let updatedValue = editValue;
 
-            // Nếu là upload avatar và có file mới
+            // If uploading avatar and new file exists
             if (editKey === 'avatar' && avatarFile) {
                 const uploadedUrls = await uploadImageAPI([avatarFile]);
                 if (uploadedUrls.length > 0) {
@@ -58,16 +58,16 @@ const PersonalInfo = () => {
             };
 
             await toast.promise(dispatch(updateUserAPI(updatedUser)), {
-                pending: "Đang cập nhật...",
-                success: "Cập nhật thành công!",
-                error: "Cập nhật thất bại!"
+                pending: "Updating...",
+                success: "Update successful!",
+                error: "Update failed!"
             });
 
             dispatch(getUserProfileAPI());
             setIsModalOpen(false);
         } catch (error) {
-            console.error("Lỗi khi cập nhật:", error);
-            toast.error("Có lỗi xảy ra khi cập nhật");
+            console.error("Error updating:", error);
+            toast.error("An error occurred while updating");
         } finally {
             setIsUploading(false);
         }
@@ -76,32 +76,32 @@ const PersonalInfo = () => {
     return (
         <div>
             <h2 className="text-xl font-semibold mb-6 text-gray-800 dark:text-white">
-                Thông tin cá nhân
+                Personal Information
             </h2>
 
-            {/* ----------- Thông tin cơ bản ----------- */}
+            {/* ----------- Basic Information ----------- */}
             <section className="mb-8">
                 <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300 mb-2">
-                    Thông tin cơ bản
+                    Basic Information
                 </h3>
                 <div className="space-y-3">
                     <InfoRow
-                        label="Họ"
-                        value={currentUser?.firstName || "Chưa cập nhật"}
+                        label="First Name"
+                        value={currentUser?.firstName || "Not updated"}
                         onClick={() =>
                             openEditModal(
-                                "Họ",
+                                "First Name",
                                 "firstName",
                                 currentUser?.firstName || ""
                             )
                         }
                     />
                     <InfoRow
-                        label="Tên"
-                        value={currentUser?.lastName || "Chưa cập nhật"}
+                        label="Last Name"
+                        value={currentUser?.lastName || "Not updated"}
                         onClick={() =>
                             openEditModal(
-                                "Tên",
+                                "Last Name",
                                 "lastName",
                                 currentUser?.lastName || ""
                             )
@@ -109,22 +109,22 @@ const PersonalInfo = () => {
                     />
 
                     <InfoRow
-                        label="Số điện thoại"
-                        value={currentUser?.phone || "Chưa cập nhật"}
+                        label="Phone Number"
+                        value={currentUser?.phone || "Not updated"}
                         onClick={() =>
                             openEditModal(
-                                "Số điện thoại",
+                                "Phone Number",
                                 "phone",
                                 currentUser?.phone || ""
                             )
                         }
                     />
                     <InfoRow
-                        label="Ảnh đại diện"
+                        label="Avatar"
                         value={<Avatar size={45} src={currentUser?.avatar} />}
                         onClick={() =>
                             openEditModal(
-                                "Ảnh đại diện",
+                                "Avatar",
                                 "avatar",
                                 currentUser?.avatar || ""
                             )
@@ -133,10 +133,10 @@ const PersonalInfo = () => {
                 </div>
             </section>
 
-            {/* ----------- Mạng xã hội ----------- */}
+            {/* ----------- Social Media ----------- */}
             <section>
                 <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300 mb-2">
-                    Thông tin mạng xã hội
+                    Social Media
                 </h3>
                 <div className="space-y-3">
                     {[
@@ -149,7 +149,7 @@ const PersonalInfo = () => {
                         <InfoRow
                             key={key}
                             label={key.charAt(0).toUpperCase() + key.slice(1)}
-                            value={currentUser?.[key] || "Chưa cập nhật"}
+                            value={currentUser?.[key] || "Not updated"}
                             onClick={() =>
                                 openEditModal(
                                     key.charAt(0).toUpperCase() + key.slice(1),
@@ -162,14 +162,14 @@ const PersonalInfo = () => {
                 </div>
             </section>
 
-            {/* ----------- Modal cập nhật ----------- */}
+            {/* ----------- Update Modal ----------- */}
             <Modal
-                title={`Cập nhật ${editLabel}`}
+                title={`Update ${editLabel}`}
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
                 footer={[
                     <Button key="cancel" onClick={() => setIsModalOpen(false)}>
-                        Hủy
+                        Cancel
                     </Button>,
                     <Button
                         key="submit"
@@ -177,7 +177,7 @@ const PersonalInfo = () => {
                         onClick={handleSave}
                         loading={isUploading}
                     >
-                        Lưu lại
+                        Save
                     </Button>,
                 ]}
             >
@@ -201,7 +201,7 @@ const PersonalInfo = () => {
                     </div>
                 ) : (
                     <Input
-                        placeholder={`Nhập ${editLabel.toLowerCase()}...`}
+                        placeholder={`Enter ${editLabel.toLowerCase()}...`}
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
                     />

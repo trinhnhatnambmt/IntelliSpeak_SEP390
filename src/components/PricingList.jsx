@@ -1,28 +1,51 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { check } from "~/assets";
-import { pricing } from "~/constants";
 import Button from "./Button/Button";
 import clsx from "clsx";
 import { useNavigate } from "react-router-dom";
+import { getAllPackagesAPI } from "~/apis";
 
 const PricingList = () => {
     const navigate = useNavigate();
+    const [packages, setPackages] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchPackages = async () => {
+            try {
+                const res = await getAllPackagesAPI();
+                // console.log('getAllPackagesAPI', res);
+
+                setPackages(res.data || []);
+            } catch (e) {
+                setPackages([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPackages();
+    }, []);
+
+    if (loading) {
+        return <div>Loading packages...</div>;
+    }
+
     return (
         <div className="flex gap-[1rem] max-lg:flex-wrap">
-            {pricing.map((item) => (
+            {packages.map((item, idx) => (
                 <div
-                    key={item.id}
+                    key={item.packageId}
                     className="w-[19rem] max-lg:w-full h-full px-6 border border-[#252134] rounded-[2rem] lg:w-auto even:py-14 odd:py-8 odd:my-4"
                 >
                     <h4
                         className={clsx(
                             `text-5xl font-bold mb-4`,
-                            item.id === "0" && "text-[#FFB800]",
-                            item.id === "1" && "text-emerald-500",
-                            item.id === "2" && "text-pink-500"
+                            idx === 0 && "text-[#FFB800]",
+                            idx === 1 && "text-emerald-500",
+                            idx === 2 && "text-pink-500"
                         )}
                     >
-                        {item.title}
+                        {item.packageName}
                     </h4>
 
                     <p className="body-2 min-h-[4rem] mb-3 text-gray-400">
@@ -30,13 +53,13 @@ const PricingList = () => {
                     </p>
 
                     <div className="flex items-center h-[5.5rem] mb-6">
-                        {item.price && (
+                        {item.price !== null && (
                             <>
-                                <div className="text-5xl">$</div>
-                                <div className="text-[5.5rem] leading-none font-bold">
-                                    {item.price}
+                                <div className="text-5xl leading-none font-bold">
+                                    {item.price === 0 ? "0" : item.price.toLocaleString("vi-VN")}
+                                    <span className="text-5xl align-top ml-1">₫</span>
                                 </div>
-                                <div className="text-4xl">/ tháng</div>
+                                <div className="text-4xl ml-2">/ month</div>
                             </>
                         )}
                     </div>
@@ -45,32 +68,30 @@ const PricingList = () => {
                         onClick={() => navigate("/main/payment")}
                         className={clsx(
                             "w-full mb-6 py-3",
-                            item.price === "0" &&
-                                "bg-orange-400 text-xl before:bg-orange-500",
-                            item.price === "9.99" &&
-                                "bg-emerald-400 text-xl before:bg-emerald-500",
-                            item.price === null &&
-                                "bg-pink-400 text-xl before:bg-pink-500"
+                            item.price === 0 &&
+                            "bg-orange-400 text-xl before:bg-orange-500",
+                            item.price > 0 && item.price <= 100000 &&
+                            "bg-emerald-400 text-xl before:bg-emerald-500",
+                            item.price > 100000 &&
+                            "bg-pink-400 text-xl before:bg-pink-500"
                         )}
                     >
-                        {item.price ? "Đăng ký ngay" : "Liên hệ với chúng tôi"}
+                        {item.price === 0 ? "Get Started" : "Subscribe Now"}
                     </Button>
 
                     <ul>
-                        {item.features.map((feature, index) => (
-                            <li
-                                key={index}
-                                className="flex items-start py-5 border-t border-[#252134]"
-                            >
-                                <img
-                                    src={check}
-                                    width={24}
-                                    height={24}
-                                    alt="Check"
-                                />
-                                <p className="body-2 ml-4">{feature}</p>
-                            </li>
-                        ))}
+                        <li className="flex items-start py-5 border-t border-[#252134]">
+                            <img src={check} width={24} height={24} alt="Check" />
+                            <p className="body-2 ml-4">{item.interviewCount} interview practices</p>
+                        </li>
+                        <li className="flex items-start py-5 border-t border-[#252134]">
+                            <img src={check} width={24} height={24} alt="Check" />
+                            <p className="body-2 ml-4">{item.cvAnalyzeCount} CV analyses</p>
+                        </li>
+                        <li className="flex items-start py-5 border-t border-[#252134]">
+                            <img src={check} width={24} height={24} alt="Check" />
+                            <p className="body-2 ml-4">{item.jdAnalyzeCount} JD analyses</p>
+                        </li>
                     </ul>
                 </div>
             ))}

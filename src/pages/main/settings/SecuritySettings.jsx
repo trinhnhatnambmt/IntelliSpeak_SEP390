@@ -4,16 +4,16 @@ const SecuritySettings = () => {
     return (
         <div>
             <h2 className="text-xl font-semibold mb-6 text-gray-800 dark:text-white">
-                Mật khẩu và bảo mật
+                Password & Security
             </h2>
 
             <section>
                 <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300 mb-2">
-                    Đăng nhập & khôi phục
+                    Login & Recovery
                 </h3>
                 <div className="space-y-3">
-                    <InfoRow label="Tạo mật khẩu" value="Chưa đổi mật khẩu" />
-                    <InfoRow label="Xác minh 2 bước" value="Đang tắt" />
+                    <InfoRow label="Set Password" value="Not changed yet" />
+                    <InfoRow label="Two-factor Authentication" value="Disabled" />
                 </div>
             </section>
         </div>
