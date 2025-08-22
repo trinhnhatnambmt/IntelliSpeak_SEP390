@@ -37,9 +37,10 @@ const InterviewPractice = () => {
         setIsModalOpen(false);
 
         createInterviewSession(formData).then((res) => {
-            // console.log("Interview session created:", res);
             toast.success("Tạo buổi phỏng vấn thành công!");
-            setInterviewCreated((prev) => [res, ...prev]);
+            getInterviewSessionWhenCreated().then((res) => {
+                setInterviewCreated(res);
+            });
         });
     };
     const handleCancel = () => {
