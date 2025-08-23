@@ -431,6 +431,7 @@ export const createPaymentLinkAPI = async (packageId) => {
             `${API_ROOT}/api/payment/create`,
             { packageId }
         );
+        console.log("Payment link created:", response.data);
         return response.data;
     } catch (error) {
         console.error("Error creating payment link:", error);

@@ -27,7 +27,7 @@ const PricingList = () => {
     // Handle subscribe click
     const handleSubscribe = async (item) => {
         const isLoggedIn = !!localStorage.getItem("accessToken");
-        if (!isLoggedIn) {
+        if (item.price === 0 && !isLoggedIn) {
             navigate("/login");
             return;
         }
