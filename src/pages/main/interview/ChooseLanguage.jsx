@@ -1,10 +1,26 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Globe } from "lucide-react";
 import { flagOfEn, flagOfVi } from "~/assets";
+import { useDispatch } from "react-redux";
+import { interViewSessionQuestionForAiAPI } from "~/redux/interview/interviewSessionSlice";
+import { toast } from "react-toastify";
 
 const ChooseLanguage = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { id } = useParams();
+    const submitInterviewSessionWithEnglish = () => {
+        toast
+            .promise(dispatch(interViewSessionQuestionForAiAPI(id)), {
+                pending: "Preparing your interview session...",
+            })
+            .then((res) => {
+                if (!res.error) {
+                    navigate(`/main/interviewPage/${id}`);
+                }
+            });
+    };
 
     return (
         <div className="container mx-auto px-5 mt-40 ">
@@ -20,7 +36,10 @@ const ChooseLanguage = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl">
-                    <button className=" hover:border-blue-500 duration-300 cursor-pointer relative z-10 flex items-center gap-4 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1e1e2f] hover:shadow-md transition rounded-2xl p-6 text-left group">
+                    <button
+                        onClick={submitInterviewSessionWithEnglish}
+                        className=" hover:border-blue-500 duration-300 cursor-pointer relative z-10 flex items-center gap-4 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1e1e2f] hover:shadow-md transition rounded-2xl p-6 text-left group"
+                    >
                         <img
                             src={flagOfEn}
                             alt="English"

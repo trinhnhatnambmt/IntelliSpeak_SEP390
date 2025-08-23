@@ -1,8 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { interViewSessionQuestionForAiAPI } from "~/redux/interview/interviewSessionSlice";
 
 const TopicDetailCard = ({
     title,
@@ -12,21 +9,8 @@ const TopicDetailCard = ({
     interviewSessionId,
 }) => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const submitInterviewSession = () => {
-        toast
-            .promise(
-                dispatch(interViewSessionQuestionForAiAPI(interviewSessionId)),
-                {
-                    pending: "Preparing your interview session...",
-                }
-            )
-            .then((res) => {
-                if (!res.error) {
-                    navigate(`/main/interviewPage/${interviewSessionId}`);
-                }
-            });
-        navigate(`/main/interviewPage/${interviewSessionId}`);
+        navigate(`/main/language/${interviewSessionId}`);
     };
     return (
         <div className="w-full rounded-2xl p-[16px] flex gap-5 bg-white dark:bg-[#252525] shadow-md dark:shadow-none transition-colors duration-300">
