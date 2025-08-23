@@ -3,7 +3,7 @@ import { check } from "~/assets";
 import Button from "./Button/Button";
 import clsx from "clsx";
 import { useNavigate } from "react-router-dom";
-import { getAllPackagesAPI } from "~/apis";
+import { getAllPackagesAPI, createPaymentLinkAPI } from "~/apis";
 
 const PricingList = () => {
     const navigate = useNavigate();
@@ -14,8 +14,6 @@ const PricingList = () => {
         const fetchPackages = async () => {
             try {
                 const res = await getAllPackagesAPI();
-                // console.log('getAllPackagesAPI', res);
-
                 setPackages(res.data || []);
             } catch (e) {
                 setPackages([]);
@@ -25,6 +23,27 @@ const PricingList = () => {
         };
         fetchPackages();
     }, []);
+
+    // Handle subscribe click
+    const handleSubscribe = async (item) => {
+        const isLoggedIn = !!localStorage.getItem("accessToken");
+        if (!isLoggedIn) {
+            navigate("/login");
+            return;
+        }
+        if (item.price === 0) {
+            navigate("/main");
+            return;
+        }
+        try {
+            const res = await createPaymentLinkAPI(item.packageId);
+            if (res?.data?.paymentUrl) {
+                window.location.href = res.data.paymentUrl;
+            }
+        } catch (e) {
+            alert("Failed to create payment link.");
+        }
+    };
 
     if (loading) {
         return <div>Loading packages...</div>;
@@ -65,7 +84,7 @@ const PricingList = () => {
                     </div>
 
                     <Button
-                        onClick={() => navigate("/main/payment")}
+                        onClick={() => handleSubscribe(item)}
                         className={clsx(
                             "w-full mb-6 py-3",
                             item.price === 0 &&

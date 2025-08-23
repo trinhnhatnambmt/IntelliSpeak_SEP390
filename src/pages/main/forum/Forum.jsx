@@ -3,7 +3,7 @@ import { Heart } from "lucide-react";
 import SideBar from "./SideBar";
 import RightSidebar from "./RightSidebar";
 import { Link, useLocation } from "react-router-dom";
-import { getAllForumPostAPI, likeOrUnlikePostAPI, getAllForumTopicsAPI, postForumAPI, uploadImageAPI } from "~/apis";
+import { getAllForumPostAPI, getAllForumTopicsAPI, likeOrUnlikePostAPI, savePostAPI, unsavePostAPI } from "~/apis";
 import { toast } from "react-toastify";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
@@ -11,6 +11,7 @@ import "react-quill-new/dist/quill.snow.css";
 const Forum = () => {
   const [posts, setPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState({}); // Track liked state for each post
+  const [savedPosts, setSavedPosts] = useState({}); // Track saved state for each post
   const location = useLocation();
 
   // State for new post (upload)
@@ -22,21 +23,19 @@ const Forum = () => {
   const [selectedTopicId, setSelectedTopicId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [expandForm, setExpandForm] = useState(false);
+
   // Fetch topics for select
   useEffect(() => {
     const fetchTopics = async () => {
-      try {
-        const data = await getAllForumTopicsAPI();
-        if (Array.isArray(data)) {
-          setTopics(data);
-          setSelectedTopicId(null);
-        }
-      } catch (err) {
-        toast.error("Error loading topic list.");
+      const data = await getAllForumTopicsAPI();
+      if (Array.isArray(data)) {
+        setTopics(data);
+        setSelectedTopicId(null);
       }
     };
     fetchTopics();
   }, []);
+
   // Handle image upload for new post
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -138,6 +137,7 @@ const Forum = () => {
       setCoverImagePreview(null);
       setCoverImageFile(null);
       setSelectedTopicId(null);
+      setExpandForm(false); // Auto close modal after create
       // Refresh posts
       const res = await getAllForumPostAPI();
       setPosts(res.data);
@@ -162,10 +162,13 @@ const Forum = () => {
 
         // Initialize liked state for each post
         const initialLikedState = {};
+        const initialSavedState = {};
         res.data.forEach(post => {
-          initialLikedState[post.postId] = false; // You should replace this with actual liked state from API if available
+          initialLikedState[post.postId] = post.isLiked || false;
+          initialSavedState[post.postId] = post.isSaved || false;
         });
         setLikedPosts(initialLikedState);
+        setSavedPosts(initialSavedState);
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
@@ -203,7 +206,33 @@ const Forum = () => {
 
       toast.success(response.message);
     } catch (error) {
-      console.error("Lỗi khi like/unlike bài viết:", error);
+      console.error("Error when liking/unliking post:", error);
+      toast.error("Action failed");
+    }
+  };
+
+  const handleSave = async (postId) => {
+    try {
+      const currentSaveState = !savedPosts[postId];
+
+      if (currentSaveState) {
+        // Save post
+        const response = await savePostAPI(postId);
+        toast.success(response.message || "Post saved successfully");
+      } else {
+        // Unsave post
+        const response = await unsavePostAPI(postId);
+        toast.success(response.message || "Post removed from saved");
+      }
+
+      // Update UI based on API response
+      setSavedPosts(prev => ({
+        ...prev,
+        [postId]: currentSaveState
+      }));
+
+    } catch (error) {
+      console.error("Error when saving/unsaving post:", error);
       toast.error("Action failed");
     }
   };
@@ -219,7 +248,7 @@ const Forum = () => {
         <div className="p-4">
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
             {post.userName} •{" "}
-            {new Date(post.createAt).toLocaleString("vi-VN", {
+            {new Date(post.createAt).toLocaleString("en-US", {
               day: "2-digit",
               month: "2-digit",
               year: "numeric",
@@ -230,7 +259,7 @@ const Forum = () => {
           </div>
           <h2 className="text-xl font-bold mb-2">{post.title}</h2>
           <div className="text-sm text-gray-500 dark:text-gray-400 space-x-2 mb-2">
-            <span>#{post.forumTopicType?.title || "chủ đề"}</span>
+            <span>#{post.forumTopicType?.title || "topic"}</span>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -255,7 +284,7 @@ const Forum = () => {
               </button>
             </div>
             <span className="text-sm text-gray-600 dark:text-gray-300">
-              🕓 {post.readTimeEstimate || 3} phút đọc
+              🕓 {post.readTimeEstimate || 3} min read
             </span>
           </div>
         </div>

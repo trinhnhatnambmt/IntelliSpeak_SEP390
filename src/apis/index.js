@@ -192,11 +192,17 @@ export const likeOrUnlikePostAPI = async ({ postId, liked }) => {
 // ==== SAVE / UNSAVE ====
 
 export const savePostAPI = async (postId) => {
-    const response = await authorizedAxiosInstance.post(
-        `${API_ROOT}/saved-post/${postId}`
-    );
-    toast.success(response.data.message);
-    return response.data;
+    try {
+        const response = await authorizedAxiosInstance.post(
+            `${API_ROOT}/saved-post/${postId}`
+        );
+        toast.success(response.data.message);
+        return response.data;
+    } catch (error) {
+        toast.error("Không thể lưu bài viết");
+        console.error("Lỗi khi lưu bài viết:", error);
+        throw error;
+    }
 };
 
 export const unsavePostAPI = async (postId) => {
@@ -204,7 +210,7 @@ export const unsavePostAPI = async (postId) => {
         const response = await authorizedAxiosInstance.delete(
             `${API_ROOT}/saved-post/${postId}`
         );
-        toast.success(response.data.message || "Đã bỏ lưu bài viết");
+        toast.success(response.data.message);
         return response.data;
     } catch (error) {
         toast.error("Không thể bỏ lưu bài viết");
@@ -404,4 +410,18 @@ export const applyForHrAPI = async ({
         }
     );
     return response.data;
+};
+
+// ==== CREATE PAYMENT LINK ====
+export const createPaymentLinkAPI = async (packageId) => {
+    try {
+        const response = await authorizedAxiosInstance.post(
+            `${API_ROOT}/api/payment/create`,
+            { packageId }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error creating payment link:", error);
+        throw error;
+    }
 };

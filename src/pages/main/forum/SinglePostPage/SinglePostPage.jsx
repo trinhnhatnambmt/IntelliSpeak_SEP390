@@ -10,6 +10,7 @@ import parse from "html-react-parser";
 const SinglePostPage = () => {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
   const commentRef = useRef(null);
   const [commentTitle, setCommentTitle] = useState("");
   const [commentContent, setCommentContent] = useState("");
@@ -36,6 +37,7 @@ const SinglePostPage = () => {
       try {
         const data = await getForumPostByIdAPI(postId);
         setPost(data.data);
+        setIsSaved(!!data.data.isSaved);
       } catch (err) {
         console.error("Error fetching post details:", err);
       }
@@ -77,7 +79,7 @@ const SinglePostPage = () => {
     <div className="min-h-screen bg-gray-100 dark:bg-[#0e0c15] py-10 px-4">
       <div className="container mx-auto grid grid-cols-1 lg:grid-cols-11 gap-6 relative z-10">
         {/* Left Sidebar */}
-        <LeftSideBar postId={post.postId} scrollToComment={scrollToComment} />
+        <LeftSideBar postId={post.postId} scrollToComment={scrollToComment} isSaved={isSaved} setIsSaved={setIsSaved} />
 
         {/* Main content */}
         <div className="col-span-10 lg:col-span-8 bg-white dark:bg-[#1e1e2f] rounded-xl shadow p-6 ml-10">
