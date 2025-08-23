@@ -98,6 +98,7 @@ const PricingList = () => {
                         {item.price === 0 ? "Get Started" : "Subscribe Now"}
                     </Button>
 
+
                     <ul>
                         <li className="flex items-start py-5 border-t border-[#252134]">
                             <img src={check} width={24} height={24} alt="Check" />

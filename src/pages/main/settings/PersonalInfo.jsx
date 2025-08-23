@@ -25,7 +25,7 @@ const PersonalInfo = () => {
         setEditLabel(label);
         setEditKey(key);
         setEditValue(value);
-        setAvatarPreview(key === 'avatar' ? value : null);
+        setAvatarPreview(key === "avatar" ? value : null);
         setAvatarFile(null);
         setIsModalOpen(true);
     };
@@ -54,7 +54,7 @@ const PersonalInfo = () => {
 
             const updatedUser = {
                 ...currentUser.user,
-                [editKey]: updatedValue
+                [editKey]: updatedValue,
             };
 
             await toast.promise(dispatch(updateUserAPI(updatedUser)), {
@@ -181,7 +181,7 @@ const PersonalInfo = () => {
                     </Button>,
                 ]}
             >
-                {editKey === 'avatar' ? (
+                {editKey === "avatar" ? (
                     <div>
                         <input
                             type="file"
