@@ -44,6 +44,18 @@ const UpdateHR = () => {
     const [showExistingCvs, setShowExistingCvs] = useState(false);
 
     useEffect(() => {
+        const loadUserProfile = async () => {
+            try {
+                await dispatch(getUserProfileAPI()).unwrap();
+            } catch (error) {
+                console.error("Error loading user profile:", error);
+            }
+        };
+
+        loadUserProfile();
+    }, [dispatch]);
+
+    useEffect(() => {
         const loadExistingCvs = async () => {
             try {
                 const response = await getAllCvAPI();
