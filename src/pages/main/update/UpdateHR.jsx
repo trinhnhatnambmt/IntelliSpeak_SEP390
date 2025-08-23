@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { applyForHrAPI, getAllCvAPI, uploadPDF, getAllCompaniesToReqHR } from "~/apis";
+import { useDispatch } from "react-redux";
+import { getUserProfileAPI } from "~/redux/user/userSlice";
 import HrApplicationStatus from "~/components/HrApplicationStatus";
 import FileUploader from "~/components/FileUploader";
 import { SquareChartGantt, Upload, FileText, Clock, CheckCircle, XCircle, AlertCircle, Building2, Phone, Globe, Linkedin, FileText as FileTextIcon, Calendar, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 
 const UpdateHR = () => {
+    const dispatch = useDispatch();
     const [formData, setFormData] = useState({
         companyId: "",
         companyNameIfNotExist: "",
@@ -167,6 +170,8 @@ const UpdateHR = () => {
         } catch (error) {
             console.error("Error details:", error.response?.data);
         } finally {
+            // Refetch user profile to update role immediately after successful HR application
+            dispatch(getUserProfileAPI());
             setIsLoading(false);
             setIsProcessingCV(false);
         }

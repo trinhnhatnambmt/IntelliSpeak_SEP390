@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import SideBar from "./SideBar";
 import RightSidebar from "./RightSidebar";
 import { Link } from "react-router-dom";
+import { Heart } from "lucide-react";
 import { getSavedPostsAPI } from "~/apis";
 
 const SavedForum = () => {
@@ -30,7 +31,7 @@ const SavedForum = () => {
         <div className="p-4">
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
             {post.userName} •{" "}
-            {new Date(post.createAt).toLocaleString("vi-VN", {
+            {new Date(post.createAt).toLocaleString("en-US", {
               day: "2-digit",
               month: "2-digit",
               year: "numeric",
@@ -41,11 +42,23 @@ const SavedForum = () => {
           </div>
           <h2 className="text-xl font-bold mb-2">{post.title}</h2>
           <div className="text-sm text-gray-500 dark:text-gray-400 space-x-2 mb-2">
-            <span>#{post.forumTopicType?.title || "chủ đề"}</span>
+            <span>#{post.forumTopicType?.title || "topic"}</span>
           </div>
-          <div className="text-sm text-gray-600 dark:text-gray-300 flex items-center justify-between">
-            <span>❤️ {post.reactionCount || 0} Lượt thích</span>
-            <span>🕓 {post.readTimeEstimate || 3} phút đọc</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <span className="flex items-center">
+                <Heart
+                  className={`cursor-pointer transition-all duration-200 text-gray-400`}
+                  size={24}
+                />
+                <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
+                  {post.reactionCount || 0}
+                </span>
+              </span>
+            </div>
+            <span className="text-sm text-gray-600 dark:text-gray-300">
+              🕓 {post.readTimeEstimate || 3} min read
+            </span>
           </div>
         </div>
       </Link>
@@ -65,17 +78,17 @@ const SavedForum = () => {
               to="/main/forum"
               className="px-4 py-1 text-gray-600 dark:text-gray-300 hover:underline"
             >
-              Khám phá
+              Explore
             </Link>
 
             <button className="px-4 py-1 bg-blue-600 text-white rounded-md">
-              Đã lưu
+              Saved
             </button>
           </div>
 
           {posts.length === 0 ? (
             <div className="text-center text-gray-500 dark:text-gray-400">
-              Chưa có bài viết nào.
+              No saved posts yet.
             </div>
           ) : (
             posts.map((post) => <PostCard key={post.id} post={post} />)

@@ -15,7 +15,7 @@ const RightSidebar = () => {
     );
 
     return (
-        <aside className="w-72 h-fit hidden xl:block bg-white dark:bg-[#1e1e2f] p-6 rounded-2xl shadow-md dark:shadow-none relative z-10">
+        <aside className="w-72 h-fit hidden xl:block bg-white dark:bg-[#1e1e2f] p-6 rounded-2xl shadow-md dark:shadow-none relative z-5">
             <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
                 💬 Trending Discussions
             </h3>
