@@ -86,6 +86,7 @@ const App = () => {
                     <Route path="payment" element={<Payment />} />
                     <Route path="settings" element={<Settings />} />
                     <Route path="forum" element={<Forum />} />
+                    <Route path="saved-forum" element={<SavedForum />} />
                     <Route
                         path="singlePostPage/:postId"
                         element={<SinglePostPage />}

@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Heart, MessageCircle, Save, XCircle } from "lucide-react";
 import { likeOrUnlikePostAPI, savePostAPI, unsavePostAPI } from "~/apis/index";
 
-const LeftSideBar = ({ postId, scrollToComment }) => {
+const LeftSideBar = ({ postId, scrollToComment, isSaved: isSavedProp, setIsSaved }) => {
   const [isLiked, setIsLiked] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const isSaved = typeof isSavedProp === 'boolean' ? isSavedProp : false;
 
   const handleLike = async () => {
     try {
@@ -16,23 +16,17 @@ const LeftSideBar = ({ postId, scrollToComment }) => {
     }
   };
 
-  const handleSave = async () => {
-    if (isSaved) return;
+  const handleSaveToggle = async () => {
     try {
-      await savePostAPI(postId);
-      setIsSaved(true);
+      if (!isSaved) {
+        await savePostAPI(postId);
+        setIsSaved && setIsSaved(true);
+      } else {
+        await unsavePostAPI(postId);
+        setIsSaved && setIsSaved(false);
+      }
     } catch (error) {
-      console.error("Lỗi khi lưu bài viết:", error);
-    }
-  };
-
-  const handleUnsave = async () => {
-    if (!isSaved) return;
-    try {
-      await unsavePostAPI(postId);
-      setIsSaved(false);
-    } catch (error) {
-      console.error("Lỗi khi bỏ lưu bài viết:", error);
+      console.error("Lỗi khi lưu/bỏ lưu bài viết:", error);
     }
   };
 
@@ -41,29 +35,18 @@ const LeftSideBar = ({ postId, scrollToComment }) => {
       {/* Like */}
       <Heart
         onClick={handleLike}
-        className={`cursor-pointer transition-all duration-200 ${
-          isLiked
-            ? "fill-red-500 text-red-500"
-            : "hover:text-red-500 text-red-500"
-        }`}
+        className={`cursor-pointer transition-all duration-200 ${isLiked
+          ? "fill-red-500 text-red-500"
+          : "hover:text-red-500 text-red-500"
+          }`}
         size={28}
       />
 
       {/* Save */}
       <Save
-        onClick={handleSave}
-        className={`cursor-pointer transition-all duration-200 ${
-          isSaved ? "fill-yellow-400 text-yellow-400" : "hover:text-yellow-400"
-        }`}
-        size={28}
-      />
-
-      {/* Unsave */}
-      <XCircle
-        onClick={handleUnsave}
-        className={`cursor-pointer transition-all duration-200 ${
-          isSaved ? "fill-red-500 text-red-500" : "hover:text-red-500"
-        }`}
+        onClick={handleSaveToggle}
+        className={`cursor-pointer transition-all duration-200 ${isSaved ? "fill-yellow-400 text-yellow-400" : "hover:text-yellow-400"
+          }`}
         size={28}
       />
 

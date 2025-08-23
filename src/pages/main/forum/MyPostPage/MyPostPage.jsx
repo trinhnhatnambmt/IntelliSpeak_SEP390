@@ -1,29 +1,18 @@
 import React, { useState, useEffect } from "react";
-import ReactQuill from "react-quill-new";
-import "react-quill-new/dist/quill.snow.css";
 import { toast } from "react-toastify";
 import {
-    uploadImageAPI,
-    postForumAPI,
     getAllForumTopicsAPI,
     getMyForumPostsAPI,
     deleteForumPostAPI,
     updateForumPostAPI,
-    likeOrUnlikePostAPI
+    likeOrUnlikePostAPI,
+    uploadImageAPI
 } from "~/apis/index";
 import { Link } from "react-router-dom";
-import { MoreHorizontal, Heart } from "lucide-react";
+import { MoreHorizontal, Heart, Edit, Trash2 } from "lucide-react";
+import CreatePostModal from "~/components/forum/CreatePostModal";
 
 const MyPostPage = () => {
-    // State for new post
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
-    const [coverImagePreview, setCoverImagePreview] = useState(null);
-    const [coverImageFile, setCoverImageFile] = useState(null);
-    const [topics, setTopics] = useState([]);
-    const [selectedTopicId, setSelectedTopicId] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-
     // State for my posts
     const [myPosts, setMyPosts] = useState([]);
     const [loadingPosts, setLoadingPosts] = useState(true);
@@ -39,18 +28,17 @@ const MyPostPage = () => {
     const [editCoverImagePreview, setEditCoverImagePreview] = useState(null);
     const [editCoverImageFile, setEditCoverImageFile] = useState(null);
     const [editLoading, setEditLoading] = useState(false);
+    const [topics, setTopics] = useState([]);
+
+    // State for create post modal
+    const [createPostModalOpen, setCreatePostModalOpen] = useState(false);
 
     // Fetch topics
     useEffect(() => {
         const fetchTopics = async () => {
-            try {
-                const data = await getAllForumTopicsAPI();
-                if (Array.isArray(data)) {
-                    setTopics(data);
-                    setSelectedTopicId(null);
-                }
-            } catch (err) {
-                toast.error("Error loading topic list.");
+            const data = await getAllForumTopicsAPI();
+            if (Array.isArray(data)) {
+                setTopics(data);
             }
         };
         fetchTopics();
@@ -64,7 +52,7 @@ const MyPostPage = () => {
             if (res && Array.isArray(res.data)) {
                 setMyPosts(res.data);
 
-                // Initialize liked state (replace with actual API data if available)
+                // Initialize liked state
                 const initialLikedState = {};
                 res.data.forEach(post => {
                     initialLikedState[post.postId] = post.isLiked || false;
@@ -129,24 +117,6 @@ const MyPostPage = () => {
         }
     };
 
-    // Handle image upload for new post
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setCoverImagePreview(URL.createObjectURL(file));
-            setCoverImageFile(file);
-        }
-    };
-
-    // Handle image upload for edit post
-    const handleEditImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setEditCoverImagePreview(URL.createObjectURL(file));
-            setEditCoverImageFile(file);
-        }
-    };
-
     // Extract base64 images from HTML content
     const extractBase64ImagesFromHTML = (htmlContent) => {
         const div = document.createElement("div");
@@ -175,86 +145,6 @@ const MyPostPage = () => {
         return new File([u8arr], filename, { type: mime });
     };
 
-    // Handle publish new post
-    const handlePublish = async () => {
-        let loadingToastId = null;
-        try {
-            setIsLoading(true);
-            loadingToastId = toast.loading("Posting your article...");
-
-            if (!title.trim() || !content.trim()) {
-                toast.update(loadingToastId, {
-                    render: "Title and content cannot be empty!",
-                    type: "error",
-                    isLoading: false,
-                    autoClose: 3000,
-                });
-                return;
-            }
-
-            if (!selectedTopicId || isNaN(selectedTopicId)) {
-                toast.update(loadingToastId, {
-                    render: "You must select a valid topic!",
-                    type: "error",
-                    isLoading: false,
-                    autoClose: 3000,
-                });
-                return;
-            }
-
-            const { div, imgTags, base64Images } = extractBase64ImagesFromHTML(content);
-
-            const allImages = [];
-            if (coverImageFile) allImages.push(coverImageFile);
-            const contentImagesAsFiles = base64Images.map((base64, i) =>
-                convertBase64ToFile(base64, `content_img_${i}.png`)
-            );
-            allImages.push(...contentImagesAsFiles);
-
-            let uploadedUrls = [];
-            if (allImages.length > 0) {
-                uploadedUrls = await uploadImageAPI(allImages);
-            }
-
-            imgTags.forEach((img) => img.remove());
-            const newContent = div.innerHTML;
-
-            const payload = {
-                title,
-                content: newContent,
-                images: uploadedUrls,
-                forumTopicTypeId: Number(selectedTopicId),
-            };
-
-            await postForumAPI(payload);
-
-            toast.update(loadingToastId, {
-                render: "Post published successfully!",
-                type: "success",
-                isLoading: false,
-                autoClose: 3000,
-            });
-
-            // Reset form and refresh posts
-            setTitle("");
-            setContent("");
-            setCoverImagePreview(null);
-            setCoverImageFile(null);
-            setSelectedTopicId(null);
-            await fetchMyPosts();
-        } catch (err) {
-            console.error(err);
-            toast.update(loadingToastId, {
-                render: "Failed to publish post. Please try again.",
-                type: "error",
-                isLoading: false,
-                autoClose: 3000,
-            });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     // Handle edit post
     const handleEdit = (post) => {
         setEditPost(post);
@@ -278,6 +168,15 @@ const MyPostPage = () => {
             await fetchMyPosts();
         } catch (error) {
             toast.error("Failed to delete post!");
+        }
+    };
+
+    // Handle image upload for edit post
+    const handleEditImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setEditCoverImagePreview(URL.createObjectURL(file));
+            setEditCoverImageFile(file);
         }
     };
 
@@ -370,7 +269,7 @@ const MyPostPage = () => {
     };
 
     const PostCard = ({ post }) => (
-        <div className="bg-white dark:bg-[#1e1e2f] shadow rounded-lg overflow-hidden mb-10 border border-neutral-200 dark:border-neutral-700 relative">
+        <div className="bg-white dark:bg-[#1e1e2f] shadow rounded-lg overflow-hidden mb-6 border border-neutral-200 dark:border-neutral-700 relative">
             <div className="absolute top-3 right-3 z-20">
                 <button
                     className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
@@ -384,21 +283,23 @@ const MyPostPage = () => {
                 {openMenuPostId === post.postId && (
                     <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-[#23233a] border border-gray-200 dark:border-gray-700 rounded shadow-lg py-1 z-30">
                         <button
-                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                            className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
                             onClick={(e) => {
                                 e.preventDefault();
                                 handleEdit(post);
                             }}
                         >
+                            <Edit className="w-4 h-4 mr-2" />
                             Edit
                         </button>
                         <button
-                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-800"
+                            className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-800"
                             onClick={(e) => {
                                 e.preventDefault();
                                 handleDelete(post.postId);
                             }}
                         >
+                            <Trash2 className="w-4 h-4 mr-2" />
                             Delete
                         </button>
                     </div>
@@ -412,25 +313,25 @@ const MyPostPage = () => {
                 />
                 <div className="p-4">
                     <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                        {post.userName} • {new Date(post.createAt).toLocaleString("vi-VN", {
+                        {post.userName} • {new Date(post.createAt).toLocaleString("en-US", {
                             day: "2-digit",
-                            month: "2-digit",
+                            month: "short",
                             year: "numeric",
                             hour: "2-digit",
                             minute: "2-digit",
                             hour12: false,
                         })}
                     </div>
-                    <h2 className="text-xl font-bold mb-2">{post.title}</h2>
+                    <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-white">{post.title}</h2>
                     <div className="text-sm text-gray-500 dark:text-gray-400 space-x-2 mb-2">
-                        <span>#{post.forumTopicType?.title || "chủ đề"}</span>
+                        <span>#{post.forumTopicType?.title || "topic"}</span>
                     </div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
                             <button
                                 onClick={(e) => handleLike(post.postId, e)}
                                 className="flex items-center"
-                                aria-label={likedPosts[post.postId] ? "Unlike bài viết" : "Like bài viết"}
+                                aria-label={likedPosts[post.postId] ? "Unlike post" : "Like post"}
                             >
                                 <Heart
                                     className={`cursor-pointer transition-all duration-200 ${likedPosts[post.postId]
@@ -445,17 +346,13 @@ const MyPostPage = () => {
                             </button>
                         </div>
                         <span className="text-sm text-gray-600 dark:text-gray-300">
-                            🕓 {post.readTimeEstimate || 3} phút đọc
+                            🕓 {post.readTimeEstimate || 3} min read
                         </span>
                     </div>
                 </div>
             </Link>
         </div>
     );
-
-
-    // State for modal trigger
-    const [expandForm, setExpandForm] = useState(false);
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-[#0e0c15] text-gray-900 dark:text-white transition-colors duration-300 container mx-auto px-4 py-7">
@@ -464,156 +361,54 @@ const MyPostPage = () => {
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-white">My Posts</h2>
                 <button
                     className="flex items-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md shadow transition-all duration-300"
-                    onClick={() => setExpandForm(true)}
+                    onClick={() => setCreatePostModalOpen(true)}
                 >
                     <span>✍️ Create Post</span>
                 </button>
             </div>
 
-            {/* New Post Modal */}
-            {expandForm && (
-                <div
-                    className="fixed inset-0 z-30 flex items-start justify-center pt-16"
-                    style={{
-                        backgroundColor: 'rgba(50, 50, 50, 0.7)',
-                        backdropFilter: 'blur(4px)',
-                        WebkitBackdropFilter: 'blur(4px)'
-                    }}
-                >
-                    <div className="bg-white dark:bg-[#1e1e2f] rounded-xl shadow-lg p-8 w-full max-w-2xl max-h-[calc(100vh-8rem)] overflow-y-auto relative mx-4 mt-10">
-                        <button
-                            className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"
-                            onClick={() => setExpandForm(false)}
-                            title="Close"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                        <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">✍️ Create New Post</h1>
-
-                        {/* Cover Image */}
-                        <div className="mb-6">
-                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Cover Image</label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                                className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer dark:file:bg-blue-500 dark:hover:file:bg-blue-600"
-                            />
-                            {coverImagePreview && (
-                                <img
-                                    src={coverImagePreview}
-                                    alt="Preview"
-                                    className="mt-4 rounded-lg max-h-64 object-cover w-full border border-gray-300 dark:border-neutral-700"
-                                />
-                            )}
-                        </div>
-
-                        {/* Topic Select */}
-                        <div className="mb-6">
-                            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Select Topic</label>
-                            <select
-                                value={selectedTopicId ?? ""}
-                                onChange={(e) => setSelectedTopicId(Number(e.target.value))}
-                                className="w-full p-3 rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-700 dark:text-neutral-200 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                            >
-                                <option value="" disabled>--Select Topic--</option>
-                                {topics.length === 0 ? (
-                                    <option disabled>No topics available</option>
-                                ) : (
-                                    topics.map((topic) => (
-                                        <option key={topic.id} value={Number(topic.id)}>
-                                            {topic.title}
-                                        </option>
-                                    ))
-                                )}
-                            </select>
-                        </div>
-
-                        {/* Title */}
-                        <input
-                            type="text"
-                            placeholder="📝 Post title..."
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="w-full p-4 mb-5 text-xl font-semibold rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                        />
-
-                        {/* Content Editor */}
-                        <ReactQuill
-                            theme="snow"
-                            value={content}
-                            onChange={setContent}
-                            placeholder="✍️ Write your post content here..."
-                            className="mb-6 bg-white dark:bg-[#181818] text-black dark:text-white border-none rounded-md"
-                            modules={{
-                                toolbar: [
-                                    [{ header: [1, 2, 3, false] }],
-                                    ["bold", "italic", "underline"],
-                                    ["blockquote", "code-block"],
-                                    [{ list: "ordered" }, { list: "bullet" }],
-                                    ["link", "image"],
-                                    ["clean"],
-                                ],
-                            }}
-                        />
-
-                        {/* Publish Button */}
-                        <div className="flex justify-between items-center mt-10">
-                            <button
-                                onClick={async () => { await handlePublish(); setExpandForm(false); }}
-                                disabled={isLoading}
-                                className={`flex items-center justify-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
-                            >
-                                {isLoading ? (
-                                    <>
-                                        <svg
-                                            className="animate-spin h-5 w-5 text-white"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <circle
-                                                className="opacity-25"
-                                                cx="12"
-                                                cy="12"
-                                                r="10"
-                                                stroke="currentColor"
-                                                strokeWidth="4"
-                                            ></circle>
-                                            <path
-                                                className="opacity-75"
-                                                fill="currentColor"
-                                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                                            ></path>
-                                        </svg>
-                                        <span>Posting...</span>
-                                    </>
-                                ) : (
-                                    <span>🚀 Publish</span>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Create Post Modal */}
+            <CreatePostModal
+                isOpen={createPostModalOpen}
+                onClose={() => setCreatePostModalOpen(false)}
+                onPostCreated={fetchMyPosts}
+            />
 
             {/* My Posts Section */}
             <div className="w-[90%] max-w-3xl mx-auto">
                 {loadingPosts ? (
-                    <div className="text-center text-gray-500 dark:text-gray-400">Loading posts...</div>
+                    <div className="text-center text-gray-500 dark:text-gray-400 py-10">
+                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                        <p className="mt-2">Loading your posts...</p>
+                    </div>
                 ) : myPosts.length === 0 ? (
-                    <div className="text-center text-gray-500 dark:text-gray-400">You have no posts yet.</div>
+                    <div className="text-center py-10 text-gray-500 dark:text-gray-400">
+                        <div className="text-4xl mb-4">📝</div>
+                        <h3 className="text-xl font-medium mb-2">You haven't created any posts yet</h3>
+                        <p className="mb-4">Share your thoughts and experiences with the community</p>
+                        <button
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md"
+                            onClick={() => setCreatePostModalOpen(true)}
+                        >
+                            Create Your First Post
+                        </button>
+                    </div>
                 ) : (
-                    myPosts.map((post) => <PostCard key={post.postId} post={post} />)
+                    <div>
+                        <p className="text-gray-600 dark:text-gray-400 mb-4">
+                            You have {myPosts.length} {myPosts.length === 1 ? 'post' : 'posts'}
+                        </p>
+                        {myPosts.map((post) => (
+                            <PostCard key={post.postId} post={post} />
+                        ))}
+                    </div>
                 )}
             </div>
 
             {/* Edit Post Modal */}
             {editModalOpen && (
                 <div
-                    className="fixed inset-0 z-20 flex items-start justify-center pt-16"
+                    className="fixed inset-0 z-50 flex items-start justify-center pt-16"
                     style={{
                         backgroundColor: 'rgba(50, 50, 50, 0.7)',
                         backdropFilter: 'blur(4px)',
@@ -676,26 +471,28 @@ const MyPostPage = () => {
                             className="w-full p-4 mb-5 text-xl font-semibold rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                         />
 
-                        {/* Content */}
-                        <ReactQuill
-                            theme="snow"
-                            value={editContent}
-                            onChange={setEditContent}
-                            placeholder="✍️ Write your post content here..."
-                            className="mb-6 bg-white dark:bg-[#181818] text-black dark:text-white border-none rounded-md"
-                            modules={{
-                                toolbar: [
-                                    [{ header: [1, 2, 3, false] }],
-                                    ["bold", "italic", "underline"],
-                                    ["blockquote", "code-block"],
-                                    [{ list: "ordered" }, { list: "bullet" }],
-                                    ["link", "image"],
-                                    ["clean"],
-                                ],
-                            }}
-                        />
+                        {/* Content Editor */}
+                        <div className="mb-6">
+                            <ReactQuill
+                                theme="snow"
+                                value={editContent}
+                                onChange={setEditContent}
+                                placeholder="✍️ Write your post content here..."
+                                className="bg-white dark:bg-[#181818] text-black dark:text-white border-none rounded-md"
+                                modules={{
+                                    toolbar: [
+                                        [{ header: [1, 2, 3, false] }],
+                                        ["bold", "italic", "underline"],
+                                        ["blockquote", "code-block"],
+                                        [{ list: "ordered" }, { list: "bullet" }],
+                                        ["link", "image"],
+                                        ["clean"],
+                                    ],
+                                }}
+                            />
+                        </div>
 
-                        {/* Nút lưu */}
+                        {/* Save Button */}
                         <div className="flex justify-end mt-6">
                             <button
                                 onClick={handleSaveEdit}
