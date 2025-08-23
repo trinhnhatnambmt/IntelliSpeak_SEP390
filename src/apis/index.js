@@ -1,11 +1,15 @@
 // ==== GET HR APPLICATION STATUS ====
 export const getHrApplicationStatusAPI = async () => {
-    const response = await authorizedAxiosInstance.get(`${API_ROOT}/hr/application/status`);
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/hr/application/status`
+    );
     return response.data;
 };
 // Get all companies
 export const getAllCompaniesToReqHR = async () => {
-    const response = await authorizedAxiosInstance.get(`${API_ROOT}/company/all`);
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/company/all`
+    );
     // console.log("Fetched companies:", response.data);
     return response.data;
 };

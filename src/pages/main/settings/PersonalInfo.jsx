@@ -25,7 +25,7 @@ const PersonalInfo = () => {
         setEditLabel(label);
         setEditKey(key);
         setEditValue(value);
-        setAvatarPreview(key === 'avatar' ? value : null);
+        setAvatarPreview(key === "avatar" ? value : null);
         setAvatarFile(null);
         setIsModalOpen(true);
     };
@@ -45,7 +45,7 @@ const PersonalInfo = () => {
             let updatedValue = editValue;
 
             // Nếu là upload avatar và có file mới
-            if (editKey === 'avatar' && avatarFile) {
+            if (editKey === "avatar" && avatarFile) {
                 const uploadedUrls = await uploadImageAPI([avatarFile]);
                 if (uploadedUrls.length > 0) {
                     updatedValue = uploadedUrls[0];
@@ -54,13 +54,13 @@ const PersonalInfo = () => {
 
             const updatedUser = {
                 ...currentUser.user,
-                [editKey]: updatedValue
+                [editKey]: updatedValue,
             };
 
             await toast.promise(dispatch(updateUserAPI(updatedUser)), {
                 pending: "Đang cập nhật...",
                 success: "Cập nhật thành công!",
-                error: "Cập nhật thất bại!"
+                error: "Cập nhật thất bại!",
             });
 
             dispatch(getUserProfileAPI());
@@ -181,7 +181,7 @@ const PersonalInfo = () => {
                     </Button>,
                 ]}
             >
-                {editKey === 'avatar' ? (
+                {editKey === "avatar" ? (
                     <div>
                         <input
                             type="file"
