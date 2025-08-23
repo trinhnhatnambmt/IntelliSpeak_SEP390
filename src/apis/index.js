@@ -387,6 +387,18 @@ export const getInterviewSessionWhenCreated = async () => {
     return response.data.data;
 };
 
+export const getAllCompaniesAPI = async () => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/company`);
+    return response.data.data;
+};
+
+export const getCompanyDetailAPI = async (id) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/company/${id}`
+    );
+    return response.data.data;
+};
+
 // ==== HR APPLICATION ====
 export const applyForHrAPI = async ({
     companyId,

@@ -29,7 +29,7 @@ const UploadPage = () => {
         //Gọi API
         uploadResumeAPI(reqData, title).then((res) => {
             if (!res.error) {
-                toast.success("Phân tích thành công");
+                toast.success("Analyze CV successfully!");
             }
             navigate(`/resume/${res?.evaluation?.id}`);
         });

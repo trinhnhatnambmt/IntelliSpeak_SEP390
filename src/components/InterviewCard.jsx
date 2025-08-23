@@ -1,36 +1,19 @@
 import React from "react";
-import { ChevronRight } from "lucide-react";
 import { service2 } from "~/assets";
 import { Link, useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
-import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { interViewSessionQuestionForAiAPI } from "~/redux/interview/interviewSessionSlice";
 
 const InterviewCard = ({
     type = "main",
     interviewTitle,
-    startedAt,
     totalQuestion,
     interviewHistoryId,
     interviewSessionId,
 }) => {
-    const formattedDate = dayjs(startedAt).format("MMM DD, YYYY – h:mm A");
-    const dispatch = useDispatch();
+    const [title, createdAt] = interviewTitle.split(" - ");
+
     const navigate = useNavigate();
     const submitInterviewSession = () => {
-        toast
-            .promise(
-                dispatch(interViewSessionQuestionForAiAPI(interviewSessionId)),
-                {
-                    pending: "Đang chờ để chuyển qua phỏng vấn...",
-                }
-            )
-            .then((res) => {
-                if (!res.error) {
-                    navigate(`/main/interviewPage/${interviewSessionId}`);
-                }
-            });
+        navigate(`/main/language/${interviewSessionId}`);
     };
 
     return (
@@ -52,14 +35,12 @@ const InterviewCard = ({
                 />
             </figure>
             <article className="p-4 space-y-2">
-                <div className="h-8 w-40 bg-[#4393fc] text-white rounded-md flex items-center justify-center mb-2 text-sm font-medium">
-                    Số câu hỏi: {totalQuestion}
+                <div className="h-8 px-5     bg-[#4393fc] text-white rounded-md flex items-center justify-center mb-2 text-sm font-medium">
+                    Number of questions: {totalQuestion}
                 </div>
-                <h1 className="text-xl font-semibold capitalize">
-                    {interviewTitle}
-                </h1>
+                <h1 className="text-xl font-semibold capitalize">{title}</h1>
                 <p className="text-base leading-[120%] text-neutral-600 dark:text-neutral-300">
-                    {formattedDate}
+                    {createdAt}
                 </p>
 
                 {type === "main" && (
@@ -67,7 +48,7 @@ const InterviewCard = ({
                         onClick={submitInterviewSession}
                         className="cursor-pointer text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 pt-2 flex gap-1 transition-all duration-300"
                     >
-                        Bắt đầu phỏng vấn
+                        Start Interview
                     </button>
                 )}
 
@@ -77,7 +58,7 @@ const InterviewCard = ({
                             to={`/main/feedback/${interviewHistoryId}`}
                             className="text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 flex gap-1 transition-all duration-300"
                         >
-                            Xem Feedback
+                            View Feedback
                         </Link>
                     </div>
                 )}

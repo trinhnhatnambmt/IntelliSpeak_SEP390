@@ -31,7 +31,7 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
     };
 
     const handleCancelClick = () => {
-        form.resetFields(); // ✅ clear khi bấm close
+        form.resetFields();
         setSelectedRole(null);
         onCancel();
     };
@@ -107,6 +107,10 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
                         placeholder="Select number of questions"
                         style={{ width: "100%" }}
                         options={[
+                            {
+                                value: "3",
+                                label: "3 questions",
+                            },
                             {
                                 value: "5",
                                 label: "5 questions",

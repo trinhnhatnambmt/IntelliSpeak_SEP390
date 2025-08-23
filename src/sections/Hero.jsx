@@ -76,7 +76,10 @@ const Hero = () => {
                 >
                     See plans
                 </Button>
-                <Button className="px-4 py-2 bg-white  text-lg before:bg-emerald-500 text-n-8 dark:text-black shadow-md border border-emerald-400 hover:bg-emerald-50 transition-colors duration-300">
+                <Button
+                    onClick={() => navigate("/login")}
+                    className="px-4 py-2 bg-white  text-lg before:bg-emerald-500 text-n-8 dark:text-black shadow-md border border-emerald-400 hover:bg-emerald-50 transition-colors duration-300"
+                >
                     Start for free
                 </Button>
             </div>

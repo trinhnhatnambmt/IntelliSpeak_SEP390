@@ -1,7 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Earth from "~/components/Globe";
 
 const DirectMeetSection = () => {
+    const navigate = useNavigate();
+
     return (
         <section
             className="container mx-auto my-12 px-4 md:px-20 py-20 md:py-10 bg-white dark:bg-[#18122B] rounded-3xl shadow-lg transition-colors duration-500"
@@ -17,7 +20,10 @@ const DirectMeetSection = () => {
                         practice and connect directly with trusted recruiters
                         across the globe.
                     </p>
-                    <button className="mt-6 px-6 py-3 cursor-pointer bg-emerald-500 text-white font-semibold rounded-full hover:bg-emerald-600 dark:hover:bg-emerald-400 transition-colors duration-300 shadow-md">
+                    <button
+                        onClick={() => navigate("/login")}
+                        className="mt-6 px-6 py-3 cursor-pointer bg-emerald-500 text-white font-semibold rounded-full hover:bg-emerald-600 dark:hover:bg-emerald-400 transition-colors duration-300 shadow-md"
+                    >
                         Join Now
                     </button>
                 </div>

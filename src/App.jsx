@@ -29,6 +29,9 @@ import Analyze from "./pages/main/analyse/Analyze";
 import UploadJDPage from "./pages/main/analyse/UploadJDPage";
 import JobDescription from "./pages/main/analyse/JobDescription";
 import HRCreateQuestionPage from "./pages/main/hr/HRCreateQuestionPage";
+import Companies from "./pages/main/companies/Companies";
+import CompanyDetail from "./pages/main/companies/CompanyDetail";
+import ChooseLanguage from "./pages/main/interview/ChooseLanguage";
 
 const ProtectedRoutes = ({ user }) => {
     if (!user) return <Navigate to="/" replace={true} />;
@@ -61,6 +64,8 @@ const App = () => {
                         path="interviewPage/:id"
                         element={<InterviewPage />}
                     />
+                    <Route path="language/:id" element={<ChooseLanguage />} />
+
                     <Route path="topic" element={<Topic />} />
                     <Route path="topicDetail/:id" element={<TopicDetail />} />
                     <Route path="profile" element={<Profile />} />
@@ -73,6 +78,10 @@ const App = () => {
                     {/* Upload cv/jd */}
                     <Route path="upload" element={<UploadPage />} />
                     <Route path="uploadJD" element={<UploadJDPage />} />
+
+                    {/* Companies */}
+                    <Route path="companies" element={<Companies />} />
+                    <Route path="company/:id" element={<CompanyDetail />} />
 
                     <Route path="payment" element={<Payment />} />
                     <Route path="settings" element={<Settings />} />

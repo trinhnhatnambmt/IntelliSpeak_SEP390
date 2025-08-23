@@ -14,7 +14,7 @@ const InterviewPage = () => {
                 {/* Header Section */}
                 <div className="flex items-center justify-between mt-30 mb-10">
                     <h1 className="font-extrabold text-4xl text-gray-900 dark:text-white">
-                        {currentInterviewSession?.title}
+                        {currentInterviewSession?.title?.split(" - ")[0]}
                     </h1>
                     <div className="rounded-xl py-2 px-2 text-lg  bg-gradient-to-r from-sky-200 to-pink-100 dark:bg-[#24273A] dark:bg-none">
                         Technical
