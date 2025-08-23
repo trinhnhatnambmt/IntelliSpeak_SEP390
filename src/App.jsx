@@ -64,7 +64,7 @@ const App = () => {
                         path="interviewPage/:id"
                         element={<InterviewPage />}
                     />
-                    <Route path="language" element={<ChooseLanguage />} />
+                    <Route path="language/:id" element={<ChooseLanguage />} />
 
                     <Route path="topic" element={<Topic />} />
                     <Route path="topicDetail/:id" element={<TopicDetail />} />

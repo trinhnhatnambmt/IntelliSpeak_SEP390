@@ -108,6 +108,10 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
                         style={{ width: "100%" }}
                         options={[
                             {
+                                value: "3",
+                                label: "3 questions",
+                            },
+                            {
                                 value: "5",
                                 label: "5 questions",
                             },

@@ -23,9 +23,9 @@ const UploadJDPage = () => {
 
         //Gọi API
         uploadJdAPI(reqData).then((res) => {
-            console.log("🚀 ~ handleAnalyze JD ~ res:", res);
+            // console.log("🚀 ~ handleAnalyze JD ~ res:", res);
             if (!res.error) {
-                toast.success("Phân tích thành công");
+                toast.success("Analyze JD successfully!");
             }
             navigate(`/jd/${res?.jdId}`);
         });

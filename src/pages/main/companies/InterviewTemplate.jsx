@@ -1,8 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { interViewSessionQuestionForAiAPI } from "~/redux/interview/interviewSessionSlice";
 
 const InterviewTemplate = ({
     interviewSessionId,
@@ -10,22 +7,10 @@ const InterviewTemplate = ({
     description,
     totalQuestion,
 }) => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const submitInterviewSession = () => {
-        toast
-            .promise(
-                dispatch(interViewSessionQuestionForAiAPI(interviewSessionId)),
-                {
-                    pending: "Waiting to move on to interview...",
-                }
-            )
-            .then((res) => {
-                if (!res.error) {
-                navigate(`/main/interviewPage/${interviewSessionId}`);
-                }
-            });
+        navigate(`/main/language/${interviewSessionId}`);
     };
 
     return (
