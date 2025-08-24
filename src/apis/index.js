@@ -428,6 +428,14 @@ export const applyForHrAPI = async ({
     return response.data;
 };
 
+// ==== GET HR INTERVIEW SESSIONS ====
+export const getMyInterviewSessionsAPI = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/interview-sessions/my-sessions`
+    );
+    return response.data;
+};
+
 // ==== CREATE PAYMENT LINK ====
 export const createPaymentLinkAPI = async (packageId) => {
     try {

@@ -5,14 +5,15 @@ import {
     postQuestion,
     connectTopicAndTag,
     getTagsOfTopic,
-    getMyQuestionsAPI
+    getMyQuestionsAPI,
+    getMyInterviewSessionsAPI
 } from "~/apis/index";
 import { toast } from "react-toastify";
 
 const difficulties = [
-    { value: "EASY", label: "Dễ" },
-    { value: "MEDIUM", label: "Trung bình" },
-    { value: "HARD", label: "Khó" },
+    { value: "EASY", label: "Easy" },
+    { value: "MEDIUM", label: "Medium" },
+    { value: "HARD", label: "Hard" },
 ];
 
 const initialForm = {
@@ -30,9 +31,21 @@ export default function HRCreateQuestionPage() {
     const [tags, setTags] = useState([]);
     const [success, setSuccess] = useState(false);
     const [myQuestions, setMyQuestions] = useState([]);
-    const [activeTab, setActiveTab] = useState('list');
+    const [mySessions, setMySessions] = useState([]);
+    const [activeTab, setActiveTab] = useState('session');
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const [sessionSearchTerm, setSessionSearchTerm] = useState(""); // thêm state cho search session
+    const [showTemplateModal, setShowTemplateModal] = useState(false);
+    const [templateForm, setTemplateForm] = useState({
+        title: "",
+        description: "",
+        totalQuestion: "",
+        difficulty: "",
+        topicId: "",
+        tagIds: [],
+    });
+    const [templateLoading, setTemplateLoading] = useState(false);
 
     const fetchMyQuestions = async () => {
         setIsLoading(true);
@@ -43,7 +56,23 @@ export default function HRCreateQuestionPage() {
             }
         } catch (error) {
             console.error("Error fetching my questions:", error);
-            toast.error("Lỗi khi lấy danh sách câu hỏi");
+            toast.error("Failed to fetch questions list");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const fetchMySessions = async () => {
+        setIsLoading(true);
+        try {
+            const res = await getMyInterviewSessionsAPI();
+            // Đảm bảo luôn là mảng
+            const sessions = Array.isArray(res) ? res : res?.data || [];
+            setMySessions(sessions);
+        } catch (error) {
+            console.error("Error fetching interview sessions:", error);
+            toast.error("Failed to fetch interview sessions");
+            setMySessions([]); // fallback về mảng rỗng nếu lỗi
         } finally {
             setIsLoading(false);
         }
@@ -57,25 +86,41 @@ export default function HRCreateQuestionPage() {
                     getAllTopic(),
                     getAllTag()
                 ]);
-
                 setTopics(Array.isArray(topicsRes) ? topicsRes : topicsRes?.data || []);
                 setTags(Array.isArray(tagsRes) ? tagsRes : tagsRes?.data || []);
-
                 await fetchMyQuestions();
+                await fetchMySessions();
             } catch (error) {
                 console.error("Error fetching initial data:", error);
-                toast.error("Lỗi khi tải dữ liệu ban đầu");
+                toast.error("Failed to load initial data");
             } finally {
                 setIsLoading(false);
             }
         };
-
         fetchData();
     }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleTemplateChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        if (name === "tagIds") {
+            const tagId = value;
+            setTemplateForm((prev) => ({
+                ...prev,
+                tagIds: checked
+                    ? [...prev.tagIds, tagId]
+                    : prev.tagIds.filter((id) => id !== tagId),
+            }));
+        } else {
+            setTemplateForm((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -86,15 +131,12 @@ export default function HRCreateQuestionPage() {
         const tagId = Number(form.tag);
 
         try {
-            // Check if tag is already connected to topic
             let isConnected = false;
             try {
                 const tagsOfTopic = await getTagsOfTopic(topicId);
                 const tagsData = Array.isArray(tagsOfTopic) ? tagsOfTopic : tagsOfTopic?.data || [];
                 isConnected = tagsData.some((t) => Number(t.tagId) === tagId);
-            } catch {
-                // If error, assume not connected and try to connect
-            }
+            } catch {}
 
             if (!isConnected) {
                 await connectTopicAndTag(topicId, tagId);
@@ -112,16 +154,40 @@ export default function HRCreateQuestionPage() {
             };
 
             await postQuestion(payload);
-            toast.success("Tạo câu hỏi thành công!");
+            toast.success("Question created successfully!");
             setSuccess(true);
             setForm(initialForm);
             await fetchMyQuestions();
-            setActiveTab('list');
+            setActiveTab('question');
         } catch (err) {
             console.error("Error creating question:", err);
-            toast.error(err.response?.data?.message || "Tạo câu hỏi thất bại!");
+            toast.error(err.response?.data?.message || "Failed to create question!");
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleCreateTemplate = async (e) => {
+        e.preventDefault();
+        setTemplateLoading(true);
+        try {
+            // TODO: Gọi API tạo template ở đây, ví dụ:
+            // await postInterviewSessionTemplate(templateForm);
+            toast.success("Template created successfully!");
+            setShowTemplateModal(false);
+            setTemplateForm({
+                title: "",
+                description: "",
+                totalQuestion: "",
+                difficulty: "",
+                topicId: "",
+                tagIds: [],
+            });
+            await fetchMySessions();
+        } catch (err) {
+            toast.error("Failed to create template!");
+        } finally {
+            setTemplateLoading(false);
         }
     };
 
@@ -137,35 +203,116 @@ export default function HRCreateQuestionPage() {
 
     return (
         <div className="max-w-4xl mx-auto p-4 md:p-8 bg-white dark:bg-neutral-900 rounded-xl shadow-md mt-6 md:mt-10 z-10 relative">
-            <h2 className="text-2xl font-bold mb-6 text-center">Quản lý câu hỏi phỏng vấn</h2>
-
+            <h2 className="text-2xl font-bold mb-6 text-center">Interview Management</h2>
             <div className="flex border-b mb-6 overflow-x-auto">
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === 'list' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
-                    onClick={() => setActiveTab('list')}
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === 'session' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
+                    onClick={() => setActiveTab('session')}
                 >
-                    Danh sách câu hỏi ({myQuestions.length})
+                    Interview Session Management ({mySessions.length})
                 </button>
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === 'create' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
-                    onClick={() => setActiveTab('create')}
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === 'question' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
+                    onClick={() => setActiveTab('question')}
                 >
-                    Tạo câu hỏi mới
+                    Question Management
                 </button>
             </div>
-
             {isLoading ? (
                 <div className="flex justify-center items-center py-10">
                     <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
-            ) : activeTab === 'list' ? (
+            ) : activeTab === 'session' ? (
                 <div className="space-y-4">
+                    {/* Header + actions */}
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
-                        <h3 className="text-xl font-semibold">Danh sách câu hỏi của tôi</h3>
+                        <h3 className="text-xl font-semibold">My Interview Sessions</h3>
                         <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
                             <input
                                 type="text"
-                                placeholder="Tìm kiếm câu hỏi..."
+                                placeholder="Search sessions..."
+                                className="px-3 py-1 border rounded-md dark:bg-neutral-800 dark:border-neutral-700 flex-grow"
+                                value={sessionSearchTerm}
+                                onChange={e => setSessionSearchTerm(e.target.value)}
+                            />
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={fetchMySessions}
+                                    className="px-3 py-1 bg-gray-100 dark:bg-neutral-700 rounded-md text-sm"
+                                >
+                                    Refresh
+                                </button>
+                                <button
+                                    className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600"
+                                    onClick={() => setShowTemplateModal(true)}
+                                >
+                                    Create a new template
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Danh sách session */}
+                    {(!Array.isArray(mySessions) || mySessions.length === 0) ? (
+                        <div className="text-center py-10">
+                            <p className="text-gray-500 dark:text-gray-400">You have not created any interview sessions yet.</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            {mySessions
+                                .filter(session =>
+                                    session.title?.toLowerCase().includes(sessionSearchTerm.toLowerCase())
+                                )
+                                .map(session => (
+                                    <div key={session.interviewSessionId} className="p-4 border rounded-lg dark:border-neutral-700 hover:shadow-md transition-shadow flex gap-4 items-center">
+                                        {session.interviewSessionThumbnail && (
+                                            <img
+                                                src={session.interviewSessionThumbnail}
+                                                alt="Session Thumbnail"
+                                                className="w-20 h-20 object-cover rounded"
+                                            />
+                                        )}
+                                        <div className="flex-1">
+                                            <h4 className="font-medium text-lg">{session.title}</h4>
+                                            <p className="text-gray-600 dark:text-gray-300 mt-1">{session.description}</p>
+                                            <div className="flex gap-4 mt-2 flex-wrap items-center">
+                                                <span className="px-2 py-1 bg-gray-100 dark:bg-neutral-800 rounded text-sm">
+                                                    Total Questions: {session.totalQuestion}
+                                                </span>
+                                                <span className={`px-2 py-1 text-xs rounded-full ${
+                                                    session.difficulty === 'EASY' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                                                    session.difficulty === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                                                    'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                                                }`}>
+                                                    {session.difficulty.charAt(0) + session.difficulty.slice(1).toLowerCase()}
+                                                </span>
+                                                {/* Hiển thị tags nếu có */}
+                                                {Array.isArray(session.tags) && session.tags.length > 0 && (
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {session.tags.map(tag => (
+                                                            <span
+                                                                key={tag.tagId}
+                                                                className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full"
+                                                            >
+                                                                {tag.title}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                        </div>
+                    )}
+                </div>
+            ) : activeTab === 'question' ? (
+                <div className="space-y-4">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
+                        <h3 className="text-xl font-semibold">My Questions</h3>
+                        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+                            <input
+                                type="text"
+                                placeholder="Search questions..."
                                 className="px-3 py-1 border rounded-md dark:bg-neutral-800 dark:border-neutral-700 flex-grow"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -175,38 +322,37 @@ export default function HRCreateQuestionPage() {
                                     onClick={fetchMyQuestions}
                                     className="px-3 py-1 bg-gray-100 dark:bg-neutral-700 rounded-md text-sm"
                                 >
-                                    Làm mới
+                                    Refresh
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('create')}
                                     className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600"
                                 >
-                                    Tạo mới
+                                    Thêm mới
                                 </button>
                             </div>
                         </div>
                     </div>
-
                     {filteredQuestions.length === 0 ? (
                         <div className="text-center py-10">
                             {searchTerm ? (
                                 <>
-                                    <p className="text-gray-500 dark:text-gray-400">Không tìm thấy câu hỏi phù hợp</p>
+                                    <p className="text-gray-500 dark:text-gray-400">No matching questions found</p>
                                     <button
                                         onClick={() => setSearchTerm("")}
                                         className="mt-4 px-4 py-2 bg-gray-100 dark:bg-neutral-700 rounded-md hover:bg-gray-200 dark:hover:bg-neutral-600"
                                     >
-                                        Xóa bộ lọc
+                                        Clear filter
                                     </button>
                                 </>
                             ) : (
                                 <>
-                                    <p className="text-gray-500 dark:text-gray-400">Bạn chưa tạo câu hỏi nào</p>
+                                    <p className="text-gray-500 dark:text-gray-400">You have not created any questions yet</p>
                                     <button
                                         onClick={() => setActiveTab('create')}
                                         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                                     >
-                                        Tạo câu hỏi đầu tiên
+                                        Create your first question
                                     </button>
                                 </>
                             )}
@@ -224,8 +370,7 @@ export default function HRCreateQuestionPage() {
                                                         question.difficulty === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
                                                             'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                                                     }`}>
-                                                    {question.difficulty === 'EASY' ? 'Dễ' :
-                                                        question.difficulty === 'MEDIUM' ? 'Trung bình' : 'Khó'}
+                                                    {question.difficulty.charAt(0) + question.difficulty.slice(1).toLowerCase()}
                                                 </span>
                                                 {question.tags.length > 0 && (
                                                     <div className="flex flex-wrap gap-2">
@@ -244,7 +389,7 @@ export default function HRCreateQuestionPage() {
                                     </div>
                                     {question.suitableAnswer1 && (
                                         <div className="mt-3 p-3 bg-gray-50 dark:bg-neutral-800 rounded">
-                                            <p className="font-medium">Đáp án mẫu:</p>
+                                            <p className="font-medium">Sample Answer:</p>
                                             <p className="mt-1 whitespace-pre-line">{question.suitableAnswer1}</p>
                                         </div>
                                     )}
@@ -256,7 +401,7 @@ export default function HRCreateQuestionPage() {
             ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <label className="block mb-1 font-medium">Chủ đề <span className="text-red-500">*</span></label>
+                        <label className="block mb-1 font-medium">Topic <span className="text-red-500">*</span></label>
                         <select
                             name="topic"
                             value={form.topic}
@@ -265,7 +410,7 @@ export default function HRCreateQuestionPage() {
                             required
                             disabled={isLoading}
                         >
-                            <option value="">Chọn chủ đề</option>
+                            <option value="">Select topic</option>
                             {topics.map((t) => (
                                 <option key={t.topicId || t.id} value={t.topicId || t.id}>
                                     {t.title}
@@ -283,7 +428,7 @@ export default function HRCreateQuestionPage() {
                             required
                             disabled={isLoading}
                         >
-                            <option value="">Chọn tag</option>
+                            <option value="">Select tag</option>
                             {tags.map((t) => (
                                 <option key={t.tagId || t.id} value={t.tagId || t.id}>
                                     {t.title}
@@ -292,7 +437,7 @@ export default function HRCreateQuestionPage() {
                         </select>
                     </div>
                     <div>
-                        <label className="block mb-1 font-medium">Tiêu đề <span className="text-red-500">*</span></label>
+                        <label className="block mb-1 font-medium">Title <span className="text-red-500">*</span></label>
                         <input
                             type="text"
                             name="title"
@@ -301,11 +446,11 @@ export default function HRCreateQuestionPage() {
                             className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
                             required
                             disabled={isLoading}
-                            placeholder="Nhập tiêu đề câu hỏi"
+                            placeholder="Enter question title"
                         />
                     </div>
                     <div>
-                        <label className="block mb-1 font-medium">Nội dung câu hỏi <span className="text-red-500">*</span></label>
+                        <label className="block mb-1 font-medium">Question Content <span className="text-red-500">*</span></label>
                         <textarea
                             name="content"
                             value={form.content}
@@ -314,11 +459,11 @@ export default function HRCreateQuestionPage() {
                             rows={4}
                             required
                             disabled={isLoading}
-                            placeholder="Nhập nội dung chi tiết câu hỏi"
+                            placeholder="Enter detailed question content"
                         />
                     </div>
                     <div>
-                        <label className="block mb-1 font-medium">Độ khó <span className="text-red-500">*</span></label>
+                        <label className="block mb-1 font-medium">Difficulty <span className="text-red-500">*</span></label>
                         <select
                             name="difficulty"
                             value={form.difficulty}
@@ -327,7 +472,7 @@ export default function HRCreateQuestionPage() {
                             required
                             disabled={isLoading}
                         >
-                            <option value="">Chọn độ khó</option>
+                            <option value="">Select difficulty</option>
                             {difficulties.map((d) => (
                                 <option key={d.value} value={d.value}>
                                     {d.label}
@@ -336,7 +481,7 @@ export default function HRCreateQuestionPage() {
                         </select>
                     </div>
                     <div>
-                        <label className="block mb-1 font-medium">Đáp án mẫu <span className="text-red-500">*</span></label>
+                        <label className="block mb-1 font-medium">Sample Answer <span className="text-red-500">*</span></label>
                         <textarea
                             name="demoAnswer"
                             value={form.demoAnswer}
@@ -345,32 +490,160 @@ export default function HRCreateQuestionPage() {
                             rows={3}
                             required
                             disabled={isLoading}
-                            placeholder="Nhập đáp án gợi ý cho câu hỏi"
+                            placeholder="Enter sample answer for the question"
                         />
                     </div>
                     <div className="flex gap-3">
                         <button
                             type="button"
-                            onClick={() => setActiveTab('list')}
+                            onClick={() => setActiveTab('question')}
                             className="flex-1 py-2 px-4 bg-gray-200 hover:bg-gray-300 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-black dark:text-white font-semibold rounded-md transition"
                             disabled={isLoading}
                         >
-                            Quay lại
+                            Back
                         </button>
                         <button
                             type="submit"
                             className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                             disabled={isLoading}
                         >
-                            {isLoading ? 'Đang xử lý...' : 'Tạo câu hỏi'}
+                            {isLoading ? 'Processing...' : 'Create Question'}
                         </button>
                     </div>
                     {success && (
                         <div className="text-green-600 text-center font-medium mt-2">
-                            Tạo câu hỏi thành công!
+                            Question created successfully!
                         </div>
                     )}
                 </form>
+            )}
+            {/* Modal tạo template */}
+            {showTemplateModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-6 w-full max-w-lg relative">
+                        <button
+                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                            onClick={() => setShowTemplateModal(false)}
+                            disabled={templateLoading}
+                        >
+                            &times;
+                        </button>
+                        <h3 className="text-xl font-semibold mb-4">Create Interview Session Template</h3>
+                        <form onSubmit={handleCreateTemplate} className="space-y-4">
+                            <div>
+                                <label className="block mb-1 font-medium">Title <span className="text-red-500">*</span></label>
+                                <input
+                                    type="text"
+                                    name="title"
+                                    value={templateForm.title}
+                                    onChange={handleTemplateChange}
+                                    className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
+                                    required
+                                    disabled={templateLoading}
+                                    placeholder="Enter session title"
+                                />
+                            </div>
+                            <div>
+                                <label className="block mb-1 font-medium">Description <span className="text-red-500">*</span></label>
+                                <textarea
+                                    name="description"
+                                    value={templateForm.description}
+                                    onChange={handleTemplateChange}
+                                    className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
+                                    rows={3}
+                                    required
+                                    disabled={templateLoading}
+                                    placeholder="Enter session description"
+                                />
+                            </div>
+                            <div>
+                                <label className="block mb-1 font-medium">Total Questions <span className="text-red-500">*</span></label>
+                                <input
+                                    type="number"
+                                    name="totalQuestion"
+                                    value={templateForm.totalQuestion}
+                                    onChange={handleTemplateChange}
+                                    className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
+                                    required
+                                    disabled={templateLoading}
+                                    min={1}
+                                    placeholder="Enter total questions"
+                                />
+                            </div>
+                            <div>
+                                <label className="block mb-1 font-medium">Difficulty <span className="text-red-500">*</span></label>
+                                <select
+                                    name="difficulty"
+                                    value={templateForm.difficulty}
+                                    onChange={handleTemplateChange}
+                                    className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
+                                    required
+                                    disabled={templateLoading}
+                                >
+                                    <option value="">Select difficulty</option>
+                                    {difficulties.map((d) => (
+                                        <option key={d.value} value={d.value}>
+                                            {d.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block mb-1 font-medium">Topic <span className="text-red-500">*</span></label>
+                                <select
+                                    name="topicId"
+                                    value={templateForm.topicId}
+                                    onChange={handleTemplateChange}
+                                    className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
+                                    required
+                                    disabled={templateLoading}
+                                >
+                                    <option value="">Select topic</option>
+                                    {topics.map((t) => (
+                                        <option key={t.topicId || t.id} value={t.topicId || t.id}>
+                                            {t.title}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block mb-1 font-medium">Tags <span className="text-red-500">*</span></label>
+                                <div className="flex flex-wrap gap-2">
+                                    {tags.map((tag) => (
+                                        <label key={tag.tagId || tag.id} className="flex items-center gap-1">
+                                            <input
+                                                type="checkbox"
+                                                name="tagIds"
+                                                value={tag.tagId || tag.id}
+                                                checked={templateForm.tagIds.includes(String(tag.tagId || tag.id))}
+                                                onChange={handleTemplateChange}
+                                                disabled={templateLoading}
+                                            />
+                                            <span>{tag.title}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="flex gap-3 mt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowTemplateModal(false)}
+                                    className="flex-1 py-2 px-4 bg-gray-200 hover:bg-gray-300 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-black dark:text-white font-semibold rounded-md transition"
+                                    disabled={templateLoading}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition ${templateLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    disabled={templateLoading}
+                                >
+                                    {templateLoading ? 'Processing...' : 'Create'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             )}
         </div>
     );
