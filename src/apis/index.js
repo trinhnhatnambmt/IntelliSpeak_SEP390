@@ -450,3 +450,11 @@ export const createPaymentLinkAPI = async (packageId) => {
         throw error;
     }
 };
+
+export const createInterviewSessionAPI = async (data) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/interview-sessions/create`,
+        data
+    );
+    return response.data;
+};
