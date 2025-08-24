@@ -6,10 +6,12 @@ import Footer from "~/sections/Footer";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getAllInterviewHistory, getUserProfileAPI } from "~/apis";
+import LineChart from "~/components/chart/LineChart";
 
 const Profile = () => {
     const [userProfile, setUserProfile] = useState(null);
     const [interviews, setInterviews] = useState([]);
+    const [dailyScores, setDailyScores] = useState([]);
 
     const personalInfo = [
         {
@@ -48,10 +50,12 @@ const Profile = () => {
 
     useEffect(() => {
         getUserProfileAPI().then((data) => {
-            console.log(data.data);
-            setUserProfile(data.data);
+            // console.log(data);
+            setUserProfile(data);
+            setDailyScores(data?.statistic[0]?.dailyScores);
         });
     }, []);
+    // console.log(dailyScores);
 
     return (
         <div className="bg-white dark:bg-[#0e0c15] text-gray-900 dark:text-white transition-colors duration-300 min-h-screen pt-3">
@@ -169,6 +173,11 @@ const Profile = () => {
                                 </div>
                             </div>
                         </motion.div>
+                    </div>
+
+                    {/* Chart */}
+                    <div className="p-6 bg-[#f9f9f9] dark:bg-[#1e1e2f] rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+                        <LineChart dailyScores={dailyScores} />
                     </div>
 
                     {/* Interview History */}
