@@ -133,7 +133,7 @@ export const getUserProfileAPI = async () => {
     const response = await authorizedAxiosInstance.get(
         `${API_ROOT}/auth/profile`
     );
-    return response.data;
+    return response.data.data;
 };
 
 // ==== TOPIC ====
