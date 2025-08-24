@@ -1,9 +1,16 @@
 import React from "react";
 import { XCircle } from "lucide-react"; // Hoặc dùng bất kỳ icon nào bạn thích
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getUserProfileAPI } from "~/redux/user/userSlice";
 
 const PaymentFailed = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const handBackToHome = () => {
+        dispatch(getUserProfileAPI());
+        navigate("/main");
+    };
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-[#0e0c15] text-gray-800 dark:text-white px-4">
@@ -14,7 +21,7 @@ const PaymentFailed = () => {
                 thông tin hoặc thử lại sau.
             </p>
             <button
-                onClick={() => navigate("/main/payment")}
+                onClick={handBackToHome}
                 className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-md"
             >
                 Thử lại thanh toán
@@ -24,4 +31,4 @@ const PaymentFailed = () => {
 };
 
 export default PaymentFailed;
-``
+``;

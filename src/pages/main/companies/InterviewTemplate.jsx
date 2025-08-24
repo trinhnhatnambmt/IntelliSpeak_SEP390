@@ -1,16 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Dialog from "~/components/dialog/Dialog";
 
 const InterviewTemplate = ({
+    packageId,
     interviewSessionId,
     title,
     description,
     totalQuestion,
 }) => {
     const navigate = useNavigate();
+    const [modalOpen, setModalOpen] = useState(false);
 
     const submitInterviewSession = () => {
-        navigate(`/main/language/${interviewSessionId}`);
+        if (!packageId || packageId === 1) {
+            setModalOpen(true);
+        } else {
+            navigate(`/main/language/${interviewSessionId}`);
+        }
     };
 
     return (
@@ -31,6 +38,7 @@ const InterviewTemplate = ({
             >
                 Start Interview
             </button>
+            <Dialog modalOpen={modalOpen} setModalOpen={setModalOpen} />
         </div>
     );
 };
