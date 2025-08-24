@@ -1,9 +1,16 @@
 import React from "react";
 import { CheckCircle } from "lucide-react"; // Bạn có thể dùng bất kỳ icon library nào khác
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getUserProfileAPI } from "~/redux/user/userSlice";
 
 const PaymentSuccess = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const handBackToHome = () => {
+        dispatch(getUserProfileAPI());
+        navigate("/main");
+    };
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-[#0e0c15] text-gray-800 dark:text-white px-4">
@@ -14,7 +21,7 @@ const PaymentSuccess = () => {
                 hoạt ngay lập tức.
             </p>
             <button
-                onClick={() => navigate("/main")}
+                onClick={handBackToHome}
                 className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md"
             >
                 Về trang chủ

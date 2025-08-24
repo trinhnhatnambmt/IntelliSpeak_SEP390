@@ -6,10 +6,13 @@ import {
     getCompanyDetailAPI,
     selectCurrentCompany,
 } from "~/redux/company/companySlice";
+import { selectCurrentUser } from "~/redux/user/userSlice";
 
 const CompanyDetail = () => {
     const { id } = useParams();
     const companyDetail = useSelector(selectCurrentCompany);
+    const currentUser = useSelector(selectCurrentUser);
+    const packageId = currentUser?.packageId;
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -117,6 +120,7 @@ const CompanyDetail = () => {
                             {companyDetail.interviewTemplateList.map(
                                 (template) => (
                                     <InterviewTemplate
+                                        packageId={packageId}
                                         interviewSessionId={
                                             template.interviewSessionId
                                         }

@@ -37,7 +37,7 @@ const InterviewPractice = () => {
         setIsModalOpen(false);
 
         createInterviewSession(formData).then((res) => {
-            toast.success("Tạo buổi phỏng vấn thành công!");
+            toast.success("Create new interview session successfully!");
             getInterviewSessionWhenCreated().then((res) => {
                 setInterviewCreated(res);
             });
