@@ -32,6 +32,7 @@ import HRCreateQuestionPage from "./pages/main/hr/HRCreateQuestionPage";
 import Companies from "./pages/main/companies/Companies";
 import CompanyDetail from "./pages/main/companies/CompanyDetail";
 import ChooseLanguage from "./pages/main/interview/ChooseLanguage";
+import Complaint from "./pages/main/complaint/Complaint";
 
 const ProtectedRoutes = ({ user }) => {
     if (!user) return <Navigate to="/" replace={true} />;
@@ -69,6 +70,7 @@ const App = () => {
                     <Route path="topic" element={<Topic />} />
                     <Route path="topicDetail/:id" element={<TopicDetail />} />
                     <Route path="profile" element={<Profile />} />
+                    <Route path="complaint" element={<Complaint />} />
                     <Route path="feedback/:id" element={<FeedBack />} />
 
                     {/* Analyze  */}

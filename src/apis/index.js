@@ -429,6 +429,13 @@ export const createWebsiteFeedbackAPI = async (data) => {
     return response.data;
 };
 
+export const getComplaintStatusAPI = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/website-feedback/user`
+    );
+    return response.data.data;
+};
+
 // ==== HR APPLICATION ====
 export const applyForHrAPI = async ({
     companyId,
