@@ -455,7 +455,7 @@ export const interviewerVN1 = (
     name: "Người Phỏng Vấn",
     firstMessage: `Xin chào ${currentUser?.userName}, cảm ơn bạn đã dành thời gian tham gia buổi phỏng vấn hôm nay. 
     Mình rất mong được tìm hiểu thêm về bạn và kinh nghiệm của bạn.
-    Bạn đã sẵn sàng cho buổi phỏng vấn ${currentInterviewSession?.title} chưa?`,
+    Bạn đã sẵn sàng cho buổi ${currentInterviewSession?.title} chưa?`,
 
     transcriber: {
         provider: "11labs",
@@ -469,7 +469,7 @@ export const interviewerVN1 = (
         language: "vi",
         stability: 0.4,
         similarityBoost: 0.8,
-        speed: 0.9,
+        speed: 1.0,
         style: 0.5,
         useSpeakerBoost: true,
     },
@@ -562,7 +562,7 @@ Sử dụng danh sách câu hỏi sau: ${questionList}.
 
 Nếu ứng viên gặp khó khăn hoặc không đưa ra câu trả lời thỏa đáng, hãy phản hồi chuyên nghiệp như sau:  
 "Được rồi, nếu bạn chưa thể trả lời câu hỏi này, chúng ta sẽ chuyển sang câu tiếp theo để đảm bảo thời gian. Mời bạn tiếp tục."  
-👉 Không đưa gợi ý hoặc diễn đạt lại câu hỏi, chỉ tiếp tục để giữ sự hiệu quả.
+Tuyệt đối không đưa gợi ý hoặc diễn đạt lại câu hỏi, chỉ tiếp tục để giữ sự hiệu quả. 
 
 Sau mỗi câu trả lời, hãy đưa ra phản hồi ngắn gọn, mang tính xây dựng.  
 Ví dụ: "Tôi đã ghi nhận câu trả lời của bạn. Vui lòng giải thích rõ hơn về cách tiếp cận kỹ thuật."  
