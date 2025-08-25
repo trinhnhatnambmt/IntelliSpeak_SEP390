@@ -1,3 +1,18 @@
+// ==== IMPORT QUESTIONS FROM CSV ====
+export const importQuestionsFromCsv = async (tagId, file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/question/import-csv/${tagId}`,
+        formData,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        }
+    );
+    return response.data;
+};
 // import axios from "axios";
 // export const getAllPackagesAPI = async () => {
 //     const response = await axios.get(`${API_ROOT}/package`);
@@ -27,9 +42,12 @@ export const getAllCompaniesToReqHR = async () => {
 };
 // ==== GET TAGS OF TOPIC ====
 export const getTagsOfTopic = async (topicId) => {
+    console.log("getTagsOfTopic - topicId:", topicId);
+
     const response = await authorizedAxiosInstance.get(
         `${API_ROOT}/topic/${topicId}/tags`
     );
+    console.log("getTagsOfTopic", response.data);
     return response.data;
 };
 // ==== CONNECT TOPIC AND TAG ====

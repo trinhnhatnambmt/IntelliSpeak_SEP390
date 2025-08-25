@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import {
     getAllTopic,
-    getAllTag,
     postQuestion,
-    connectTopicAndTag,
     getTagsOfTopic,
     getMyQuestionsAPI,
     getMyInterviewSessionsAPI,
-    createInterviewSessionAPI // thêm import
+    createInterviewSessionAPI,
+    getAllTag
 } from "~/apis/index";
 import { toast } from "react-toastify";
 import HRCreateSessionModal from "./HRCreateSessionModal";
 import HREditSessionModal from "./HREditSessionModal";
 import HRDeleteSessionConfirm from "./HRDeleteSessionConfirm";
+import HRCreateQuestionModal from "./HRCreateQuestionModal";
 
 const difficulties = [
     { value: "EASY", label: "Easy" },
@@ -30,16 +30,29 @@ const initialForm = {
 };
 
 export default function HRCreateQuestionPage() {
-    const [form, setForm] = useState(initialForm);
+    const [showCreateQuestionModal, setShowCreateQuestionModal] = useState(false);
     const [topics, setTopics] = useState([]);
-    const [tags, setTags] = useState([]);
-    const [success, setSuccess] = useState(false);
+    const [allTags, setAllTags] = useState([]); // all tags from API
     const [myQuestions, setMyQuestions] = useState([]);
+    // Only tags that have at least one question
+    const tagsInMyQuestions = React.useMemo(() => {
+        const tagMap = {};
+        myQuestions.forEach(q => {
+            (q.tags || []).forEach(tag => {
+                tagMap[tag.tagId || tag.id] = tag;
+            });
+        });
+        return Object.values(tagMap);
+    }, [myQuestions]);
+    const [selectedTagFilter, setSelectedTagFilter] = useState("");
+    const [tags, setTags] = useState([]); // tags filtered by topic
+    const [selectedTopic, setSelectedTopic] = useState("");
     const [mySessions, setMySessions] = useState([]);
     const [activeTab, setActiveTab] = useState('session');
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-    const [sessionSearchTerm, setSessionSearchTerm] = useState(""); // thêm state cho search session
+    const [selectedDifficulty, setSelectedDifficulty] = useState("");
+    const [sessionSearchTerm, setSessionSearchTerm] = useState("");
     const [showTemplateModal, setShowTemplateModal] = useState(false);
     const [templateForm, setTemplateForm] = useState({
         title: "",
@@ -52,7 +65,7 @@ export default function HRCreateQuestionPage() {
         questionIds: [],
     });
     const [templateLoading, setTemplateLoading] = useState(false);
-    const [openSessionMenuId, setOpenSessionMenuId] = useState(null); // state cho menu mở
+    const [openSessionMenuId, setOpenSessionMenuId] = useState(null);
     const [editSessionModal, setEditSessionModal] = useState({ open: false, session: null });
     const [deleteSessionModal, setDeleteSessionModal] = useState({ open: false, session: null });
 
@@ -96,7 +109,7 @@ export default function HRCreateQuestionPage() {
                     getAllTag(),
                 ]);
                 setTopics(Array.isArray(topicsRes) ? topicsRes : topicsRes?.data || []);
-                setTags(Array.isArray(tagsRes) ? tagsRes : tagsRes?.data || []);
+                setAllTags(Array.isArray(tagsRes) ? tagsRes : tagsRes?.data || []);
                 await fetchMyQuestions();
                 await fetchMySessions();
             } catch (error) {
@@ -109,75 +122,56 @@ export default function HRCreateQuestionPage() {
         fetchData();
     }, []);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleTemplateChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        if (name === "tagIds") {
-            const tagId = value;
-            setTemplateForm((prev) => ({
-                ...prev,
-                tagIds: checked
-                    ? [...prev.tagIds, tagId]
-                    : prev.tagIds.filter((id) => id !== tagId),
-            }));
-        } else if (name === "questionIds") {
-            const qId = value;
-            setTemplateForm((prev) => ({
-                ...prev,
-                questionIds: checked
-                    ? [...prev.questionIds, qId]
-                    : prev.questionIds.filter((id) => id !== qId),
-            }));
-        } else {
-            setTemplateForm((prev) => ({
-                ...prev,
-                [name]: value,
-            }));
+    // When topic changes, fetch tags of that topic
+    const handleTopicChange = async (topicId) => {
+        console.log('[handleTopicChange] topicId:', topicId);
+        setSelectedTopic(topicId);
+        setTags([]);
+        setIsLoading(true);
+        try {
+            if (topicId) {
+                const tagsOfTopic = await getTagsOfTopic(topicId);
+                console.log('[handleTopicChange] tagsOfTopic:', tagsOfTopic);
+                const tagsData = Array.isArray(tagsOfTopic) ? tagsOfTopic : tagsOfTopic?.data || [];
+                setTags(tagsData);
+            } else {
+                setTags([]);
+            }
+        } catch (err) {
+            console.error('[handleTopicChange] error:', err);
+            setTags([]);
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+
+    // Remove handleChange, handleSubmit for inline form, use modal instead
+
+    // handleTemplateChange is not used
+
+
+    const handleCreateQuestion = async (modalForm, { setSuccess, setForm }) => {
         setIsLoading(true);
-
-        const topicId = Number(form.topic);
-        const tagId = Number(form.tag);
-
+        const tagId = Number(modalForm.tag);
         try {
-            let isConnected = false;
-            try {
-                const tagsOfTopic = await getTagsOfTopic(topicId);
-                const tagsData = Array.isArray(tagsOfTopic)
-                    ? tagsOfTopic
-                    : tagsOfTopic?.data || [];
-                isConnected = tagsData.some((t) => Number(t.tagId) === tagId);
-            } catch {}
-
-            if (!isConnected) {
-                await connectTopicAndTag(topicId, tagId);
-            }
-
             const payload = {
-                title: form.title.trim(),
-                content: form.content.trim(),
-                difficulty: form.difficulty,
-                suitableAnswer1: form.demoAnswer.trim(),
-                suitableAnswer2: "",
+                title: modalForm.title.trim(),
+                content: modalForm.content.trim(),
+                difficulty: modalForm.difficulty,
+                suitableAnswer1: modalForm.demoAnswer.trim(),
+                suitableAnswer2: modalForm.demoAnswer2 ? modalForm.demoAnswer2.trim() : "",
                 tagIds: [tagId],
                 tags: [],
                 deleted: false,
             };
-
             await postQuestion(payload);
             toast.success("Question created successfully!");
             setSuccess(true);
             setForm(initialForm);
             await fetchMyQuestions();
             setActiveTab('question');
+            setShowCreateQuestionModal(false);
         } catch (err) {
             console.error("Error creating question:", err);
             toast.error(err.response?.data?.message || "Failed to create question!");
@@ -215,7 +209,7 @@ export default function HRCreateQuestionPage() {
                 questionIds: [],
             });
             await fetchMySessions();
-        } catch (err) {
+        } catch {
             toast.error("Failed to create interview session!");
         } finally {
             setTemplateLoading(false);
@@ -224,14 +218,14 @@ export default function HRCreateQuestionPage() {
 
     const filteredQuestions = myQuestions.filter(question => {
         const searchLower = searchTerm.toLowerCase();
-        return (
+        const matchesSearch =
             question.title.toLowerCase().includes(searchLower) ||
             question.content.toLowerCase().includes(searchLower) ||
-            question.tags.some((tag) =>
-                tag.title.toLowerCase().includes(searchLower)
-            ) ||
-            question.difficulty.toLowerCase().includes(searchLower)
-        );
+            question.tags.some(tag => tag.title.toLowerCase().includes(searchLower)) ||
+            question.difficulty.toLowerCase().includes(searchLower);
+        const matchesTag = !selectedTagFilter || question.tags.some(tag => String(tag.tagId) === String(selectedTagFilter));
+        const matchesDifficulty = !selectedDifficulty || question.difficulty === selectedDifficulty;
+        return matchesSearch && matchesTag && matchesDifficulty;
     });
 
     return (
@@ -314,11 +308,10 @@ export default function HRCreateQuestionPage() {
                                                 <span className="px-2 py-1 bg-gray-50 dark:bg-neutral-800 rounded text-xs text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-neutral-700">
                                                     Total Questions: {session.totalQuestion}
                                                 </span>
-                                                <span className={`px-2 py-1 text-xs rounded-full border ${
-                                                    session.difficulty === 'EASY' ? 'bg-green-50 text-green-700 border-green-100 dark:bg-green-900 dark:text-green-200' :
+                                                <span className={`px-2 py-1 text-xs rounded-full border ${session.difficulty === 'EASY' ? 'bg-green-50 text-green-700 border-green-100 dark:bg-green-900 dark:text-green-200' :
                                                     session.difficulty === 'MEDIUM' ? 'bg-yellow-50 text-yellow-700 border-yellow-100 dark:bg-yellow-900 dark:text-yellow-200' :
-                                                    'bg-red-50 text-red-700 border-red-100 dark:bg-red-900 dark:text-red-200'
-                                                }`}>
+                                                        'bg-red-50 text-red-700 border-red-100 dark:bg-red-900 dark:text-red-200'
+                                                    }`}>
                                                     {session.difficulty.charAt(0) + session.difficulty.slice(1).toLowerCase()}
                                                 </span>
                                                 {Array.isArray(session.tags) && session.tags.length > 0 && (
@@ -375,7 +368,7 @@ export default function HRCreateQuestionPage() {
                 <div className="space-y-4">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
                         <h3 className="text-xl font-semibold">My Questions</h3>
-                        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+                        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto items-center">
                             <input
                                 type="text"
                                 placeholder="Search questions..."
@@ -383,20 +376,32 @@ export default function HRCreateQuestionPage() {
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={fetchMyQuestions}
-                                    className="px-3 py-1 bg-gray-100 dark:bg-neutral-700 rounded-md text-sm"
-                                >
-                                    Refresh
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab("create")}
-                                    className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600"
-                                >
-                                    Thêm mới
-                                </button>
-                            </div>
+                            <select
+                                className="px-3 py-1 border rounded-md dark:bg-neutral-800 dark:border-neutral-700 text-sm"
+                                value={selectedTagFilter}
+                                onChange={e => setSelectedTagFilter(e.target.value)}
+                            >
+                                <option value="">All Tags</option>
+                                {tagsInMyQuestions.map(tag => (
+                                    <option key={tag.tagId || tag.id} value={tag.tagId || tag.id}>{tag.title}</option>
+                                ))}
+                            </select>
+                            <select
+                                className="px-3 py-1 border rounded-md dark:bg-neutral-800 dark:border-neutral-700 text-sm"
+                                value={selectedDifficulty}
+                                onChange={e => setSelectedDifficulty(e.target.value)}
+                            >
+                                <option value="">All Difficulties</option>
+                                <option value="EASY">Easy</option>
+                                <option value="MEDIUM">Medium</option>
+                                <option value="HARD">Hard</option>
+                            </select>
+                            <button
+                                onClick={() => setShowCreateQuestionModal(true)}
+                                className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600"
+                            >
+                                Add New
+                            </button>
                         </div>
                     </div>
                     {filteredQuestions.length === 0 ? (
@@ -408,14 +413,14 @@ export default function HRCreateQuestionPage() {
                                         onClick={() => setSearchTerm("")}
                                         className="mt-4 px-4 py-2 bg-gray-100 dark:bg-neutral-700 rounded-md hover:bg-gray-200 dark:hover:bg-neutral-600"
                                     >
-                                        Clear filter
+                                        Clear Filter
                                     </button>
                                 </>
                             ) : (
                                 <>
                                     <p className="text-gray-500 dark:text-gray-400">You have not created any questions yet</p>
                                     <button
-                                        onClick={() => setActiveTab("create")}
+                                        onClick={() => setShowCreateQuestionModal(true)}
                                         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                                     >
                                         Create your first question
@@ -440,8 +445,8 @@ export default function HRCreateQuestionPage() {
                                             </p>
                                             <div className="flex flex-wrap items-center gap-3 mt-3">
                                                 <span className={`px-2 py-1 text-xs rounded-full ${question.difficulty === 'EASY' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                                                        question.difficulty === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                                                            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                                                    question.difficulty === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                                                        'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                                                     }`}>
                                                     {question.difficulty.charAt(0) + question.difficulty.slice(1).toLowerCase()}
                                                 </span>
@@ -464,10 +469,16 @@ export default function HRCreateQuestionPage() {
                                             </div>
                                         </div>
                                     </div>
-                                    {question.suitableAnswer1 && (
+                                    {(question.suitableAnswer1 || question.suitableAnswer2) && (
                                         <div className="mt-3 p-3 bg-gray-50 dark:bg-neutral-800 rounded">
-                                            <p className="font-medium">Sample Answer:</p>
+                                            <p className="font-medium">Sample Answer 1:</p>
                                             <p className="mt-1 whitespace-pre-line">{question.suitableAnswer1}</p>
+                                            {question.suitableAnswer2 && (
+                                                <>
+                                                    <p className="font-medium mt-3">Sample Answer 2:</p>
+                                                    <p className="mt-1 whitespace-pre-line">{question.suitableAnswer2}</p>
+                                                </>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -475,134 +486,20 @@ export default function HRCreateQuestionPage() {
                         </div>
                     )}
                 </div>
-            ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    <div>
-                        <label className="block mb-1 font-medium">Topic <span className="text-red-500">*</span></label>
-                        <select
-                            name="topic"
-                            value={form.topic}
-                            onChange={handleChange}
-                            className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
-                            required
-                            disabled={isLoading}
-                        >
-                            <option value="">Select topic</option>
-                            {topics.map((t) => (
-                                <option
-                                    key={t.topicId || t.id}
-                                    value={t.topicId || t.id}
-                                >
-                                    {t.title}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block mb-1 font-medium">
-                            Tag <span className="text-red-500">*</span>
-                        </label>
-                        <select
-                            name="tag"
-                            value={form.tag}
-                            onChange={handleChange}
-                            className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
-                            required
-                            disabled={isLoading}
-                        >
-                            <option value="">Select tag</option>
-                            {tags.map((t) => (
-                                <option
-                                    key={t.tagId || t.id}
-                                    value={t.tagId || t.id}
-                                >
-                                    {t.title}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block mb-1 font-medium">Title <span className="text-red-500">*</span></label>
-                        <input
-                            type="text"
-                            name="title"
-                            value={form.title}
-                            onChange={handleChange}
-                            className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
-                            required
-                            disabled={isLoading}
-                            placeholder="Enter question title"
-                        />
-                    </div>
-                    <div>
-                        <label className="block mb-1 font-medium">Question Content <span className="text-red-500">*</span></label>
-                        <textarea
-                            name="content"
-                            value={form.content}
-                            onChange={handleChange}
-                            className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
-                            rows={4}
-                            required
-                            disabled={isLoading}
-                            placeholder="Enter detailed question content"
-                        />
-                    </div>
-                    <div>
-                        <label className="block mb-1 font-medium">Difficulty <span className="text-red-500">*</span></label>
-                        <select
-                            name="difficulty"
-                            value={form.difficulty}
-                            onChange={handleChange}
-                            className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
-                            required
-                            disabled={isLoading}
-                        >
-                            <option value="">Select difficulty</option>
-                            {difficulties.map((d) => (
-                                <option key={d.value} value={d.value}>
-                                    {d.label}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block mb-1 font-medium">Sample Answer <span className="text-red-500">*</span></label>
-                        <textarea
-                            name="demoAnswer"
-                            value={form.demoAnswer}
-                            onChange={handleChange}
-                            className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
-                            rows={3}
-                            required
-                            disabled={isLoading}
-                            placeholder="Enter sample answer for the question"
-                        />
-                    </div>
-                    <div className="flex gap-3">
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab('question')}
-                            className="flex-1 py-2 px-4 bg-gray-200 hover:bg-gray-300 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-black dark:text-white font-semibold rounded-md transition"
-                            disabled={isLoading}
-                        >
-                            Back
-                        </button>
-                        <button
-                            type="submit"
-                            className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition ${
-                                isLoading ? "opacity-50 cursor-not-allowed" : ""
-                            }`}
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Processing...' : 'Create Question'}
-                        </button>
-                    </div>
-                    {success && (
-                        <div className="text-green-600 text-center font-medium mt-2">
-                            Question created successfully!
-                        </div>
-                    )}
-                </form>
+            ) : null}
+            {/* Modal tạo câu hỏi mới */}
+            {showCreateQuestionModal && (
+                <HRCreateQuestionModal
+                    open={showCreateQuestionModal}
+                    onClose={() => setShowCreateQuestionModal(false)}
+                    onSubmit={handleCreateQuestion}
+                    topics={topics}
+                    tags={tags}
+                    difficulties={difficulties}
+                    loading={isLoading}
+                    onTopicChange={handleTopicChange}
+                    selectedTopic={selectedTopic}
+                />
             )}
             {/* Modal tạo template */}
             {showTemplateModal && (
