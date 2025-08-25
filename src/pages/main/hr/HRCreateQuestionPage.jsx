@@ -93,7 +93,7 @@ export default function HRCreateQuestionPage() {
             try {
                 const [topicsRes, tagsRes] = await Promise.all([
                     getAllTopic(),
-                    getAllTag()
+                    getAllTag(),
                 ]);
                 setTopics(Array.isArray(topicsRes) ? topicsRes : topicsRes?.data || []);
                 setTags(Array.isArray(tagsRes) ? tagsRes : tagsRes?.data || []);
@@ -151,7 +151,9 @@ export default function HRCreateQuestionPage() {
             let isConnected = false;
             try {
                 const tagsOfTopic = await getTagsOfTopic(topicId);
-                const tagsData = Array.isArray(tagsOfTopic) ? tagsOfTopic : tagsOfTopic?.data || [];
+                const tagsData = Array.isArray(tagsOfTopic)
+                    ? tagsOfTopic
+                    : tagsOfTopic?.data || [];
                 isConnected = tagsData.some((t) => Number(t.tagId) === tagId);
             } catch {}
 
@@ -225,7 +227,9 @@ export default function HRCreateQuestionPage() {
         return (
             question.title.toLowerCase().includes(searchLower) ||
             question.content.toLowerCase().includes(searchLower) ||
-            question.tags.some(tag => tag.title.toLowerCase().includes(searchLower)) ||
+            question.tags.some((tag) =>
+                tag.title.toLowerCase().includes(searchLower)
+            ) ||
             question.difficulty.toLowerCase().includes(searchLower)
         );
     });
@@ -387,7 +391,7 @@ export default function HRCreateQuestionPage() {
                                     Refresh
                                 </button>
                                 <button
-                                    onClick={() => setActiveTab('create')}
+                                    onClick={() => setActiveTab("create")}
                                     className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600"
                                 >
                                     Thêm mới
@@ -411,7 +415,7 @@ export default function HRCreateQuestionPage() {
                                 <>
                                     <p className="text-gray-500 dark:text-gray-400">You have not created any questions yet</p>
                                     <button
-                                        onClick={() => setActiveTab('create')}
+                                        onClick={() => setActiveTab("create")}
                                         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                                     >
                                         Create your first question
@@ -422,11 +426,18 @@ export default function HRCreateQuestionPage() {
                     ) : (
                         <div className="space-y-4">
                             {filteredQuestions.map((question) => (
-                                <div key={question.questionId} className="p-4 border rounded-lg dark:border-neutral-700 hover:shadow-md transition-shadow">
+                                <div
+                                    key={question.questionId}
+                                    className="p-4 border rounded-lg dark:border-neutral-700 hover:shadow-md transition-shadow"
+                                >
                                     <div className="flex justify-between items-start">
                                         <div className="flex-1">
-                                            <h4 className="font-medium text-lg">{question.title}</h4>
-                                            <p className="text-gray-600 dark:text-gray-300 mt-1 whitespace-pre-line">{question.content}</p>
+                                            <h4 className="font-medium text-lg">
+                                                {question.title}
+                                            </h4>
+                                            <p className="text-gray-600 dark:text-gray-300 mt-1 whitespace-pre-line">
+                                                {question.content}
+                                            </p>
                                             <div className="flex flex-wrap items-center gap-3 mt-3">
                                                 <span className={`px-2 py-1 text-xs rounded-full ${question.difficulty === 'EASY' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
                                                         question.difficulty === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
@@ -436,14 +447,18 @@ export default function HRCreateQuestionPage() {
                                                 </span>
                                                 {question.tags.length > 0 && (
                                                     <div className="flex flex-wrap gap-2">
-                                                        {question.tags.map(tag => (
-                                                            <span
-                                                                key={tag.tagId}
-                                                                className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full"
-                                                            >
-                                                                {tag.title}
-                                                            </span>
-                                                        ))}
+                                                        {question.tags.map(
+                                                            (tag) => (
+                                                                <span
+                                                                    key={
+                                                                        tag.tagId
+                                                                    }
+                                                                    className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full"
+                                                                >
+                                                                    {tag.title}
+                                                                </span>
+                                                            )
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>
@@ -474,14 +489,19 @@ export default function HRCreateQuestionPage() {
                         >
                             <option value="">Select topic</option>
                             {topics.map((t) => (
-                                <option key={t.topicId || t.id} value={t.topicId || t.id}>
+                                <option
+                                    key={t.topicId || t.id}
+                                    value={t.topicId || t.id}
+                                >
                                     {t.title}
                                 </option>
                             ))}
                         </select>
                     </div>
                     <div>
-                        <label className="block mb-1 font-medium">Tag <span className="text-red-500">*</span></label>
+                        <label className="block mb-1 font-medium">
+                            Tag <span className="text-red-500">*</span>
+                        </label>
                         <select
                             name="tag"
                             value={form.tag}
@@ -492,7 +512,10 @@ export default function HRCreateQuestionPage() {
                         >
                             <option value="">Select tag</option>
                             {tags.map((t) => (
-                                <option key={t.tagId || t.id} value={t.tagId || t.id}>
+                                <option
+                                    key={t.tagId || t.id}
+                                    value={t.tagId || t.id}
+                                >
                                     {t.title}
                                 </option>
                             ))}
@@ -566,7 +589,9 @@ export default function HRCreateQuestionPage() {
                         </button>
                         <button
                             type="submit"
-                            className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition ${
+                                isLoading ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                             disabled={isLoading}
                         >
                             {isLoading ? 'Processing...' : 'Create Question'}

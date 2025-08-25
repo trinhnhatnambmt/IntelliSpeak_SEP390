@@ -16,6 +16,16 @@ export const interViewSessionQuestionForAiAPI = createAsyncThunk(
     }
 );
 
+export const interViewSessionVietnameseQuestionForAiAPI = createAsyncThunk(
+    "interviewSession/interViewSessionVietnameseQuestionForAiAPI",
+    async (id) => {
+        const response = await authorizedAxiosInstance.post(
+            `${API_ROOT}/interview-sessions/${id}/random-questions-by-session/vietnamese`
+        );
+        return response.data.data;
+    }
+);
+
 export const interviewSessionSlice = createSlice({
     name: "interviewSession",
     initialState,
@@ -24,6 +34,13 @@ export const interviewSessionSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(
             interViewSessionQuestionForAiAPI.fulfilled,
+            (state, action) => {
+                //action.payload chính là cái response.data trả về ở phía trên
+                state.interViewSessionQuestions = action.payload;
+            }
+        );
+        builder.addCase(
+            interViewSessionVietnameseQuestionForAiAPI.fulfilled,
             (state, action) => {
                 //action.payload chính là cái response.data trả về ở phía trên
                 state.interViewSessionQuestions = action.payload;
