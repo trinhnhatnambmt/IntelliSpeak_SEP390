@@ -1,9 +1,8 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomModal from "../../../components/CustomModal";
-import { uploadImageAPI } from "~/apis/index";
+import { uploadImageAPI, getAllTag } from "~/apis/index";
 import { toast } from "react-toastify";
-
+import { all } from "axios";
 export default function HRCreateSessionModal({
     open,
     onClose,
@@ -12,13 +11,33 @@ export default function HRCreateSessionModal({
     templateLoading,
     handleCreateTemplate,
     topics,
-    tags,
     myQuestions,
 }) {
     const [thumbnailUploading, setThumbnailUploading] = useState(false);
+    const [allTags, setAllTags] = useState([]);
+
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const res = await getAllTag();
+                // API returns { code, message, data: [...] }
+                setAllTags(res || []);
+                // Đừng log ở đây vì allTags chưa cập nhật kịp!
+            } catch {
+                setAllTags([]);
+            }
+        };
+        fetchTags();
+    }, []);
+
+    // Log allTags mỗi khi nó thay đổi
+    useEffect(() => {
+        console.log('all tag', allTags);
+    }, [allTags]);
+
     // Handle input changes for form fields
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value, checked } = e.target;
         if (name === "tagIds") {
             const tagId = value;
             setTemplateForm((prev) => ({
@@ -60,7 +79,7 @@ export default function HRCreateSessionModal({
                 }));
                 toast.success("Upload successful!");
             }
-        } catch (err) {
+        } catch {
             toast.error("Upload failed!");
         } finally {
             setThumbnailUploading(false);
@@ -71,7 +90,7 @@ export default function HRCreateSessionModal({
         <CustomModal
             open={open}
             onClose={onClose}
-            title={<span className="text-xl font-bold text-gray-800 dark:text-white">Create Interview Session</span>}
+            title={<span className="text-xl font-bold text-gray-800 dark:text-white">Create Interview Template</span>}
             backgroundColor={isDark ? '#111112' : '#fff'}
             className="hr-create-session-modal"
         >
@@ -180,13 +199,13 @@ export default function HRCreateSessionModal({
                 <div>
                     <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">Tags <span className="text-red-500">*</span></label>
                     <div className="flex flex-wrap gap-2">
-                        {tags.map((tag) => (
-                            <label key={tag.tagId || tag.id} className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]">
+                        {allTags.map((tag) => (
+                            <label key={tag.id} className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]">
                                 <input
                                     type="checkbox"
                                     name="tagIds"
-                                    value={tag.tagId || tag.id}
-                                    checked={templateForm.tagIds.includes(String(tag.tagId || tag.id))}
+                                    value={tag.id}
+                                    checked={templateForm.tagIds.includes(String(tag.id))}
                                     onChange={handleChange}
                                     disabled={templateLoading}
                                 />

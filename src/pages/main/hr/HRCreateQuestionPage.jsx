@@ -236,7 +236,7 @@ export default function HRCreateQuestionPage() {
                     className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === 'session' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
                     onClick={() => setActiveTab('session')}
                 >
-                    Interview Session Management ({mySessions.length})
+                    Interview Template Management ({mySessions.length})
                 </button>
                 <button
                     className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === 'question' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
@@ -253,7 +253,7 @@ export default function HRCreateQuestionPage() {
                 <div className="space-y-4">
                     {/* Header + actions */}
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
-                        <h3 className="text-xl font-semibold">My Interview Sessions</h3>
+                        <h3 className="text-xl font-semibold">My Interview Templates</h3>
                         <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
                             <input
                                 type="text"
@@ -297,7 +297,7 @@ export default function HRCreateQuestionPage() {
                                         {session.interviewSessionThumbnail && (
                                             <img
                                                 src={session.interviewSessionThumbnail}
-                                                alt="Session Thumbnail"
+                                                alt="Template Thumbnail"
                                                 className="w-16 h-16 object-cover rounded-lg border border-gray-200 dark:border-neutral-800"
                                             />
                                         )}

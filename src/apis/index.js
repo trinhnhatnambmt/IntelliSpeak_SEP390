@@ -75,7 +75,8 @@ export const getMyQuestionsAPI = async () => {
 // ==== TAGS ====
 export const getAllTag = async () => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/tag`);
-    return response.data;
+    console.log("getAllTag", response.data);
+    return response.data.data;
 };
 // ==== GET ALL COMMENTS FOR A POST ====
 export const getForumPostRepliesAPI = async (postId) => {

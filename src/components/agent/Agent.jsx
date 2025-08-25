@@ -3,11 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { robot_assistant } from "~/assets";
-import { interviewer, interviewer2 } from "~/constants";
-import { cn } from "~/lib/utils";
+import {
+    interviewer,
+    interviewer2,
+    interviewerVN1,
+    interviewerVN2,
+} from "~/constants";
+import { cn, detectLanguage } from "~/lib/utils";
 import { vapi } from "~/lib/vapi.sdk";
 import { selectCurrentCompany } from "~/redux/company/companySlice";
-import { interviewFeedbackAPI } from "~/redux/interview/feedbackSlice";
+import {
+    interviewFeedbackAPI,
+    interviewFeedbackVietnameseAPI,
+} from "~/redux/interview/feedbackSlice";
 
 const CallStatus = {
     INACTIVE: "INACTIVE",
@@ -28,6 +36,19 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
     const companyDetail = useSelector(selectCurrentCompany);
     const companyLogo = companyDetail?.logoUrl;
     const companyName = companyDetail?.name;
+
+    // console.log(currentInterviewSession);
+
+    const detectLanguageFromSession = (currentInterviewSession) => {
+        if (!currentInterviewSession || !currentInterviewSession?.title)
+            return "unknown";
+
+        const textToAnalyze = currentInterviewSession?.title;
+
+        const language = detectLanguage(textToAnalyze);
+
+        return language;
+    };
 
     const dispatch = useDispatch();
 
@@ -94,10 +115,21 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
         }
 
         const handleGenerateFeedback = () => {
+            if (!currentInterviewSession || !messages.length) {
+                toast.error("No session or chat history available!");
+                return;
+            }
+
+            const feedbackApi =
+                detectLanguageFromSession(currentInterviewSession) ===
+                "vietnamese"
+                    ? interviewFeedbackVietnameseAPI
+                    : interviewFeedbackAPI;
+
             toast
                 .promise(
                     dispatch(
-                        interviewFeedbackAPI({
+                        feedbackApi({
                             interviewSession: currentInterviewSession,
                             chatHistory: messages,
                         })
@@ -133,14 +165,40 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
             .map((q) => q.content)
             .join(", ");
 
-        const assistantOptions = currentInterviewSession?.companyId
-            ? interviewer2(
-                  currentUser,
-                  currentInterviewSession,
-                  questionList,
-                  companyDetail
-              )
-            : interviewer(currentUser, currentInterviewSession, questionList);
+        let assistantOptions;
+
+        if (
+            currentInterviewSession?.companyId &&
+            detectLanguageFromSession(currentInterviewSession) === "vietnamese"
+        ) {
+            assistantOptions = interviewerVN2(
+                currentUser,
+                currentInterviewSession,
+                questionList,
+                companyDetail
+            );
+        } else if (
+            detectLanguageFromSession(currentInterviewSession) === "vietnamese"
+        ) {
+            assistantOptions = interviewerVN1(
+                currentUser,
+                currentInterviewSession,
+                questionList
+            );
+        } else if (currentInterviewSession?.companyId) {
+            assistantOptions = interviewer2(
+                currentUser,
+                currentInterviewSession,
+                questionList,
+                companyDetail
+            );
+        } else {
+            assistantOptions = interviewer(
+                currentUser,
+                currentInterviewSession,
+                questionList
+            );
+        }
 
         await vapi.start(assistantOptions);
     };
