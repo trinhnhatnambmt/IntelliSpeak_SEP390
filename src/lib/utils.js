@@ -19,3 +19,17 @@ export function formatSize(bytes) {
 }
 
 export const generateUUID = () => crypto.randomUUID();
+
+export const detectLanguage = (text) => {
+    const vietnameseChars =
+        /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/i;
+    const vietnameseWords = ["là", "và", "trong", "có", "tôi"];
+
+    const hasVietnameseChar = vietnameseChars.test(text);
+    const hasVietnameseWord = vietnameseWords.some((word) =>
+        text.toLowerCase().includes(word)
+    );
+
+    if (hasVietnameseChar || hasVietnameseWord) return "vietnamese";
+    return "english";
+};
