@@ -12,7 +12,10 @@ import {
 import { cn, detectLanguage } from "~/lib/utils";
 import { vapi } from "~/lib/vapi.sdk";
 import { selectCurrentCompany } from "~/redux/company/companySlice";
-import { interviewFeedbackAPI } from "~/redux/interview/feedbackSlice";
+import {
+    interviewFeedbackAPI,
+    interviewFeedbackVietnameseAPI,
+} from "~/redux/interview/feedbackSlice";
 
 const CallStatus = {
     INACTIVE: "INACTIVE",
@@ -34,7 +37,7 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
     const companyLogo = companyDetail?.logoUrl;
     const companyName = companyDetail?.name;
 
-    console.log(currentInterviewSession);
+    // console.log(currentInterviewSession);
 
     const detectLanguageFromSession = (currentInterviewSession) => {
         if (!currentInterviewSession || !currentInterviewSession?.title)
@@ -112,10 +115,21 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
         }
 
         const handleGenerateFeedback = () => {
+            if (!currentInterviewSession || !messages.length) {
+                toast.error("No session or chat history available!");
+                return;
+            }
+
+            const feedbackApi =
+                detectLanguageFromSession(currentInterviewSession) ===
+                "vietnamese"
+                    ? interviewFeedbackVietnameseAPI
+                    : interviewFeedbackAPI;
+
             toast
                 .promise(
                     dispatch(
-                        interviewFeedbackAPI({
+                        feedbackApi({
                             interviewSession: currentInterviewSession,
                             chatHistory: messages,
                         })
