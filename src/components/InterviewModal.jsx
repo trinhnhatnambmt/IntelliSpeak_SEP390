@@ -1,24 +1,18 @@
 import { Form, Modal, Select } from "antd";
-import { useState, useEffect } from "react";
-import { getAllTag } from "~/apis";
-
+import { useState } from "react";
 
 const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
     const [form] = Form.useForm();
-    const [allTags, setAllTags] = useState([]);
+    const [selectedRole, setSelectedRole] = useState(null);
 
-    useEffect(() => {
-        const fetchTags = async () => {
-            try {
-                const tags = await getAllTag();
-                setAllTags(tags);
-                console.log("Fetched tags:", tags);
-            } catch {
-                setAllTags([]);
-            }
-        };
-        fetchTags();
-    }, []);
+    const handleRoleChange = (value) => {
+        setSelectedRole(value);
+    };
+
+    const getTagsForSelectedRole = () => {
+        const topic = topicWithTags.find((t) => t.topicId === selectedRole);
+        return topic?.tags || [];
+    };
 
     const handleSubmit = async () => {
         try {
@@ -30,6 +24,7 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
             };
             onOk(payload);
             form.resetFields();
+            setSelectedRole(null);
         } catch (error) {
             console.log("Validation failed:", error);
         }
@@ -37,12 +32,13 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
 
     const handleCancelClick = () => {
         form.resetFields();
+        setSelectedRole(null);
         onCancel();
     };
 
     return (
         <Modal
-            title="Create Interview Template"
+            title="Create Interview Session"
             open={open}
             onOk={handleSubmit}
             onCancel={handleCancelClick}
@@ -70,7 +66,7 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
                     <Select
                         placeholder="Select role"
                         style={{ width: "100%" }}
-                        // onChange removed, no longer needed
+                        onChange={handleRoleChange}
                         options={topicWithTags.map((topic) => ({
                             value: topic.topicId,
                             label: topic.title,
@@ -87,31 +83,15 @@ const ModalInterview = ({ open, onOk, onCancel, topicWithTags }) => {
                         },
                     ]}
                 >
-                    <div className="flex flex-wrap gap-2">
-                        {allTags.map((tag) => (
-                            <label key={tag.tagId || tag.id} className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]">
-                                <Form.Item name="techStack" noStyle valuePropName="checked">
-                                    <input
-                                        type="checkbox"
-                                        value={tag.tagId || tag.id}
-                                        onChange={e => {
-                                            const checked = e.target.checked;
-                                            const value = String(tag.tagId || tag.id);
-                                            const prev = form.getFieldValue("techStack") || [];
-                                            if (checked) {
-                                                form.setFieldsValue({ techStack: [...prev, value] });
-                                            } else {
-                                                form.setFieldsValue({ techStack: prev.filter((id) => id !== value) });
-                                            }
-                                        }}
-                                        checked={(form.getFieldValue("techStack") || []).includes(String(tag.tagId || tag.id))}
-                                        disabled={false}
-                                    />
-                                </Form.Item>
-                                <span className="text-xs text-gray-700 dark:text-gray-200">{tag.title}</span>
-                            </label>
-                        ))}
-                    </div>
+                    <Select
+                        mode="multiple"
+                        placeholder="Select tech stack"
+                        style={{ width: "100%" }}
+                        options={getTagsForSelectedRole().map((tag) => ({
+                            value: tag.tagId,
+                            label: tag.title,
+                        }))}
+                    />
                 </Form.Item>
                 <Form.Item
                     label="How many questions do you want in the interview?"
