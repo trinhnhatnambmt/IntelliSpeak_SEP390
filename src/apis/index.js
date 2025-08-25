@@ -21,7 +21,7 @@ export const importQuestionsFromCsv = async (tagId, file) => {
 // ==== GET ALL PACKAGES ====
 export const getAllPackagesAPI = async () => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/package`);
-    console.log('getAllPackagesAPI', response.data);
+    console.log("getAllPackagesAPI", response.data);
     return response.data;
 };
 // ==== GET HR APPLICATION STATUS ====
@@ -419,6 +419,14 @@ export const getCompanyDetailAPI = async (id) => {
         `${API_ROOT}/company/${id}`
     );
     return response.data.data;
+};
+
+export const createWebsiteFeedbackAPI = async (data) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/website-feedback`,
+        data
+    );
+    return response.data;
 };
 
 // ==== HR APPLICATION ====

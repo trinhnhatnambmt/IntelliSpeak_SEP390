@@ -106,7 +106,7 @@ export default function HRCreateQuestionPage() {
             try {
                 const [topicsRes, tagsRes] = await Promise.all([
                     getAllTopic(),
-                    getAllTag()
+                    getAllTag(),
                 ]);
                 setTopics(Array.isArray(topicsRes) ? topicsRes : topicsRes?.data || []);
                 setAllTags(Array.isArray(tagsRes) ? tagsRes : tagsRes?.data || []);
@@ -431,11 +431,18 @@ export default function HRCreateQuestionPage() {
                     ) : (
                         <div className="space-y-4">
                             {filteredQuestions.map((question) => (
-                                <div key={question.questionId} className="p-4 border rounded-lg dark:border-neutral-700 hover:shadow-md transition-shadow">
+                                <div
+                                    key={question.questionId}
+                                    className="p-4 border rounded-lg dark:border-neutral-700 hover:shadow-md transition-shadow"
+                                >
                                     <div className="flex justify-between items-start">
                                         <div className="flex-1">
-                                            <h4 className="font-medium text-lg">{question.title}</h4>
-                                            <p className="text-gray-600 dark:text-gray-300 mt-1 whitespace-pre-line">{question.content}</p>
+                                            <h4 className="font-medium text-lg">
+                                                {question.title}
+                                            </h4>
+                                            <p className="text-gray-600 dark:text-gray-300 mt-1 whitespace-pre-line">
+                                                {question.content}
+                                            </p>
                                             <div className="flex flex-wrap items-center gap-3 mt-3">
                                                 <span className={`px-2 py-1 text-xs rounded-full ${question.difficulty === 'EASY' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
                                                     question.difficulty === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
@@ -445,14 +452,18 @@ export default function HRCreateQuestionPage() {
                                                 </span>
                                                 {question.tags.length > 0 && (
                                                     <div className="flex flex-wrap gap-2">
-                                                        {question.tags.map(tag => (
-                                                            <span
-                                                                key={tag.tagId}
-                                                                className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full"
-                                                            >
-                                                                {tag.title}
-                                                            </span>
-                                                        ))}
+                                                        {question.tags.map(
+                                                            (tag) => (
+                                                                <span
+                                                                    key={
+                                                                        tag.tagId
+                                                                    }
+                                                                    className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full"
+                                                                >
+                                                                    {tag.title}
+                                                                </span>
+                                                            )
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>

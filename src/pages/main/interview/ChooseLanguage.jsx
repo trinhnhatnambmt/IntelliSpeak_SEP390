@@ -3,7 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Globe } from "lucide-react";
 import { flagOfEn, flagOfVi } from "~/assets";
 import { useDispatch } from "react-redux";
-import { interViewSessionQuestionForAiAPI } from "~/redux/interview/interviewSessionSlice";
+import {
+    interViewSessionQuestionForAiAPI,
+    interViewSessionVietnameseQuestionForAiAPI,
+} from "~/redux/interview/interviewSessionSlice";
 import { toast } from "react-toastify";
 
 const ChooseLanguage = () => {
@@ -13,6 +16,18 @@ const ChooseLanguage = () => {
     const submitInterviewSessionWithEnglish = () => {
         toast
             .promise(dispatch(interViewSessionQuestionForAiAPI(id)), {
+                pending: "Preparing your interview session...",
+            })
+            .then((res) => {
+                if (!res.error) {
+                    navigate(`/main/interviewPage/${id}`);
+                }
+            });
+    };
+
+    const submitInterviewSessionWithVietnamese = () => {
+        toast
+            .promise(dispatch(interViewSessionVietnameseQuestionForAiAPI(id)), {
                 pending: "Preparing your interview session...",
             })
             .then((res) => {
@@ -54,7 +69,10 @@ const ChooseLanguage = () => {
                             </p>
                         </div>
                     </button>
-                    <button className="hover:border-green-600 duration-300 cursor-pointer relative z-10 flex items-center gap-4 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1e1e2f] hover:shadow-md transition rounded-2xl p-6 text-left group">
+                    <button
+                        onClick={submitInterviewSessionWithVietnamese}
+                        className="hover:border-green-600 duration-300 cursor-pointer relative z-10 flex items-center gap-4 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1e1e2f] hover:shadow-md transition rounded-2xl p-6 text-left group"
+                    >
                         <img
                             src={flagOfVi}
                             alt="Vietnamese"
