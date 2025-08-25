@@ -12,7 +12,6 @@ const SinglePostPage = () => {
   const [post, setPost] = useState(null);
   const [isSaved, setIsSaved] = useState(false);
   const commentRef = useRef(null);
-  const [commentTitle, setCommentTitle] = useState("");
   const [commentContent, setCommentContent] = useState("");
   const [isCommentLoading, setIsCommentLoading] = useState(false);
   const [comments, setComments] = useState([]);
@@ -21,7 +20,7 @@ const SinglePostPage = () => {
     try {
       const res = await getForumPostRepliesAPI(postId);
       setComments(res.data || []);
-    } catch (err) {
+    } catch {
       setComments([]);
     }
   };
@@ -38,8 +37,8 @@ const SinglePostPage = () => {
         const data = await getForumPostByIdAPI(postId);
         setPost(data.data);
         setIsSaved(!!data.data.isSaved);
-      } catch (err) {
-        console.error("Error fetching post details:", err);
+      } catch {
+        // Error fetching post details
       }
     };
     fetchPost();
@@ -50,19 +49,17 @@ const SinglePostPage = () => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    if (!commentTitle.trim() || !commentContent.trim()) {
-      toast.error("Please enter a comment title and content.");
+    if (!commentContent.trim()) {
+      toast.error("Please enter a comment.");
       return;
     }
     setIsCommentLoading(true);
     try {
       await postReplyAPI({
         postId: Number(postId),
-        title: commentTitle,
         content: commentContent,
       });
       toast.success("Comment submitted!");
-      setCommentTitle("");
       setCommentContent("");
       await fetchComments();
     } catch (err) {
@@ -149,29 +146,52 @@ const SinglePostPage = () => {
           {/* Comment Section */}
           <div ref={commentRef} className="mt-10">
             <h3 className="text-lg font-semibold mb-3 text-gray-800 dark:text-white">Comments</h3>
-            <form onSubmit={handleCommentSubmit} className="mb-8 bg-gray-50 dark:bg-[#23233a] p-4 rounded-lg">
-              <input
-                type="text"
-                placeholder="Comment title"
-                className="w-full mb-2 p-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-white"
-                value={commentTitle}
-                onChange={e => setCommentTitle(e.target.value)}
-                disabled={isCommentLoading}
-              />
-              <textarea
-                placeholder="Comment content"
-                className="w-full mb-2 p-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-white min-h-[80px]"
-                value={commentContent}
-                onChange={e => setCommentContent(e.target.value)}
-                disabled={isCommentLoading}
-              />
-              <button
-                type="submit"
-                disabled={isCommentLoading}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition-all disabled:opacity-50"
-              >
-                {isCommentLoading ? "Sending..." : "Submit Comment"}
-              </button>
+            <form
+              onSubmit={handleCommentSubmit}
+              className="mb-8 bg-gradient-to-br from-blue-50 via-white to-blue-100 dark:from-[#23233a] dark:via-[#181818] dark:to-[#23233a] p-6 rounded-2xl shadow-lg border border-blue-100 dark:border-[#23233a] flex flex-col gap-4"
+            >
+              <label htmlFor="comment-content" className="font-semibold text-gray-700 dark:text-gray-200 mb-1">Add a Comment</label>
+              <div className="relative">
+                <textarea
+                  id="comment-content"
+                  placeholder="Write your comment..."
+                  className="w-full resize-none p-3 pr-12 rounded-xl border-2 border-blue-200 dark:border-blue-700 bg-white dark:bg-[#181818] text-gray-800 dark:text-white min-h-[90px] focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 transition-all text-base shadow-sm"
+                  value={commentContent}
+                  onChange={e => setCommentContent(e.target.value)}
+                  disabled={isCommentLoading}
+                  maxLength={500}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      if (!isCommentLoading && commentContent.trim()) {
+                        handleCommentSubmit(e);
+                      }
+                    }
+                  }}
+                />
+                <button
+                  type="submit"
+                  disabled={isCommentLoading || !commentContent.trim()}
+                  className="absolute bottom-3 right-3 bg-gradient-to-r from-blue-500 to-blue-700 dark:from-blue-600 dark:to-blue-800 hover:from-blue-600 hover:to-blue-800 dark:hover:from-blue-700 dark:hover:to-blue-900 text-white rounded-full p-2 shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  tabIndex={-1}
+                  aria-label="Submit comment"
+                >
+                  {isCommentLoading ? (
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 6.487a2.25 2.25 0 0 1 0 3.182L10.67 15.86a.75.75 0 0 1-.53.22H7.5v-2.64a.75.75 0 0 1 .22-.53l6.192-6.192a2.25 2.25 0 0 1 3.182 0Z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 7.5l.75.75" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-xs text-gray-400 dark:text-gray-500">{commentContent.length}/500</span>
+              </div>
             </form>
             {/* Existing comments */}
             <div className="space-y-4">
@@ -193,9 +213,7 @@ const SinglePostPage = () => {
                         <span className="text-xs text-gray-400">{new Date(cmt.createAt).toLocaleString("en-US", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })}</span>
                       </div>
                     </div>
-                    <div className="mb-1 text-base font-semibold text-gray-900 dark:text-white">
-                      {cmt.title}
-                    </div>
+                    {/* Removed comment title display */}
                     <div className="text-gray-700 dark:text-gray-200">
                       {cmt.content}
                     </div>
