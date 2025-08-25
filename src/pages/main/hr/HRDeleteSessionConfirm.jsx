@@ -35,7 +35,7 @@ export default function HRDeleteSessionConfirm({
                 >
                     &times;
                 </button>
-                <h3 className="text-lg font-bold mb-4 text-center text-gray-800 dark:text-white">Delete Interview Session</h3>
+                <h3 className="text-lg font-bold mb-4 text-center text-gray-800 dark:text-white">Delete Interview Template</h3>
                 <p className="mb-6 text-center text-gray-700 dark:text-gray-200">
                     Are you sure you want to delete <span className="font-semibold">{session?.title}</span>?
                 </p>

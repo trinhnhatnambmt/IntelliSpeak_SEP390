@@ -1,6 +1,5 @@
-
-import React, { useState, useMemo } from "react";
-import { createInterviewSessionAPI } from "~/apis/index"; // hoặc update API nếu có
+import React, { useState, useMemo, useEffect } from "react";
+import { createInterviewSessionAPI, getAllTag } from "~/apis/index"; // thêm getAllTag
 import CustomModal from "../../../components/CustomModal";
 import { uploadImageAPI } from "~/apis/index";
 import { toast } from "react-toastify";
@@ -10,7 +9,6 @@ export default function HREditSessionModal({
     session,
     onClose,
     topics,
-    tags,
     myQuestions,
     onUpdated,
 }) {
@@ -42,6 +40,20 @@ export default function HREditSessionModal({
     }, [form, session]);
     const [loading, setLoading] = useState(false);
     const [thumbnailUploading, setThumbnailUploading] = useState(false);
+    const [allTags, setAllTags] = useState([]);
+
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const res = await getAllTag();
+                setAllTags(res || []);
+            } catch {
+                setAllTags([]);
+            }
+        };
+        fetchTags();
+    }, []);
+
     // Handle image upload for thumbnail
     const handleThumbnailUpload = async (e) => {
         const file = e.target.files[0];
@@ -119,7 +131,7 @@ export default function HREditSessionModal({
         <CustomModal
             open={open}
             onClose={onClose}
-            title={<span className="text-xl font-bold text-gray-800 dark:text-white">Edit Interview Session</span>}
+            title={<span className="text-xl font-bold text-gray-800 dark:text-white">Edit Interview Template</span>}
             backgroundColor={isDark ? '#111112' : '#fff'}
             className="hr-edit-session-modal"
         >
@@ -228,8 +240,11 @@ export default function HREditSessionModal({
                 <div>
                     <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">Tags <span className="text-red-500">*</span></label>
                     <div className="flex flex-wrap gap-2">
-                        {tags.map((tag) => (
-                            <label key={tag.tagId || tag.id} className="flex items-center gap-1 bg-gray-50 dark:bg-neutral-800 px-2 py-1 rounded border border-gray-200 dark:border-neutral-700">
+                        {allTags.map((tag) => (
+                            <label
+                                key={tag.tagId || tag.id}
+                                className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]"
+                            >
                                 <input
                                     type="checkbox"
                                     name="tagIds"
