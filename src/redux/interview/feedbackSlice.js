@@ -17,6 +17,17 @@ export const interviewFeedbackAPI = createAsyncThunk(
     }
 );
 
+export const interviewFeedbackVietnameseAPI = createAsyncThunk(
+    "interviewFeedback/interviewFeedbackVietnameseAPI",
+    async (data) => {
+        const response = await authorizedAxiosInstance.post(
+            `${API_ROOT}/answer_compare/evaluate-batch/vietnamese`,
+            data
+        );
+        return response.data;
+    }
+);
+
 export const interviewFeedbackSlice = createSlice({
     name: "interviewFeedback",
     initialState,
@@ -27,6 +38,12 @@ export const interviewFeedbackSlice = createSlice({
             //action.payload chính là cái response.data trả về ở phía trên
             state.feedback = action.payload;
         });
+        builder.addCase(
+            interviewFeedbackVietnameseAPI.fulfilled,
+            (state, action) => {
+                state.feedback = action.payload;
+            }
+        );
     },
 });
 
