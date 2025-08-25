@@ -436,6 +436,14 @@ export const applyForHrAPI = async ({
     return response.data;
 };
 
+// ==== GET HR INTERVIEW SESSIONS ====
+export const getMyInterviewSessionsAPI = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/interview-sessions/my-sessions`
+    );
+    return response.data;
+};
+
 // ==== CREATE PAYMENT LINK ====
 export const createPaymentLinkAPI = async (packageId) => {
     try {
@@ -449,4 +457,12 @@ export const createPaymentLinkAPI = async (packageId) => {
         console.error("Error creating payment link:", error);
         throw error;
     }
+};
+
+export const createInterviewSessionAPI = async (data) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/interview-sessions/create`,
+        data
+    );
+    return response.data;
 };
