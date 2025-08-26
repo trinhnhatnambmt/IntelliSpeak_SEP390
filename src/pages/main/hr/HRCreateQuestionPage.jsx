@@ -13,6 +13,10 @@ import HRCreateSessionModal from "./HRCreateSessionModal";
 import HREditSessionModal from "./HREditSessionModal";
 import HRDeleteSessionConfirm from "./HRDeleteSessionConfirm";
 import HRCreateQuestionModal from "./HRCreateQuestionModal";
+import HRInterviewTemplateTab from "./HRInterviewTemplateTab";
+import HRQuestionManagementTab from "./HRQuestionManagementTab";
+import HRJDUploadTab from "./HRJDUploadTab";
+import HRPotentialCandidatesTab from "./HRPotentialCandidatesTab";
 
 const difficulties = [
     { value: "EASY", label: "Easy" },
@@ -244,248 +248,51 @@ export default function HRCreateQuestionPage() {
                 >
                     Question Management
                 </button>
+                <button
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === 'jd' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
+                    onClick={() => setActiveTab('jd')}
+                >
+                    JD Upload
+                </button>
+                <button
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === 'candidates' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
+                    onClick={() => setActiveTab('candidates')}
+                >
+                    Potential Candidates
+                </button>
             </div>
             {isLoading ? (
                 <div className="flex justify-center items-center py-10">
                     <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
             ) : activeTab === 'session' ? (
-                <div className="space-y-4">
-                    {/* Header + actions */}
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
-                        <h3 className="text-xl font-semibold">My Interview Templates</h3>
-                        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-                            <input
-                                type="text"
-                                placeholder="Search sessions..."
-                                className="px-3 py-1 border rounded-md dark:bg-neutral-800 dark:border-neutral-700 flex-grow"
-                                value={sessionSearchTerm}
-                                onChange={e => setSessionSearchTerm(e.target.value)}
-                            />
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={fetchMySessions}
-                                    className="px-3 py-1 bg-gray-100 dark:bg-neutral-700 rounded-md text-sm"
-                                >
-                                    Refresh
-                                </button>
-                                <button
-                                    className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600"
-                                    onClick={() => setShowTemplateModal(true)}
-                                >
-                                    Create a new template
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {/* Danh sách session */}
-                    {(!Array.isArray(mySessions) || mySessions.length === 0) ? (
-                        <div className="text-center py-10">
-                            <p className="text-gray-500 dark:text-gray-400">You have not created any interview sessions yet.</p>
-                        </div>
-                    ) : (
-                        <div className="space-y-4">
-                            {mySessions
-                                .filter(session =>
-                                    session.title?.toLowerCase().includes(sessionSearchTerm.toLowerCase())
-                                )
-                                .map(session => (
-                                    <div
-                                        key={session.interviewSessionId}
-                                        className="relative flex gap-4 items-center bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-sm hover:shadow-lg transition-shadow p-4"
-                                    >
-                                        {session.interviewSessionThumbnail && (
-                                            <img
-                                                src={session.interviewSessionThumbnail}
-                                                alt="Template Thumbnail"
-                                                className="w-16 h-16 object-cover rounded-lg border border-gray-200 dark:border-neutral-800"
-                                            />
-                                        )}
-                                        <div className="flex-1">
-                                            <h4 className="font-semibold text-lg text-gray-800 dark:text-white">{session.title}</h4>
-                                            <p className="text-gray-500 dark:text-gray-300 mt-1 text-sm">{session.description}</p>
-                                            <div className="flex flex-wrap gap-2 mt-2 items-center">
-                                                <span className="px-2 py-1 bg-gray-50 dark:bg-neutral-800 rounded text-xs text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-neutral-700">
-                                                    Total Questions: {session.totalQuestion}
-                                                </span>
-                                                <span className={`px-2 py-1 text-xs rounded-full border ${session.difficulty === 'EASY' ? 'bg-green-50 text-green-700 border-green-100 dark:bg-green-900 dark:text-green-200' :
-                                                    session.difficulty === 'MEDIUM' ? 'bg-yellow-50 text-yellow-700 border-yellow-100 dark:bg-yellow-900 dark:text-yellow-200' :
-                                                        'bg-red-50 text-red-700 border-red-100 dark:bg-red-900 dark:text-red-200'
-                                                    }`}>
-                                                    {session.difficulty.charAt(0) + session.difficulty.slice(1).toLowerCase()}
-                                                </span>
-                                                {Array.isArray(session.tags) && session.tags.length > 0 && (
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {session.tags.map(tag => (
-                                                            <span
-                                                                key={tag.tagId}
-                                                                className="px-2 py-1 bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full border border-blue-100 dark:border-blue-800"
-                                                            >
-                                                                {tag.title}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                        {/* 3 chấm menu */}
-                                        <div className="absolute top-4 right-4">
-                                            <button
-                                                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-neutral-800 transition"
-                                                onClick={() => setOpenSessionMenuId(openSessionMenuId === session.interviewSessionId ? null : session.interviewSessionId)}
-                                            >
-                                                <span className="text-xl text-gray-500 dark:text-gray-300">⋮</span>
-                                            </button>
-                                            {openSessionMenuId === session.interviewSessionId && (
-                                                <div className="absolute right-0 mt-2 w-36 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-lg z-10 py-2">
-                                                    <button
-                                                        className="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-neutral-800 rounded transition"
-                                                        onClick={() => {
-                                                            setOpenSessionMenuId(null);
-                                                            setEditSessionModal({ open: true, session });
-                                                        }}
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                    <button
-                                                        className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-700 rounded transition"
-                                                        onClick={() => {
-                                                            setOpenSessionMenuId(null);
-                                                            setDeleteSessionModal({ open: true, session });
-                                                        }}
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                        </div>
-                    )}
-                </div>
+                <HRInterviewTemplateTab
+                    mySessions={mySessions}
+                    sessionSearchTerm={sessionSearchTerm}
+                    setSessionSearchTerm={setSessionSearchTerm}
+                    fetchMySessions={fetchMySessions}
+                    setShowTemplateModal={setShowTemplateModal}
+                    setOpenSessionMenuId={setOpenSessionMenuId}
+                    openSessionMenuId={openSessionMenuId}
+                    setEditSessionModal={setEditSessionModal}
+                    setDeleteSessionModal={setDeleteSessionModal}
+                />
             ) : activeTab === 'question' ? (
-                <div className="space-y-4">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
-                        <h3 className="text-xl font-semibold">My Questions</h3>
-                        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto items-center">
-                            <input
-                                type="text"
-                                placeholder="Search questions..."
-                                className="px-3 py-1 border rounded-md dark:bg-neutral-800 dark:border-neutral-700 flex-grow"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                            <select
-                                className="px-3 py-1 border rounded-md dark:bg-neutral-800 dark:border-neutral-700 text-sm"
-                                value={selectedTagFilter}
-                                onChange={e => setSelectedTagFilter(e.target.value)}
-                            >
-                                <option value="">All Tags</option>
-                                {tagsInMyQuestions.map(tag => (
-                                    <option key={tag.tagId || tag.id} value={tag.tagId || tag.id}>{tag.title}</option>
-                                ))}
-                            </select>
-                            <select
-                                className="px-3 py-1 border rounded-md dark:bg-neutral-800 dark:border-neutral-700 text-sm"
-                                value={selectedDifficulty}
-                                onChange={e => setSelectedDifficulty(e.target.value)}
-                            >
-                                <option value="">All Difficulties</option>
-                                <option value="EASY">Easy</option>
-                                <option value="MEDIUM">Medium</option>
-                                <option value="HARD">Hard</option>
-                            </select>
-                            <button
-                                onClick={() => setShowCreateQuestionModal(true)}
-                                className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600"
-                            >
-                                Add New
-                            </button>
-                        </div>
-                    </div>
-                    {filteredQuestions.length === 0 ? (
-                        <div className="text-center py-10">
-                            {searchTerm ? (
-                                <>
-                                    <p className="text-gray-500 dark:text-gray-400">No matching questions found</p>
-                                    <button
-                                        onClick={() => setSearchTerm("")}
-                                        className="mt-4 px-4 py-2 bg-gray-100 dark:bg-neutral-700 rounded-md hover:bg-gray-200 dark:hover:bg-neutral-600"
-                                    >
-                                        Clear Filter
-                                    </button>
-                                </>
-                            ) : (
-                                <>
-                                    <p className="text-gray-500 dark:text-gray-400">You have not created any questions yet</p>
-                                    <button
-                                        onClick={() => setShowCreateQuestionModal(true)}
-                                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                                    >
-                                        Create your first question
-                                    </button>
-                                </>
-                            )}
-                        </div>
-                    ) : (
-                        <div className="space-y-4">
-                            {filteredQuestions.map((question) => (
-                                <div
-                                    key={question.questionId}
-                                    className="p-4 border rounded-lg dark:border-neutral-700 hover:shadow-md transition-shadow"
-                                >
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex-1">
-                                            <h4 className="font-medium text-lg">
-                                                {question.title}
-                                            </h4>
-                                            <p className="text-gray-600 dark:text-gray-300 mt-1 whitespace-pre-line">
-                                                {question.content}
-                                            </p>
-                                            <div className="flex flex-wrap items-center gap-3 mt-3">
-                                                <span className={`px-2 py-1 text-xs rounded-full ${question.difficulty === 'EASY' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                                                    question.difficulty === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                                                        'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                                                    }`}>
-                                                    {question.difficulty.charAt(0) + question.difficulty.slice(1).toLowerCase()}
-                                                </span>
-                                                {question.tags.length > 0 && (
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {question.tags.map(
-                                                            (tag) => (
-                                                                <span
-                                                                    key={
-                                                                        tag.tagId
-                                                                    }
-                                                                    className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full"
-                                                                >
-                                                                    {tag.title}
-                                                                </span>
-                                                            )
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {(question.suitableAnswer1 || question.suitableAnswer2) && (
-                                        <div className="mt-3 p-3 bg-gray-50 dark:bg-neutral-800 rounded">
-                                            <p className="font-medium">Sample Answer 1:</p>
-                                            <p className="mt-1 whitespace-pre-line">{question.suitableAnswer1}</p>
-                                            {question.suitableAnswer2 && (
-                                                <>
-                                                    <p className="font-medium mt-3">Sample Answer 2:</p>
-                                                    <p className="mt-1 whitespace-pre-line">{question.suitableAnswer2}</p>
-                                                </>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                <HRQuestionManagementTab
+                    myQuestions={myQuestions}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    selectedTagFilter={selectedTagFilter}
+                    setSelectedTagFilter={setSelectedTagFilter}
+                    selectedDifficulty={selectedDifficulty}
+                    setSelectedDifficulty={setSelectedDifficulty}
+                    tagsInMyQuestions={tagsInMyQuestions}
+                    setShowCreateQuestionModal={setShowCreateQuestionModal}
+                />
+            ) : activeTab === 'jd' ? (
+                <HRJDUploadTab />
+            ) : activeTab === 'candidates' ? (
+                <HRPotentialCandidatesTab />
             ) : null}
             {/* Modal tạo câu hỏi mới */}
             {showCreateQuestionModal && (
