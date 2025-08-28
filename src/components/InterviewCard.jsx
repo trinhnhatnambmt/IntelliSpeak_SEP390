@@ -1,6 +1,6 @@
 import React from "react";
-import { interviewSession, service2 } from "~/assets";
 import { Link, useNavigate } from "react-router-dom";
+import { interviewSession } from "~/assets";
 
 const InterviewCard = ({
     type = "main",

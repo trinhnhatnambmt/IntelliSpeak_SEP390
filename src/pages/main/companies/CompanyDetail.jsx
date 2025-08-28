@@ -87,25 +87,6 @@ const CompanyDetail = () => {
                                     >
                                         LinkedIn
                                     </Link>
-
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        CV:
-                                        <Link
-                                            to={hr.cvUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-500 hover:underline text-sm ml-1"
-                                        >
-                                            View CV
-                                        </Link>
-                                    </p>
-
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        Submitted:{" "}
-                                        {new Date(
-                                            hr.submittedAt
-                                        ).toLocaleDateString()}
-                                    </p>
                                 </div>
                             ))}
                         </div>
