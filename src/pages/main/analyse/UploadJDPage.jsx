@@ -23,7 +23,6 @@ const UploadJDPage = () => {
 
         //Gọi API
         uploadJdAPI(reqData).then((res) => {
-            // console.log("🚀 ~ handleAnalyze JD ~ res:", res);
             if (!res.error) {
                 toast.success("Analyze JD successfully!");
             }

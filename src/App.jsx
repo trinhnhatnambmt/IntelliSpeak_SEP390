@@ -33,6 +33,7 @@ import Companies from "./pages/main/companies/Companies";
 import CompanyDetail from "./pages/main/companies/CompanyDetail";
 import ChooseLanguage from "./pages/main/interview/ChooseLanguage";
 import Complaint from "./pages/main/complaint/Complaint";
+import InterviewSessionDetail from "./pages/main/interview/interviewSessionDetail";
 
 const ProtectedRoutes = ({ user }) => {
     if (!user) return <Navigate to="/" replace={true} />;
@@ -94,6 +95,11 @@ const App = () => {
                         element={<SinglePostPage />}
                     />
                     <Route path="myPostPage" element={<MyPostPage />} />
+
+                    <Route
+                        path="interviewSessionDetail/:id"
+                        element={<InterviewSessionDetail />}
+                    />
 
                     {/* HR */}
                     <Route path="updateHR" element={<UpdateHR />} />

@@ -1,13 +1,17 @@
 // ==== IMPORT QUESTIONS FROM CSV ====
-export const importQuestionsFromCsv = async (tagId, file) => {
+export const importQuestionsFromCsv = async (
+    tagId,
+    file,
+    interviewSessionId
+) => {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
     const response = await authorizedAxiosInstance.post(
-        `${API_ROOT}/question/import-csv/${tagId}`,
+        `${API_ROOT}/question/import-csv/${tagId}/${interviewSessionId}`,
         formData,
         {
             headers: {
-                'Content-Type': 'multipart/form-data',
+                "Content-Type": "multipart/form-data",
             },
         }
     );
@@ -433,6 +437,35 @@ export const createWebsiteFeedbackAPI = async (data) => {
 export const getComplaintStatusAPI = async () => {
     const response = await authorizedAxiosInstance.get(
         `${API_ROOT}/website-feedback/user`
+    );
+    return response.data.data;
+};
+
+export const getDetailSessionAPI = async (id) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/interview-sessions/sessions/${id}`
+    );
+    return response.data.data;
+};
+
+export const deleteQuestionFromSessionAPI = async (sessionId, questionId) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/question/${sessionId}/questions/${questionId}/remove`
+    );
+    return response.data;
+};
+
+export const addJDForCompanyAPI = async (file) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/api/jd/company/upload`,
+        file
+    );
+    return response.data.data;
+};
+
+export const getJdCompanyOfHR = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/jd/company/uploadedJD`
     );
     return response.data.data;
 };

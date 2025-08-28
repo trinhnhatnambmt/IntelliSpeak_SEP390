@@ -1,117 +1,134 @@
-import React, { useState } from "react";
+import { SquareChartGantt } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { addJDForCompanyAPI, getJdCompanyOfHR } from "~/apis";
+import FileUploader from "~/components/FileUploader";
 
 export default function HRJDUploadTab() {
-    const [jdName, setJDName] = useState("");
-    const [jdDesc, setJDDesc] = useState("");
-    const [jdFile, setJDFile] = useState(null);
-    const [jdList, setJDList] = useState([
-        // Demo data
-        // { name: "JD Frontend Developer", desc: "React, HTML, CSS", fileName: "JD_Frontend.pdf" }
-    ]);
-    const [uploading, setUploading] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [statusText, setStatusText] = useState("");
+    const [file, setFile] = useState(null);
+    const [jobDescriptions, setJobDescriptions] = useState([]);
 
-    const handleFileChange = (e) => {
-        setJDFile(e.target.files[0]);
+    useEffect(() => {
+        fetchJobDescriptions();
+    }, []);
+
+    const fetchJobDescriptions = () => {
+        getJdCompanyOfHR().then((res) => {
+            setJobDescriptions(res);
+        });
     };
 
-    const handleUpload = (e) => {
+    const handleFileSelect = (file) => {
+        setFile(file);
+    };
+
+    const handleAnalyze = async ({ file }) => {
+        setIsProcessing(true);
+        setStatusText("Uploading your JD...");
+
+        const reqData = new FormData();
+        reqData.append("file", file);
+
+        addJDForCompanyAPI(reqData).then((res) => {
+            if (!res.error) {
+                toast.success("Uploading JD successfully!");
+                setIsProcessing(false);
+                setStatusText("");
+                setFile(null);
+                fetchJobDescriptions();
+            } else {
+                // Xử lý lỗi nếu cần
+                setIsProcessing(false);
+                setStatusText("");
+                toast.error("Failed to upload JD.");
+            }
+        });
+    };
+
+    const handleSubmit = (e) => {
         e.preventDefault();
-        if (!jdName || !jdFile) {
-            alert("Please enter JD name and select a file.");
-            return;
-        }
-        setUploading(true);
-        // Fake upload
-        setTimeout(() => {
-            setJDList([
-                ...jdList,
-                {
-                    name: jdName,
-                    desc: jdDesc,
-                    fileName: jdFile.name,
-                },
-            ]);
-            setJDName("");
-            setJDDesc("");
-            setJDFile(null);
-            setUploading(false);
-        }, 1000);
+        if (!file) return;
+        handleAnalyze({ file });
     };
 
     return (
         <div className="space-y-6">
-            <h3 className="text-xl font-semibold">Upload Job Description (JD)</h3>
-            <form
-                className="bg-gray-50 dark:bg-neutral-800 rounded-lg p-4 flex flex-col gap-4"
-                onSubmit={handleUpload}
-            >
-                <div>
-                    <label className="block font-medium mb-1">JD Name <span className="text-red-500">*</span></label>
-                    <input
-                        type="text"
-                        className="w-full px-3 py-2 border rounded-md dark:bg-neutral-900 dark:border-neutral-700"
-                        value={jdName}
-                        onChange={e => setJDName(e.target.value)}
-                        placeholder="e.g. Backend Developer"
-                        required
+            {isProcessing ? (
+                <div className="mt-10">
+                    <h2 className="text-2xl">{statusText}</h2>
+                    <img
+                        src="/images/resume-scan.gif"
+                        className="mt-[-100px] w-[500px] ml-[180px] relative z-10"
                     />
                 </div>
-                <div>
-                    <label className="block font-medium mb-1">Short Description</label>
-                    <textarea
-                        className="w-full px-3 py-2 border rounded-md dark:bg-neutral-900 dark:border-neutral-700"
-                        value={jdDesc}
-                        onChange={e => setJDDesc(e.target.value)}
-                        placeholder="e.g. NodeJS, MongoDB, REST API"
-                        rows={2}
-                    />
-                </div>
-                <div>
-                    <label className="block font-medium mb-1">JD File <span className="text-red-500">*</span></label>
-                    <input
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={handleFileChange}
-                        className="block"
-                        required
-                    />
-                    {jdFile && (
-                        <div className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-                            Selected: {jdFile.name}
+            ) : (
+                <>
+                    <h2 className="text-2xl font-medium text-shadow-gray-50">
+                        Upload a Job Description (JD)
+                    </h2>
+                    <form
+                        id="upload-form"
+                        onSubmit={handleSubmit}
+                        className="flex flex-col gap-4 mt-8"
+                    >
+                        <div className="form-div">
+                            <FileUploader
+                                onFileSelect={handleFileSelect}
+                                file={file}
+                            />
                         </div>
-                    )}
-                </div>
-                <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-60"
-                    disabled={uploading}
-                >
-                    {uploading ? "Uploading..." : "Upload JD"}
-                </button>
-            </form>
-            <div>
-                <h4 className="font-semibold mb-2">Uploaded JDs</h4>
-                {jdList.length === 0 ? (
-                    <div className="text-gray-500 dark:text-gray-400">No JD uploaded yet.</div>
-                ) : (
-                    <ul className="space-y-2">
-                        {jdList.map((jd, idx) => (
-                            <li key={idx} className="p-3 border rounded-md bg-white dark:bg-neutral-900 dark:border-neutral-700 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                                <div>
-                                    <div className="font-medium">{jd.name}</div>
-                                    {jd.desc && <div className="text-sm text-gray-500 dark:text-gray-400">{jd.desc}</div>}
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <span className="text-xs text-gray-600 dark:text-gray-300">{jd.fileName}</span>
-                                    <button className="px-2 py-1 text-xs bg-red-100 text-red-600 rounded hover:bg-red-200">
-                                        Delete
-                                    </button>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </div>
+
+                        <button
+                            type="submit"
+                            className="relative z-10 cursor-pointer flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
+                        >
+                            <SquareChartGantt className="w-5 h-5" />
+                            Analyze JD
+                        </button>
+                    </form>
+
+                    {/* Phần hiển thị danh sách JD */}
+                    <div className="mt-10">
+                        <h2 className="text-2xl font-medium mb-4">
+                            Your Job Descriptions
+                        </h2>
+                        {jobDescriptions.length === 0 ? (
+                            <p>No job descriptions available.</p>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {jobDescriptions.map((jd) => {
+                                    // Lấy link ảnh đầu tiên từ linkToJd (nếu có nhiều trang, tách bằng ';')
+                                    const firstImageLink = jd.linkToJd
+                                        .split(";")[0]
+                                        .trim();
+                                    return (
+                                        <a
+                                            key={jd.companyJdId}
+                                            href={firstImageLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="block border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-200"
+                                        >
+                                            <img
+                                                src={firstImageLink}
+                                                alt={jd.jobTitle}
+                                                className="w-full h-48 object-cover"
+                                            />
+                                            <div className="p-4">
+                                                <h3 className="text-lg font-semibold">
+                                                    {jd.jobTitle}
+                                                </h3>
+                                            </div>
+                                        </a>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </>
+            )}
         </div>
     );
 }
