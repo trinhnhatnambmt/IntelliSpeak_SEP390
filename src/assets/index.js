@@ -38,8 +38,10 @@ import robot from "./robot.png";
 import robot_assistant from "./robot-assistant.png";
 import flagOfEn from "./Flag_of_the_United_Kingdom.png";
 import flagOfVi from "./Flag_of_Vietnam.svg.png";
+import interviewSession from "./interviewSession.png";
 
 export {
+    interviewSession,
     flagOfVi,
     flagOfEn,
     robot_assistant,
