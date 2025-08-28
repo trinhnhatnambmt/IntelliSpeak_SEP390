@@ -245,60 +245,7 @@ export default function HRCreateSessionModal({
                         ))}
                     </div>
                 </div>
-                <div>
-                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
-                        Tags <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                        {allTags.map((tag) => (
-                            <label
-                                key={tag.id}
-                                className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]"
-                            >
-                                <input
-                                    type="checkbox"
-                                    name="tagIds"
-                                    value={tag.id}
-                                    checked={templateForm.tagIds.includes(
-                                        String(tag.id)
-                                    )}
-                                    onChange={handleChange}
-                                    disabled={templateLoading}
-                                />
-                                <span className="text-xs text-gray-700 dark:text-gray-200">
-                                    {tag.title}
-                                </span>
-                            </label>
-                        ))}
-                    </div>
-                </div>
-                <div>
-                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
-                        Tags <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                        {allTags.map((tag) => (
-                            <label
-                                key={tag.id}
-                                className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]"
-                            >
-                                <input
-                                    type="checkbox"
-                                    name="tagIds"
-                                    value={tag.id}
-                                    checked={templateForm.tagIds.includes(
-                                        String(tag.id)
-                                    )}
-                                    onChange={handleChange}
-                                    disabled={templateLoading}
-                                />
-                                <span className="text-xs text-gray-700 dark:text-gray-200">
-                                    {tag.title}
-                                </span>
-                            </label>
-                        ))}
-                    </div>
-                </div>
+
                 <div className="flex gap-3 mt-4">
                     <button
                         type="button"
