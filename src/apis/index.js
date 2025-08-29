@@ -470,6 +470,41 @@ export const getJdCompanyOfHR = async () => {
     return response.data.data;
 };
 
+export const getAllJdOfCompany = async (id) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/jd/company/${id}`
+    );
+    return response.data.data;
+};
+
+export const getCompanyJdDetail = async (id) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/jd/company/jd/${id}`
+    );
+    return response.data.data;
+};
+
+export const compareJdAndCV = async (jdId) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/jd/${jdId}/match-cv`
+    );
+    return response.data.data;
+};
+
+export const userApplyCvForCompany = async (id) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/api/cv/submit-for-company?companyId=${id}`
+    );
+    return response.data;
+};
+
+export const getApplyCVStatusToCompany = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/cv/candidate/view-submitted-cv`
+    );
+    return response.data.data;
+};
+
 // ==== HR APPLICATION ====
 export const applyForHrAPI = async ({
     companyId,

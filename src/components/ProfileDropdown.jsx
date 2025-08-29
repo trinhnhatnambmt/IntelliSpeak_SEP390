@@ -82,7 +82,7 @@ export default function WalletProfile() {
         },
         {
             icon: <MessageCircleCode className="w-5 h-5" />,
-            label: "Complaint status",
+            label: "Status",
             href: "/main/complaint",
         },
         {
