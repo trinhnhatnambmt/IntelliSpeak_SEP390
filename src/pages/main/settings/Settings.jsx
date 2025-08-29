@@ -40,18 +40,6 @@ const Settings = () => {
                                     Password & Security
                                 </button>
                             </li>
-                            <li>
-                                <button
-                                    onClick={() => setActiveTab("uploadCV")}
-                                    className={`w-full text-left px-4 py-2 rounded font-medium ${
-                                        activeTab === "uploadCV"
-                                            ? "bg-blue-600 text-white"
-                                            : "text-gray-700 dark:text-gray-300 hover:text-blue-500"
-                                    }`}
-                                >
-                                    Upload CV
-                                </button>
-                            </li>
                         </ul>
                     </div>
                 </aside>

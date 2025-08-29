@@ -18,22 +18,23 @@ const UploadPage = () => {
 
     const handleAnalyze = async ({ file, title }) => {
         setIsProcessing(true);
+        setStatusText("Analyzing your CV...");
 
         const reqData = new FormData();
         reqData.append("file", file);
-        // console.log("🚀 ~ handleAnalyze ~ reqData:", reqData);
-        // for (const value of reqData.values()) {
-        //     console.log("reqData Value: ", value);
-        // }
 
         //Gọi API
         uploadResumeAPI(reqData, title).then((res) => {
             if (!res.error) {
                 toast.success("Analyze CV successfully!");
+                navigate(`/resume/${res?.evaluation?.id}`);
+            } else {
+                toast.error(
+                    "Failed to analyze JD. Redirecting to main page..."
+                );
+                navigate("/main");
             }
-            navigate(`/resume/${res?.evaluation?.id}`);
         });
-        setStatusText("Analyzing your CV...");
     };
 
     const handleSubmit = (e) => {

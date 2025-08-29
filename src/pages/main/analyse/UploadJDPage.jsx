@@ -17,6 +17,7 @@ const UploadJDPage = () => {
 
     const handleAnalyze = async ({ file }) => {
         setIsProcessing(true);
+        setStatusText("Analyzing your JD...");
 
         const reqData = new FormData();
         reqData.append("file", file);
@@ -25,10 +26,14 @@ const UploadJDPage = () => {
         uploadJdAPI(reqData).then((res) => {
             if (!res.error) {
                 toast.success("Analyze JD successfully!");
+                navigate(`/jd/${res?.jdId}`);
+            } else {
+                toast.error(
+                    "Failed to analyze JD. Redirecting to main page..."
+                );
+                navigate("/main");
             }
-            navigate(`/jd/${res?.jdId}`);
         });
-        setStatusText("Analyzing your JD...");
     };
 
     const handleSubmit = (e) => {
