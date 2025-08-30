@@ -90,13 +90,14 @@ const Profile = () => {
                         </p>
 
                         <p className="text-gray-500 dark:text-gray-400 mt-1">
-                            CV analyze used: {userProfile?.cvAnalyzeUsed || 0}
+                            CV analyze remained: {userProfile?.cvAnalyzeUsed || 0}
                         </p>
                         <p className="text-gray-500 dark:text-gray-400 mt-1">
-                            JD analyze used: {userProfile?.jdAnalyzeUsed || 0}
+                            JD analyze remained: {userProfile?.jdAnalyzeUsed || 0}
                         </p>
                         <p className="text-gray-500 dark:text-gray-400 mt-1">
-                            Interview used: {userProfile?.interviewUsed || 0}
+                            Interview remained:{" "}
+                            {userProfile?.interviewUsed || 0}
                         </p>
                     </div>
 

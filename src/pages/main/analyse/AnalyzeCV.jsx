@@ -1,7 +1,7 @@
 import { Upload } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllCvAPI } from "~/apis";
+import { getAllCvAPI, updateCvActive } from "~/apis";
 import ResumeCard from "~/components/ResumeCard";
 // import { resumes } from "~/constants";
 
@@ -13,6 +13,24 @@ const AnalyzeCV = () => {
             setResumes(res);
         });
     }, []);
+
+    const handleActivate = async (id) => {
+        try {
+            const res = await updateCvActive(id);
+            if (!res.error) {
+                setResumes((prev) =>
+                    prev.map((cv) =>
+                        cv.id === id
+                            ? { ...cv, active: true }
+                            : { ...cv, active: false }
+                    )
+                );
+            }
+        } catch (err) {
+            console.error("Failed to activate CV", err);
+        }
+    };
+
     return (
         <div className="min-h-[60vh] bg-white dark:bg-[#18182a] rounded-2xl shadow-lg p-6 sm:p-10 transition-colors duration-300 ">
             <section className="main-section">
@@ -34,7 +52,11 @@ const AnalyzeCV = () => {
 
                 <div className="resumes-section">
                     {resumes?.map((resume) => (
-                        <ResumeCard key={resume.id} resume={resume} />
+                        <ResumeCard
+                            key={resume.id}
+                            resume={resume}
+                            onActivate={handleActivate}
+                        />
                     ))}
                 </div>
             </section>

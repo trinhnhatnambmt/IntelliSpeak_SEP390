@@ -505,6 +505,14 @@ export const getApplyCVStatusToCompany = async () => {
     return response.data.data;
 };
 
+export const updateCvActive = async (id) => {
+    const response = await authorizedAxiosInstance.put(
+        `${API_ROOT}/api/cv/${id}/set-active`
+    );
+
+    return response.data;
+};
+
 // ==== HR APPLICATION ====
 export const applyForHrAPI = async ({
     companyId,
