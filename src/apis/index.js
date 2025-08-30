@@ -491,9 +491,9 @@ export const compareJdAndCV = async (jdId) => {
     return response.data.data;
 };
 
-export const userApplyCvForCompany = async (id) => {
+export const userApplyCvForCompany = async (companyId, companyJD_ID) => {
     const response = await authorizedAxiosInstance.post(
-        `${API_ROOT}/api/cv/submit-for-company?companyId=${id}`
+        `${API_ROOT}/api/cv/submit-for-company?companyId=${companyId}&companyJD_ID=${companyJD_ID}`
     );
     return response.data;
 };
@@ -511,6 +511,13 @@ export const updateCvActive = async (id) => {
     );
 
     return response.data;
+};
+
+export const getUserTransactionAPI = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/transaction/my-transaction`
+    );
+    return response.data.data;
 };
 
 // ==== HR APPLICATION ====

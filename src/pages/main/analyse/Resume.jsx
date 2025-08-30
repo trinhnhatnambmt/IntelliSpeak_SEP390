@@ -5,6 +5,7 @@ import ATS from "~/components/Resume/ATS";
 import Details from "~/components/Resume/Detail";
 import Summary from "~/components/Resume/Summary";
 import mockFeedback from "~/constants/mockdata";
+import SessionCard from "./SessionCard";
 
 const Resume = () => {
     const { id } = useParams();
@@ -17,11 +18,11 @@ const Resume = () => {
         });
     }, [id]);
 
-    const atsScore = feedback?.categories?.find(
+    const atsScore = feedback?.evaluate?.categories?.find(
         (cat) => cat.categoryName === "ATS"
     )?.score;
 
-    const atsSuggestions = feedback?.categories?.find(
+    const atsSuggestions = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "ATS"
     )?.tips;
 
@@ -40,9 +41,9 @@ const Resume = () => {
                 </Link>
             </nav>
             <div className="flex flex-row w-full max-lg:flex-col-reverse">
-                <section className="feedback-section bg-[url('/images/bg-small.svg') bg-cover h-[100vh] sticky top-0 items-center justify-center">
+                <section className="feedback-section bg-[url('/images/bg-small.svg') bg-cover h-[100%] sticky top-0 items-center justify-center">
                     <div className="animate-in fade-in duration-1000  max-sm:m-0 h-[90%] max-wxl:h-fit w-fit">
-                        {feedback?.imageURL
+                        {feedback?.evaluate.imageURL
                             ?.split(";")
                             .filter((url) => url.trim() !== "")
                             .map((url, index) => (
@@ -78,6 +79,9 @@ const Resume = () => {
                                 }
                             />
                             <Details feedback={feedback || mockFeedback} />
+                            {feedback?.recommendSessions?.map((session) => (
+                                <SessionCard session={session} />
+                            ))}
                         </div>
                     ) : (
                         <img

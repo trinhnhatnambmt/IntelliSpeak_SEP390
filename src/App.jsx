@@ -36,6 +36,7 @@ import Complaint from "./pages/main/complaint/Complaint";
 import InterviewSessionDetail from "./pages/main/interview/interviewSessionDetail";
 import CompanyJdDetail from "./pages/main/companies/CompanyJdDetail";
 import CompareCV from "./components/jobDescription/CompareCV";
+import Transaction from "./pages/main/transaction/Transaction";
 
 const ProtectedRoutes = ({ user }) => {
     if (!user) return <Navigate to="/" replace={true} />;
@@ -75,6 +76,7 @@ const App = () => {
                     <Route path="topicDetail/:id" element={<TopicDetail />} />
                     <Route path="profile" element={<Profile />} />
                     <Route path="complaint" element={<Complaint />} />
+                    <Route path="transaction" element={<Transaction />} />
                     <Route path="feedback/:id" element={<FeedBack />} />
 
                     {/* Analyze  */}
