@@ -10,16 +10,19 @@ import { selectCurrentUser } from "~/redux/user/userSlice";
 import { getAllJdOfCompany, userApplyCvForCompany } from "~/apis";
 import { Upload } from "lucide-react";
 import { toast } from "react-toastify";
+import { Form, Modal, Select } from "antd";
 
 const CompanyDetail = () => {
     const { id } = useParams();
     const companyDetail = useSelector(selectCurrentCompany);
     const currentUser = useSelector(selectCurrentUser);
     const [jobDescriptions, setJobDescriptions] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const packageId = currentUser?.packageId;
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [form] = Form.useForm();
 
     useEffect(() => {
         dispatch(getCompanyDetailAPI(id));
@@ -31,21 +34,29 @@ const CompanyDetail = () => {
         });
     }, [id]);
 
-    const handleUploadCV = () => {
-        toast
-            .promise(userApplyCvForCompany(id), {
-                pending: "Uploading your CV to Company...",
-            })
-            .then((res) => {
-                if (!res.error) {
-                    console.log(res);
-                    toast.success(res?.message);
-                } else if (res.error) {
-                    toast.error(
-                        "Something wrong!! Please upload your CV again"
-                    );
-                }
-            });
+    const handleUploadCV = async () => {
+        try {
+            const values = await form.validateFields();
+            toast
+                .promise(userApplyCvForCompany(id, values.job), {
+                    pending: "Uploading your CV to Company...",
+                })
+                .then((res) => {
+                    if (!res.error) {
+                        console.log(res);
+                        toast.success(res?.message);
+                    } else if (res.error) {
+                        toast.error(
+                            "Something wrong!! Please upload your CV again"
+                        );
+                    }
+                });
+
+            setIsModalOpen(false);
+            form.resetFields();
+        } catch (error) {
+            console.error("Validation failed:", error);
+        }
     };
 
     return (
@@ -77,7 +88,7 @@ const CompanyDetail = () => {
                         </div>
                         <div className="flex flex-col items-center sm:items-end gap-2">
                             <button
-                                onClick={handleUploadCV}
+                                onClick={() => setIsModalOpen(true)}
                                 className={`inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-lg shadow-lg hover:from-green-600 hover:to-teal-600 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 text-sm font-semibold ${
                                     isUploading
                                         ? "opacity-50 cursor-not-allowed"
@@ -223,6 +234,43 @@ const CompanyDetail = () => {
             ) : (
                 <p className="text-center">Loading...</p>
             )}
+
+            <Modal
+                title="Upload your CV"
+                closable={{ "aria-label": "Custom Close Button" }}
+                open={isModalOpen}
+                onOk={handleUploadCV}
+                onCancel={() => setIsModalOpen(false)}
+            >
+                <Form
+                    form={form}
+                    name="basic"
+                    labelCol={{ span: 24 }}
+                    wrapperCol={{ span: 24 }}
+                    initialValues={{ remember: true }}
+                    autoComplete="off"
+                >
+                    <Form.Item
+                        label="Which job are you focusing on?"
+                        name="job"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please select a job!",
+                            },
+                        ]}
+                    >
+                        <Select
+                            placeholder="Select job"
+                            style={{ width: "100%" }}
+                            options={jobDescriptions.map((jd) => ({
+                                value: jd.companyJdId,
+                                label: jd.jobTitle,
+                            }))}
+                        />
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 };
