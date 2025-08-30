@@ -1,6 +1,6 @@
 import React from "react";
-import { service2 } from "~/assets";
 import { Link, useNavigate } from "react-router-dom";
+import { interviewSession } from "~/assets";
 
 const InterviewCard = ({
     type = "main",
@@ -27,11 +27,11 @@ const InterviewCard = ({
                     className="absolute top-0 left-0 w-full h-full group-hover:opacity-100 opacity-0 transition-all duration-300"
                 ></div>
                 <img
-                    src={service2}
+                    src={interviewSession}
                     alt="interview"
                     width={600}
                     height={600}
-                    className="absolute -bottom-1 group-hover:-bottom-5 right-0 h-64 w-[80%] group-hover:border-4 border-4 group-hover:border-[#76aaf82d] rounded-lg object-cover transition-all duration-300"
+                    className="absolute -bottom-1 group-hover:-bottom-5 right-0 h-64 w-[80%] group-hover:border-4 border-4 group-hover:border-[#76aaf82d] rounded-lg object-contain transition-all duration-300"
                 />
             </figure>
             <article className="p-4 space-y-2">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getResumeFeedbackAPI } from "~/apis";
 import ATS from "~/components/Resume/ATS";
 import Details from "~/components/Resume/Detail";
@@ -12,7 +12,7 @@ const Resume = () => {
 
     useEffect(() => {
         getResumeFeedbackAPI(id).then((res) => {
-            // console.log("🚀 ~ Resume ~ res:", res);
+            console.log("🚀 ~ Resume ~ res:", res);
             setFeedback(res);
         });
     }, [id]);

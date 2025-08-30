@@ -1,5 +1,12 @@
 import { Avatar, Button } from "antd";
-import { Glasses, Mail, MapIcon, Phone, TicketCheck } from "lucide-react";
+import {
+    Glasses,
+    Mail,
+    MapIcon,
+    Package,
+    Phone,
+    TicketCheck,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import InterviewCard from "~/components/InterviewCard";
 import Footer from "~/sections/Footer";
@@ -38,6 +45,14 @@ const Profile = () => {
             ),
             label: userProfile?.role ? userProfile?.role : "Not updated",
         },
+        {
+            icon: (
+                <Package className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            ),
+            label: userProfile?.packageName
+                ? userProfile?.packageName
+                : "Not updated",
+        },
     ];
 
     const navigate = useNavigate();
@@ -72,6 +87,17 @@ const Profile = () => {
                             {userProfile?.firstName && userProfile?.lastName
                                 ? `${userProfile.firstName} ${userProfile.lastName}`
                                 : "Full name not updated"}
+                        </p>
+
+                        <p className="text-gray-500 dark:text-gray-400 mt-1">
+                            CV analyze remained: {userProfile?.cvAnalyzeUsed || 0}
+                        </p>
+                        <p className="text-gray-500 dark:text-gray-400 mt-1">
+                            JD analyze remained: {userProfile?.jdAnalyzeUsed || 0}
+                        </p>
+                        <p className="text-gray-500 dark:text-gray-400 mt-1">
+                            Interview remained:{" "}
+                            {userProfile?.interviewUsed || 0}
                         </p>
                     </div>
 

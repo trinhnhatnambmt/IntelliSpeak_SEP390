@@ -19,10 +19,11 @@ const Settings = () => {
                             <li>
                                 <button
                                     onClick={() => setActiveTab("personal")}
-                                    className={`w-full text-left px-4 py-2 rounded font-medium ${activeTab === "personal"
+                                    className={`w-full text-left px-4 py-2 rounded font-medium ${
+                                        activeTab === "personal"
                                             ? "bg-blue-600 text-white"
                                             : "text-gray-700 dark:text-gray-300 hover:text-blue-500"
-                                        }`}
+                                    }`}
                                 >
                                     Personal Information
                                 </button>
@@ -30,10 +31,11 @@ const Settings = () => {
                             <li>
                                 <button
                                     onClick={() => setActiveTab("security")}
-                                    className={`w-full text-left px-4 py-2 rounded font-medium ${activeTab === "security"
+                                    className={`w-full text-left px-4 py-2 rounded font-medium ${
+                                        activeTab === "security"
                                             ? "bg-blue-600 text-white"
                                             : "text-gray-700 dark:text-gray-300 hover:text-blue-500"
-                                        }`}
+                                    }`}
                                 >
                                     Password & Security
                                 </button>

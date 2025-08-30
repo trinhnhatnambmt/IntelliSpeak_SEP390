@@ -1,13 +1,17 @@
 // ==== IMPORT QUESTIONS FROM CSV ====
-export const importQuestionsFromCsv = async (tagId, file) => {
+export const importQuestionsFromCsv = async (
+    tagId,
+    file,
+    interviewSessionId
+) => {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
     const response = await authorizedAxiosInstance.post(
-        `${API_ROOT}/question/import-csv/${tagId}`,
+        `${API_ROOT}/question/import-csv/${tagId}/${interviewSessionId}`,
         formData,
         {
             headers: {
-                'Content-Type': 'multipart/form-data',
+                "Content-Type": "multipart/form-data",
             },
         }
     );
@@ -435,6 +439,78 @@ export const getComplaintStatusAPI = async () => {
         `${API_ROOT}/website-feedback/user`
     );
     return response.data.data;
+};
+
+export const getDetailSessionAPI = async (id) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/interview-sessions/sessions/${id}`
+    );
+    return response.data.data;
+};
+
+export const deleteQuestionFromSessionAPI = async (sessionId, questionId) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/question/${sessionId}/questions/${questionId}/remove`
+    );
+    return response.data;
+};
+
+export const addJDForCompanyAPI = async (file) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/api/jd/company/upload`,
+        file
+    );
+    return response.data.data;
+};
+
+export const getJdCompanyOfHR = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/jd/company/uploadedJD`
+    );
+    return response.data.data;
+};
+
+export const getAllJdOfCompany = async (id) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/jd/company/${id}`
+    );
+    return response.data.data;
+};
+
+export const getCompanyJdDetail = async (id) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/jd/company/jd/${id}`
+    );
+    return response.data.data;
+};
+
+export const compareJdAndCV = async (jdId) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/jd/${jdId}/match-cv`
+    );
+    return response.data.data;
+};
+
+export const userApplyCvForCompany = async (id) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/api/cv/submit-for-company?companyId=${id}`
+    );
+    return response.data;
+};
+
+export const getApplyCVStatusToCompany = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/cv/candidate/view-submitted-cv`
+    );
+    return response.data.data;
+};
+
+export const updateCvActive = async (id) => {
+    const response = await authorizedAxiosInstance.put(
+        `${API_ROOT}/api/cv/${id}/set-active`
+    );
+
+    return response.data;
 };
 
 // ==== HR APPLICATION ====

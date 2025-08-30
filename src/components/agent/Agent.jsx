@@ -32,12 +32,18 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
 
     const [messages, setMessages] = useState([]);
     const [lastMessage, setLastMessage] = useState("");
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(-1);
 
     const companyDetail = useSelector(selectCurrentCompany);
     const companyLogo = companyDetail?.logoUrl;
     const companyName = companyDetail?.name;
 
-    // console.log(currentInterviewSession);
+    const dispatch = useDispatch();
+
+    const questionList =
+        currentInterviewSession?.questions?.map(
+            (question) => question.content
+        ) || [];
 
     const detectLanguageFromSession = (currentInterviewSession) => {
         if (!currentInterviewSession || !currentInterviewSession?.title)
@@ -50,8 +56,6 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
         return language;
     };
 
-    const dispatch = useDispatch();
-
     useEffect(() => {
         const onCallStart = () => {
             setCallStatus(CallStatus.ACTIVE);
@@ -59,6 +63,7 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
 
         const onCallEnd = () => {
             setCallStatus(CallStatus.FINISHED);
+            setCurrentQuestionIndex(-1);
         };
 
         const onMessage = (message) => {
@@ -72,8 +77,17 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
                 };
                 setMessages((prev) => [...prev, newMessage]);
                 if (message.role === "user") {
-                    setIsUserSpeaking(true); // Đánh dấu người dùng đang nói
-                    setTimeout(() => setIsUserSpeaking(false), 1000); // Tắt hiệu ứng sau 1s
+                    setIsUserSpeaking(true);
+                    setTimeout(() => setIsUserSpeaking(false), 1000);
+                } else if (message.role === "assistant") {
+                    const questionIndex = questionList.findIndex((question) =>
+                        message.transcript
+                            .toLowerCase()
+                            .includes(question.toLowerCase())
+                    );
+                    if (questionIndex !== -1) {
+                        setCurrentQuestionIndex(questionIndex);
+                    }
                 }
             }
         };
@@ -146,11 +160,13 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
                         navigate(
                             `/main/feedback/${currentInterviewSession?.interviewSessionId}`
                         );
-                    } else {
-                        toast.error(
-                            "An error occurred while creating feedback, please try again later!!"
-                        );
                     }
+                })
+                .catch((error) => {
+                    toast.error(
+                        "An error occurred while creating feedback, please try again later!!"
+                    );
+                    navigate(`/main/topic`);
                 });
         };
 
@@ -211,133 +227,168 @@ const Agent = ({ userAvatar, currentInterviewSession, currentUser }) => {
     const isCallInactiveOrFinished =
         callStatus === CallStatus.INACTIVE ||
         callStatus === CallStatus.FINISHED;
-    // console.log(messages);
 
     return (
-        <div>
-            <div className="flex items-center justify-center gap-5 mb-5">
+        <div className="flex gap-5">
+            <div className="w-[25vw] h-[60vh] rounded-2xl border-2 border-gray-300 dark:border-[#4B4D4F66] p-4 overflow-y-auto relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
                 <div
-                    className={cn(
-                        `w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border border-purple-200 dark:border-purple-200 relative overflow-hidden`,
-                        isSpeaking &&
-                            "border-2 border-purple-400 dark:border-purple-400"
-                    )}
-                >
-                    <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
-
-                    <div
-                        className="absolute inset-0 hidden dark:block"
-                        style={{
-                            background:
-                                "linear-gradient(0deg, rgba(19, 17, 42, 1) 17%, rgba(24, 21, 55, 1) 63%)",
-                        }}
-                    />
-
-                    {isSpeaking && (
-                        <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
-                    )}
-
-                    <div
-                        className="w-[120px] h-[120px] rounded-full flex items-center justify-center z-10"
-                        style={{
-                            background:
-                                "radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 87%)",
-                        }}
-                    >
-                        <img
-                            src={
-                                currentInterviewSession?.companyId
-                                    ? companyLogo || robot_assistant
-                                    : robot_assistant
-                            }
-                            alt="robot"
-                            className="w-[66px] h-[66px] object-cover rounded-full"
-                        />
-                    </div>
-                    <h1 className="absolute bottom-[70px] text-lg font-semibold text-gray-800 dark:text-gray-200">
-                        {currentInterviewSession?.companyId
-                            ? companyName
-                            : "AI Assistant"}
-                    </h1>
-                </div>
-
-                <div
-                    className={cn(
-                        "w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-gray-300 dark:border-[#4B4D4F66] relative overflow-hidden",
-                        isUserSpeaking &&
-                            "border-2 border-purple-400 dark:border-purple-400"
-                    )}
-                >
-                    <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
-
-                    {isUserSpeaking && (
-                        <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-10"></div>
-                    )}
-
-                    <div
-                        className="absolute inset-0 hidden dark:block"
-                        style={{
-                            background:
-                                "linear-gradient(0deg, rgba(8, 9, 13, 1) 6%, rgba(26, 28, 32, 1) 74%)",
-                        }}
-                    />
-
-                    <img
-                        src={userAvatar}
-                        className="w-[120px] h-[120px] rounded-full z-10"
-                    />
-                    <h1 className="absolute bottom-[70px] text-lg font-semibold text-gray-800 dark:text-gray-200">
-                        You
-                    </h1>
-                </div>
-            </div>
-
-            {messages.length > 0 && (
-                <div
-                    className="rounded-2xl min-h-12 px-5 py-4 flex items-center justify-center mb-8 border-gray-300 dark:border-[#4B4D4F66]  border-2"
+                    className="absolute inset-0 hidden dark:block"
                     style={{
                         background:
                             "linear-gradient(0deg, rgba(8, 9, 13, 1) 6%, rgba(26, 28, 32, 1) 74%)",
                     }}
-                >
-                    <p
+                />
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 relative z-10">
+                    Question list
+                </h2>
+                {questionList.length > 0 ? (
+                    <ul className="space-y-3 relative z-10">
+                        {questionList.map((question, index) => (
+                            <li
+                                key={index}
+                                className={cn(
+                                    "text-gray-700 dark:text-gray-300 text-sm bg-white dark:bg-gray-800 bg-opacity-80 dark:bg-opacity-80 p-3 rounded-lg shadow-sm",
+                                    index === currentQuestionIndex &&
+                                        "bg-purple-200 dark:bg-purple-600 text-gray-900 dark:text-gray-100 border border-purple-400 dark:border-purple-400"
+                                )}
+                            >
+                                {index + 1}. {question}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="text-gray-500 dark:text-gray-400 text-sm relative z-10">
+                        No question
+                    </p>
+                )}
+            </div>
+
+            <div className="flex-1 w-[60%]">
+                <div className="flex items-center justify-center gap-5 mb-5">
+                    <div
                         className={cn(
-                            "text-lg text-center text-white opacity-0 animate-smoothFadeIn"
+                            `w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border border-purple-200 dark:border-purple-200 relative overflow-hidden`,
+                            isSpeaking &&
+                                "border-2 border-purple-400 dark:border-purple-400"
                         )}
                     >
-                        {lastMessage}
-                    </p>
-                </div>
-            )}
+                        <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
 
-            <div className="flex items-center justify-center gap-5">
-                {callStatus !== CallStatus.ACTIVE ? (
-                    <button
-                        className={` px-10 py-3 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer 
-                            bg-green-500 hover:bg-green-600`}
-                        onClick={handleCall}
-                    >
-                        <span
-                            className={cn(
-                                "absolute animate-ping rounded-full opacity-75",
-                                callStatus !== "CONNECTING" && "hidden"
-                            )}
+                        <div
+                            className="absolute inset-0 hidden dark:block"
+                            style={{
+                                background:
+                                    "linear-gradient(0deg, rgba(19, 17, 42, 1) 17%, rgba(24, 21, 55, 1) 63%)",
+                            }}
                         />
-                        <span>
-                            {isCallInactiveOrFinished
-                                ? "Start"
-                                : "Connecting..."}
-                        </span>
-                    </button>
-                ) : (
-                    <button
-                        className={`px-10 py-3 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer 
-                            bg-red-500 hover:bg-red-600`}
-                        onClick={() => handleDisconnect()}
+
+                        {isSpeaking && (
+                            <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-0"></div>
+                        )}
+
+                        <div
+                            className="w-[120px] h-[120px] rounded-full flex items-center justify-center z-10"
+                            style={{
+                                background:
+                                    "radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 87%)",
+                            }}
+                        >
+                            <img
+                                src={
+                                    currentInterviewSession?.companyId
+                                        ? companyLogo || robot_assistant
+                                        : robot_assistant
+                                }
+                                alt="robot"
+                                className="w-[66px] h-[66px] object-cover rounded-full"
+                            />
+                        </div>
+                        <h1 className="absolute bottom-[70px] text-lg font-semibold text-gray-800 dark:text-gray-200">
+                            {currentInterviewSession?.companyId
+                                ? companyName
+                                : "AI Assistant"}
+                        </h1>
+                    </div>
+
+                    <div
+                        className={cn(
+                            "w-[40vw] h-[40vh] rounded-2xl flex items-center justify-center border-2 border-gray-300 dark:border-[#4B4D4F66] relative overflow-hidden",
+                            isUserSpeaking &&
+                                "border-2 border-purple-400 dark:border-purple-400"
+                        )}
                     >
-                        <span className="flex items-center gap-2">End</span>
-                    </button>
+                        <div className="absolute inset-0 bg-gradient-to-br from-sky-200 to-pink-100 dark:hidden" />
+
+                        {isUserSpeaking && (
+                            <div className="absolute w-[100px] h-[100px] rounded-full bg-purple-400 opacity-30 animate-pulseWave z-10"></div>
+                        )}
+
+                        <div
+                            className="absolute inset-0 hidden dark:block"
+                            style={{
+                                background:
+                                    "linear-gradient(0deg, rgba(8, 9, 13, 1) 6%, rgba(26, 28, 32, 1) 74%)",
+                            }}
+                        />
+
+                        <img
+                            src={userAvatar}
+                            className="w-[120px] h-[120px] rounded-full z-10"
+                        />
+                        <h1 className="absolute bottom-[70px] text-lg font-semibold text-gray-800 dark:text-gray-200">
+                            You
+                        </h1>
+                    </div>
+                </div>
+
+                {messages.length > 0 && (
+                    <div
+                        className="rounded-2xl min-h-12 px-5 py-4 flex items-center justify-center mb-8 border-gray-300 dark:border-[#4B4D4F66]  border-2"
+                        style={{
+                            background:
+                                "linear-gradient(0deg, rgba(8, 9, 13, 1) 6%, rgba(26, 28, 32, 1) 74%)",
+                        }}
+                    >
+                        <p
+                            className={cn(
+                                "text-lg text-center text-white opacity-0 animate-smoothFadeIn"
+                            )}
+                        >
+                            {lastMessage}
+                        </p>
+                    </div>
                 )}
+
+                <div className="flex items-center justify-center gap-5">
+                    {callStatus !== CallStatus.ACTIVE ? (
+                        <button
+                            className={` px-10 py-3 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer 
+                                bg-green-500 hover:bg-green-600`}
+                            onClick={handleCall}
+                        >
+                            <span
+                                className={cn(
+                                    "absolute animate-ping rounded-full opacity-75",
+                                    callStatus !== "CONNECTING" && "hidden"
+                                )}
+                            />
+                            <span>
+                                {isCallInactiveOrFinished
+                                    ? "Start"
+                                    : "Connecting..."}
+                            </span>
+                        </button>
+                    ) : (
+                        <button
+                            className={`px-10 py-3 text-white font-semibold rounded-full transition duration-300 flex items-center cursor-pointer 
+                                bg-red-500 hover:bg-red-600`}
+                            onClick={() => handleDisconnect()}
+                        >
+                            <span className="flex items-center gap-2">End</span>
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );

@@ -1,3 +1,4 @@
+import { Progress } from "antd";
 import { SquareChartGantt } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +9,7 @@ import FileUploader from "~/components/FileUploader";
 const UploadJDPage = () => {
     const navigate = useNavigate();
     const [isProcessing, setIsProcessing] = useState(false);
-    const [statusText, setStatusText] = useState("");
+    const [progress, setProgress] = useState(0);
     const [file, setFile] = useState(null);
 
     const handleFileSelect = (file) => {
@@ -21,15 +22,37 @@ const UploadJDPage = () => {
         const reqData = new FormData();
         reqData.append("file", file);
 
-        //Gọi API
-        uploadJdAPI(reqData).then((res) => {
-            // console.log("🚀 ~ handleAnalyze JD ~ res:", res);
-            if (!res.error) {
-                toast.success("Analyze JD successfully!");
+        let fakeProgress = 0;
+        const interval = setInterval(() => {
+            fakeProgress += Math.floor(Math.random() * 15) + 5;
+            if (fakeProgress >= 95) {
+                fakeProgress = 95;
+                clearInterval(interval);
             }
-            navigate(`/jd/${res?.jdId}`);
-        });
-        setStatusText("Analyzing your JD...");
+            setProgress(fakeProgress);
+        }, 500);
+
+        //Gọi API
+        uploadJdAPI(reqData)
+            .then((res) => {
+                clearInterval(interval);
+                setProgress(100);
+
+                if (!res.error) {
+                    toast.success("Analyze JD successfully!");
+                    navigate(`/jd/${res?.jdId}`);
+                } else {
+                    toast.error(
+                        "Failed to analyze JD. Redirecting to main page..."
+                    );
+                    navigate("/main");
+                }
+            })
+            .catch((error) => {
+                clearInterval(interval);
+                setProgress(0);
+                navigate("/main/analyze/JD");
+            });
     };
 
     const handleSubmit = (e) => {
@@ -49,7 +72,20 @@ const UploadJDPage = () => {
                     </h1>
                     {isProcessing ? (
                         <>
-                            <h2 className="text-2xl">{statusText}</h2>
+                            <div className="flex flex-col items-center mt-6">
+                                <Progress
+                                    percent={progress}
+                                    percentPosition={{
+                                        align: "center",
+                                        type: "inner",
+                                    }}
+                                    size={[700, 20]}
+                                    strokeColor={{
+                                        "0%": "#108ee9",
+                                        "100%": "#87d068",
+                                    }}
+                                />
+                            </div>
                             <img
                                 src="/images/resume-scan.gif"
                                 className="mt-[-100px] w-[500px] relative z-10"

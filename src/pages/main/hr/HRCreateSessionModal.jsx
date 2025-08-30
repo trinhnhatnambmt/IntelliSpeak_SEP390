@@ -32,7 +32,7 @@ export default function HRCreateSessionModal({
 
     // Log allTags mỗi khi nó thay đổi
     useEffect(() => {
-        console.log('all tag', allTags);
+        console.log("all tag", allTags);
     }, [allTags]);
 
     // Handle input changes for form fields
@@ -63,7 +63,7 @@ export default function HRCreateSessionModal({
     };
 
     // Detect dark mode
-    const isDark = document.documentElement.classList.contains('dark');
+    const isDark = document.documentElement.classList.contains("dark");
 
     // Handle image upload for thumbnail
     const handleThumbnailUpload = async (e) => {
@@ -90,23 +90,30 @@ export default function HRCreateSessionModal({
         <CustomModal
             open={open}
             onClose={onClose}
-            title={<span className="text-xl font-bold text-gray-800 dark:text-white">Create Interview Template</span>}
-            backgroundColor={isDark ? '#111112' : '#fff'}
+            title={
+                <span className="text-xl font-bold text-gray-800 dark:text-white">
+                    Create Interview Template
+                </span>
+            }
+            backgroundColor={isDark ? "#111112" : "#fff"}
             className="hr-create-session-modal"
         >
             <form onSubmit={handleCreateTemplate} className="space-y-4">
                 {/* Thumbnail upload on top, only upload, no URL input */}
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">Thumbnail <span className="text-red-500">*</span></label>
-                    {templateForm.interviewSessionThumbnail && !thumbnailUploading && (
-                        <div className="flex justify-center">
-                            <img
-                                src={templateForm.interviewSessionThumbnail}
-                                alt="Thumbnail Preview"
-                                className="w-1/2 max-h-64 object-contain rounded border border-gray-200 dark:border-[#333] mb-3"
-                            />
-                        </div>
-                    )}
+                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
+                        Thumbnail <span className="text-red-500">*</span>
+                    </label>
+                    {templateForm.interviewSessionThumbnail &&
+                        !thumbnailUploading && (
+                            <div className="flex justify-center">
+                                <img
+                                    src={templateForm.interviewSessionThumbnail}
+                                    alt="Thumbnail Preview"
+                                    className="w-1/2 max-h-64 object-contain rounded border border-gray-200 dark:border-[#333] mb-3"
+                                />
+                            </div>
+                        )}
                     <div className="flex items-center gap-4">
                         <input
                             type="file"
@@ -116,12 +123,16 @@ export default function HRCreateSessionModal({
                             className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer dark:file:bg-blue-500 dark:hover:file:bg-blue-600"
                         />
                         {thumbnailUploading && (
-                            <span className="text-xs text-blue-500">Uploading...</span>
+                            <span className="text-xs text-blue-500">
+                                Uploading...
+                            </span>
                         )}
                     </div>
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">Title <span className="text-red-500">*</span></label>
+                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
+                        Title <span className="text-red-500">*</span>
+                    </label>
                     <input
                         type="text"
                         name="title"
@@ -134,7 +145,9 @@ export default function HRCreateSessionModal({
                     />
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">Description <span className="text-red-500">*</span></label>
+                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
+                        Description <span className="text-red-500">*</span>
+                    </label>
                     <textarea
                         name="description"
                         value={templateForm.description}
@@ -147,7 +160,9 @@ export default function HRCreateSessionModal({
                     />
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">Total Questions <span className="text-red-500">*</span></label>
+                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
+                        Total Questions <span className="text-red-500">*</span>
+                    </label>
                     <input
                         type="number"
                         name="totalQuestion"
@@ -161,7 +176,9 @@ export default function HRCreateSessionModal({
                     />
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">Difficulty <span className="text-red-500">*</span></label>
+                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
+                        Difficulty <span className="text-red-500">*</span>
+                    </label>
                     <select
                         name="difficulty"
                         value={templateForm.difficulty}
@@ -179,7 +196,9 @@ export default function HRCreateSessionModal({
                     </select>
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">Topic <span className="text-red-500">*</span></label>
+                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
+                        Topic <span className="text-red-500">*</span>
+                    </label>
                     <select
                         name="topicId"
                         value={templateForm.topicId}
@@ -190,30 +209,43 @@ export default function HRCreateSessionModal({
                     >
                         <option value="">Select topic</option>
                         {topics.map((t) => (
-                            <option key={t.topicId || t.id} value={t.topicId || t.id}>
+                            <option
+                                key={t.topicId || t.id}
+                                value={t.topicId || t.id}
+                            >
                                 {t.title}
                             </option>
                         ))}
                     </select>
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">Tags <span className="text-red-500">*</span></label>
+                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
+                        Tags <span className="text-red-500">*</span>
+                    </label>
                     <div className="flex flex-wrap gap-2">
                         {allTags.map((tag) => (
-                            <label key={tag.id} className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]">
+                            <label
+                                key={tag.id}
+                                className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]"
+                            >
                                 <input
                                     type="checkbox"
                                     name="tagIds"
                                     value={tag.id}
-                                    checked={templateForm.tagIds.includes(String(tag.id))}
+                                    checked={templateForm.tagIds.includes(
+                                        String(tag.id)
+                                    )}
                                     onChange={handleChange}
                                     disabled={templateLoading}
                                 />
-                                <span className="text-xs text-gray-700 dark:text-gray-200">{tag.title}</span>
+                                <span className="text-xs text-gray-700 dark:text-gray-200">
+                                    {tag.title}
+                                </span>
                             </label>
                         ))}
                     </div>
                 </div>
+
                 <div className="flex gap-3 mt-4">
                     <button
                         type="button"
@@ -225,10 +257,14 @@ export default function HRCreateSessionModal({
                     </button>
                     <button
                         type="submit"
-                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition ${templateLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition ${
+                            templateLoading
+                                ? "opacity-50 cursor-not-allowed"
+                                : ""
+                        }`}
                         disabled={templateLoading}
                     >
-                        {templateLoading ? 'Processing...' : 'Create'}
+                        {templateLoading ? "Processing..." : "Create"}
                     </button>
                 </div>
             </form>

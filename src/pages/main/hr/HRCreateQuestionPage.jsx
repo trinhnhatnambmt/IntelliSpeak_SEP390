@@ -6,7 +6,7 @@ import {
     getMyQuestionsAPI,
     getMyInterviewSessionsAPI,
     createInterviewSessionAPI,
-    getAllTag
+    getAllTag,
 } from "~/apis/index";
 import { toast } from "react-toastify";
 import HRCreateSessionModal from "./HRCreateSessionModal";
@@ -34,15 +34,16 @@ const initialForm = {
 };
 
 export default function HRCreateQuestionPage() {
-    const [showCreateQuestionModal, setShowCreateQuestionModal] = useState(false);
+    const [showCreateQuestionModal, setShowCreateQuestionModal] =
+        useState(false);
     const [topics, setTopics] = useState([]);
     const [allTags, setAllTags] = useState([]); // all tags from API
     const [myQuestions, setMyQuestions] = useState([]);
     // Only tags that have at least one question
     const tagsInMyQuestions = React.useMemo(() => {
         const tagMap = {};
-        myQuestions.forEach(q => {
-            (q.tags || []).forEach(tag => {
+        myQuestions.forEach((q) => {
+            (q.tags || []).forEach((tag) => {
                 tagMap[tag.tagId || tag.id] = tag;
             });
         });
@@ -52,7 +53,7 @@ export default function HRCreateQuestionPage() {
     const [tags, setTags] = useState([]); // tags filtered by topic
     const [selectedTopic, setSelectedTopic] = useState("");
     const [mySessions, setMySessions] = useState([]);
-    const [activeTab, setActiveTab] = useState('session');
+    const [activeTab, setActiveTab] = useState("session");
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedDifficulty, setSelectedDifficulty] = useState("");
@@ -70,8 +71,14 @@ export default function HRCreateQuestionPage() {
     });
     const [templateLoading, setTemplateLoading] = useState(false);
     const [openSessionMenuId, setOpenSessionMenuId] = useState(null);
-    const [editSessionModal, setEditSessionModal] = useState({ open: false, session: null });
-    const [deleteSessionModal, setDeleteSessionModal] = useState({ open: false, session: null });
+    const [editSessionModal, setEditSessionModal] = useState({
+        open: false,
+        session: null,
+    });
+    const [deleteSessionModal, setDeleteSessionModal] = useState({
+        open: false,
+        session: null,
+    });
 
     const fetchMyQuestions = async () => {
         setIsLoading(true);
@@ -104,6 +111,10 @@ export default function HRCreateQuestionPage() {
         }
     };
 
+    // console.log(mySessions?.map((s) => s.interviewSessionId));
+
+    const interviewSessionId = mySessions?.map((s) => s.interviewSessionId);
+
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
@@ -112,8 +123,12 @@ export default function HRCreateQuestionPage() {
                     getAllTopic(),
                     getAllTag(),
                 ]);
-                setTopics(Array.isArray(topicsRes) ? topicsRes : topicsRes?.data || []);
-                setAllTags(Array.isArray(tagsRes) ? tagsRes : tagsRes?.data || []);
+                setTopics(
+                    Array.isArray(topicsRes) ? topicsRes : topicsRes?.data || []
+                );
+                setAllTags(
+                    Array.isArray(tagsRes) ? tagsRes : tagsRes?.data || []
+                );
                 await fetchMyQuestions();
                 await fetchMySessions();
             } catch (error) {
@@ -128,32 +143,32 @@ export default function HRCreateQuestionPage() {
 
     // When topic changes, fetch tags of that topic
     const handleTopicChange = async (topicId) => {
-        console.log('[handleTopicChange] topicId:', topicId);
+        console.log("[handleTopicChange] topicId:", topicId);
         setSelectedTopic(topicId);
         setTags([]);
         setIsLoading(true);
         try {
             if (topicId) {
                 const tagsOfTopic = await getTagsOfTopic(topicId);
-                console.log('[handleTopicChange] tagsOfTopic:', tagsOfTopic);
-                const tagsData = Array.isArray(tagsOfTopic) ? tagsOfTopic : tagsOfTopic?.data || [];
+                console.log("[handleTopicChange] tagsOfTopic:", tagsOfTopic);
+                const tagsData = Array.isArray(tagsOfTopic)
+                    ? tagsOfTopic
+                    : tagsOfTopic?.data || [];
                 setTags(tagsData);
             } else {
                 setTags([]);
             }
         } catch (err) {
-            console.error('[handleTopicChange] error:', err);
+            console.error("[handleTopicChange] error:", err);
             setTags([]);
         } finally {
             setIsLoading(false);
         }
     };
 
-
     // Remove handleChange, handleSubmit for inline form, use modal instead
 
     // handleTemplateChange is not used
-
 
     const handleCreateQuestion = async (modalForm, { setSuccess, setForm }) => {
         setIsLoading(true);
@@ -164,7 +179,9 @@ export default function HRCreateQuestionPage() {
                 content: modalForm.content.trim(),
                 difficulty: modalForm.difficulty,
                 suitableAnswer1: modalForm.demoAnswer.trim(),
-                suitableAnswer2: modalForm.demoAnswer2 ? modalForm.demoAnswer2.trim() : "",
+                suitableAnswer2: modalForm.demoAnswer2
+                    ? modalForm.demoAnswer2.trim()
+                    : "",
                 tagIds: [tagId],
                 tags: [],
                 deleted: false,
@@ -174,11 +191,13 @@ export default function HRCreateQuestionPage() {
             setSuccess(true);
             setForm(initialForm);
             await fetchMyQuestions();
-            setActiveTab('question');
+            setActiveTab("question");
             setShowCreateQuestionModal(false);
         } catch (err) {
             console.error("Error creating question:", err);
-            toast.error(err.response?.data?.message || "Failed to create question!");
+            toast.error(
+                err.response?.data?.message || "Failed to create question!"
+            );
         } finally {
             setIsLoading(false);
         }
@@ -192,12 +211,13 @@ export default function HRCreateQuestionPage() {
             const payload = {
                 title: templateForm.title.trim(),
                 description: templateForm.description.trim(),
-                interviewSessionThumbnail: templateForm.interviewSessionThumbnail.trim(),
+                interviewSessionThumbnail:
+                    templateForm.interviewSessionThumbnail.trim(),
                 totalQuestion: Number(templateForm.totalQuestion),
                 difficulty: templateForm.difficulty,
                 topicId: Number(templateForm.topicId),
-                tagIds: templateForm.tagIds.map(id => Number(id)),
-                questionIds: templateForm.questionIds.map(id => Number(id)),
+                tagIds: templateForm.tagIds.map((id) => Number(id)),
+                questionIds: templateForm.questionIds.map((id) => Number(id)),
             };
             await createInterviewSessionAPI(payload);
             toast.success("Interview session created successfully!");
@@ -220,43 +240,64 @@ export default function HRCreateQuestionPage() {
         }
     };
 
-    const filteredQuestions = myQuestions.filter(question => {
+    const filteredQuestions = myQuestions.filter((question) => {
         const searchLower = searchTerm.toLowerCase();
         const matchesSearch =
             question.title.toLowerCase().includes(searchLower) ||
             question.content.toLowerCase().includes(searchLower) ||
-            question.tags.some(tag => tag.title.toLowerCase().includes(searchLower)) ||
+            question.tags.some((tag) =>
+                tag.title.toLowerCase().includes(searchLower)
+            ) ||
             question.difficulty.toLowerCase().includes(searchLower);
-        const matchesTag = !selectedTagFilter || question.tags.some(tag => String(tag.tagId) === String(selectedTagFilter));
-        const matchesDifficulty = !selectedDifficulty || question.difficulty === selectedDifficulty;
+        const matchesTag =
+            !selectedTagFilter ||
+            question.tags.some(
+                (tag) => String(tag.tagId) === String(selectedTagFilter)
+            );
+        const matchesDifficulty =
+            !selectedDifficulty || question.difficulty === selectedDifficulty;
         return matchesSearch && matchesTag && matchesDifficulty;
     });
 
     return (
         <div className="max-w-4xl mx-auto p-4 md:p-8 bg-white dark:bg-neutral-900 rounded-xl shadow-md mt-6 md:mt-10 z-10 relative">
-            <h2 className="text-2xl font-bold mb-6 text-center">Interview Management</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center">
+                Interview Management
+            </h2>
             <div className="flex border-b mb-6 overflow-x-auto">
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === 'session' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
-                    onClick={() => setActiveTab('session')}
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "session"
+                            ? "border-b-2 border-blue-500 text-blue-500"
+                            : "text-gray-500 dark:text-gray-400"
+                        }`}
+                    onClick={() => setActiveTab("session")}
                 >
                     Interview Template Management ({mySessions.length})
                 </button>
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === 'question' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
-                    onClick={() => setActiveTab('question')}
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "question"
+                            ? "border-b-2 border-blue-500 text-blue-500"
+                            : "text-gray-500 dark:text-gray-400"
+                        }`}
+                    onClick={() => setActiveTab("question")}
                 >
                     Question Management
                 </button>
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === 'jd' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
-                    onClick={() => setActiveTab('jd')}
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "jd"
+                            ? "border-b-2 border-blue-500 text-blue-500"
+                            : "text-gray-500 dark:text-gray-400"
+                        }`}
+                    onClick={() => setActiveTab("jd")}
                 >
                     JD Upload
                 </button>
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === 'candidates' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
-                    onClick={() => setActiveTab('candidates')}
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "candidates"
+                            ? "border-b-2 border-blue-500 text-blue-500"
+                            : "text-gray-500 dark:text-gray-400"
+                        }`}
+                    onClick={() => setActiveTab("candidates")}
                 >
                     Potential Candidates
                 </button>
@@ -265,7 +306,7 @@ export default function HRCreateQuestionPage() {
                 <div className="flex justify-center items-center py-10">
                     <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
-            ) : activeTab === 'session' ? (
+            ) : activeTab === "session" ? (
                 <HRInterviewTemplateTab
                     mySessions={mySessions}
                     sessionSearchTerm={sessionSearchTerm}
@@ -277,7 +318,7 @@ export default function HRCreateQuestionPage() {
                     setEditSessionModal={setEditSessionModal}
                     setDeleteSessionModal={setDeleteSessionModal}
                 />
-            ) : activeTab === 'question' ? (
+            ) : activeTab === "question" ? (
                 <HRQuestionManagementTab
                     myQuestions={myQuestions}
                     searchTerm={searchTerm}
@@ -289,9 +330,9 @@ export default function HRCreateQuestionPage() {
                     tagsInMyQuestions={tagsInMyQuestions}
                     setShowCreateQuestionModal={setShowCreateQuestionModal}
                 />
-            ) : activeTab === 'jd' ? (
+            ) : activeTab === "jd" ? (
                 <HRJDUploadTab />
-            ) : activeTab === 'candidates' ? (
+            ) : activeTab === "candidates" ? (
                 <HRPotentialCandidatesTab />
             ) : null}
             {/* Modal tạo câu hỏi mới */}
@@ -301,6 +342,7 @@ export default function HRCreateQuestionPage() {
                     onClose={() => setShowCreateQuestionModal(false)}
                     onSubmit={handleCreateQuestion}
                     topics={topics}
+                    mySessions={mySessions}
                     tags={tags}
                     difficulties={difficulties}
                     loading={isLoading}
@@ -327,7 +369,9 @@ export default function HRCreateQuestionPage() {
                 <HREditSessionModal
                     open={editSessionModal.open}
                     session={editSessionModal.session}
-                    onClose={() => setEditSessionModal({ open: false, session: null })}
+                    onClose={() =>
+                        setEditSessionModal({ open: false, session: null })
+                    }
                     topics={topics}
                     tags={tags}
                     myQuestions={myQuestions}
@@ -339,7 +383,9 @@ export default function HRCreateQuestionPage() {
                 <HRDeleteSessionConfirm
                     open={deleteSessionModal.open}
                     session={deleteSessionModal.session}
-                    onClose={() => setDeleteSessionModal({ open: false, session: null })}
+                    onClose={() =>
+                        setDeleteSessionModal({ open: false, session: null })
+                    }
                     onDeleted={fetchMySessions}
                 />
             )}

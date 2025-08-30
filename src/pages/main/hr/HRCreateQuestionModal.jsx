@@ -7,12 +7,12 @@ const initialForm = {
     topic: "",
     tag: "",
     title: "",
+    interviewSessionId: "",
     content: "",
     difficulty: "",
     demoAnswer: "",
     demoAnswer2: "",
 };
-
 
 export default function HRCreateQuestionModal({
     open,
@@ -21,6 +21,7 @@ export default function HRCreateQuestionModal({
     topics = [],
     tags = [],
     difficulties = [],
+    mySessions = [],
     loading = false,
     onTopicChange,
     selectedTopic = "",
@@ -48,6 +49,7 @@ export default function HRCreateQuestionModal({
             setForm((prev) => ({ ...prev, [name]: value }));
         }
     };
+    // console.log(form);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -66,13 +68,20 @@ export default function HRCreateQuestionModal({
             }
             setCsvLoading(true);
             try {
-                await importQuestionsFromCsv(form.tag, csvFile);
+                await importQuestionsFromCsv(
+                    form.tag,
+                    csvFile,
+                    form.interviewSessionId
+                );
                 toast.success("Questions imported successfully!");
                 setSuccess(true);
                 setCsvFile(null);
                 if (onClose) onClose();
             } catch (err) {
-                toast.error(err?.response?.data?.message || "Failed to import questions from CSV.");
+                toast.error(
+                    err?.response?.data?.message ||
+                        "Failed to import questions from CSV."
+                );
             } finally {
                 setCsvLoading(false);
             }
@@ -80,7 +89,9 @@ export default function HRCreateQuestionModal({
     };
 
     // Detect dark mode
-    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    const isDark =
+        typeof document !== "undefined" &&
+        document.documentElement.classList.contains("dark");
 
     // Only show mode selection after topic and tag are selected
     const canChooseMode = form.topic && form.tag;
@@ -89,13 +100,19 @@ export default function HRCreateQuestionModal({
         <CustomModal
             open={open}
             onClose={onClose}
-            title={<span className="text-xl font-bold text-gray-800 dark:text-white">Create New Question</span>}
-            backgroundColor={isDark ? '#111112' : '#fff'}
+            title={
+                <span className="text-xl font-bold text-gray-800 dark:text-white">
+                    Create New Question
+                </span>
+            }
+            backgroundColor={isDark ? "#111112" : "#fff"}
             className="hr-create-question-modal"
         >
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label className="block mb-1 font-medium">Topic <span className="text-red-500">*</span></label>
+                    <label className="block mb-1 font-medium">
+                        Topic <span className="text-red-500">*</span>
+                    </label>
                     <select
                         name="topic"
                         value={form.topic}
@@ -106,14 +123,19 @@ export default function HRCreateQuestionModal({
                     >
                         <option value="">Select topic</option>
                         {topics.map((t) => (
-                            <option key={t.topicId || t.id} value={t.topicId || t.id}>
+                            <option
+                                key={t.topicId || t.id}
+                                value={t.topicId || t.id}
+                            >
                                 {t.title}
                             </option>
                         ))}
                     </select>
                 </div>
                 <div>
-                    <label className="block mb-1 font-medium">Tag <span className="text-red-500">*</span></label>
+                    <label className="block mb-1 font-medium">
+                        Tag <span className="text-red-500">*</span>
+                    </label>
                     <select
                         name="tag"
                         value={form.tag}
@@ -124,8 +146,35 @@ export default function HRCreateQuestionModal({
                     >
                         <option value="">Select tag</option>
                         {tags.map((t) => (
-                            <option key={t.tagId || t.id} value={t.tagId || t.id}>
+                            <option
+                                key={t.tagId || t.id}
+                                value={t.tagId || t.id}
+                            >
                                 {t.title}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div>
+                    <label className="block mb-1 font-medium">
+                        Interview Session{" "}
+                        <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                        name="interviewSessionId"
+                        value={form.interviewSessionId}
+                        onChange={handleChange}
+                        className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
+                        required
+                        disabled={loading}
+                    >
+                        <option value="">Select interview session</option>
+                        {mySessions.map((session) => (
+                            <option
+                                key={session.interviewSessionId}
+                                value={session.interviewSessionId}
+                            >
+                                {session.title}
                             </option>
                         ))}
                     </select>
@@ -134,16 +183,24 @@ export default function HRCreateQuestionModal({
                     <div className="flex border-b border-gray-200 dark:border-neutral-700 mb-4">
                         <button
                             type="button"
-                            className={`px-6 py-2 -mb-px font-semibold border-b-2 transition focus:outline-none ${mode === 'manual' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-300 hover:text-blue-500'}`}
-                            onClick={() => setMode('manual')}
+                            className={`px-6 py-2 -mb-px font-semibold border-b-2 transition focus:outline-none ${
+                                mode === "manual"
+                                    ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                                    : "border-transparent text-gray-500 dark:text-gray-300 hover:text-blue-500"
+                            }`}
+                            onClick={() => setMode("manual")}
                             disabled={loading}
                         >
                             Manual Entry
                         </button>
                         <button
                             type="button"
-                            className={`px-6 py-2 -mb-px font-semibold border-b-2 transition focus:outline-none ${mode === 'csv' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-300 hover:text-blue-500'}`}
-                            onClick={() => setMode('csv')}
+                            className={`px-6 py-2 -mb-px font-semibold border-b-2 transition focus:outline-none ${
+                                mode === "csv"
+                                    ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                                    : "border-transparent text-gray-500 dark:text-gray-300 hover:text-blue-500"
+                            }`}
+                            onClick={() => setMode("csv")}
                             disabled={loading}
                         >
                             Import CSV File
@@ -151,10 +208,12 @@ export default function HRCreateQuestionModal({
                     </div>
                 )}
                 {/* Manual entry form */}
-                {(!canChooseMode || mode === 'manual') && (
+                {(!canChooseMode || mode === "manual") && (
                     <>
                         <div>
-                            <label className="block mb-1 font-medium">Title <span className="text-red-500">*</span></label>
+                            <label className="block mb-1 font-medium">
+                                Title <span className="text-red-500">*</span>
+                            </label>
                             <input
                                 type="text"
                                 name="title"
@@ -167,7 +226,10 @@ export default function HRCreateQuestionModal({
                             />
                         </div>
                         <div>
-                            <label className="block mb-1 font-medium">Question Content <span className="text-red-500">*</span></label>
+                            <label className="block mb-1 font-medium">
+                                Question Content{" "}
+                                <span className="text-red-500">*</span>
+                            </label>
                             <textarea
                                 name="content"
                                 value={form.content}
@@ -180,7 +242,10 @@ export default function HRCreateQuestionModal({
                             />
                         </div>
                         <div>
-                            <label className="block mb-1 font-medium">Difficulty <span className="text-red-500">*</span></label>
+                            <label className="block mb-1 font-medium">
+                                Difficulty{" "}
+                                <span className="text-red-500">*</span>
+                            </label>
                             <select
                                 name="difficulty"
                                 value={form.difficulty}
@@ -198,7 +263,10 @@ export default function HRCreateQuestionModal({
                             </select>
                         </div>
                         <div>
-                            <label className="block mb-1 font-medium">Sample Answer 1 <span className="text-red-500">*</span></label>
+                            <label className="block mb-1 font-medium">
+                                Sample Answer 1{" "}
+                                <span className="text-red-500">*</span>
+                            </label>
                             <textarea
                                 name="demoAnswer"
                                 value={form.demoAnswer}
@@ -211,7 +279,9 @@ export default function HRCreateQuestionModal({
                             />
                         </div>
                         <div>
-                            <label className="block mb-1 font-medium">Sample Answer 2</label>
+                            <label className="block mb-1 font-medium">
+                                Sample Answer 2
+                            </label>
                             <textarea
                                 name="demoAnswer2"
                                 value={form.demoAnswer2}
@@ -225,7 +295,7 @@ export default function HRCreateQuestionModal({
                     </>
                 )}
                 {/* CSV import form */}
-                {canChooseMode && mode === 'csv' && (
+                {canChooseMode && mode === "csv" && (
                     <div className="flex flex-col gap-4 border rounded-md p-4 bg-gray-50 dark:bg-neutral-800">
                         {/* Download sample button */}
                         <div className="flex flex-col gap-1 mb-2">
@@ -243,16 +313,26 @@ export default function HRCreateQuestionModal({
                         </div>
                         {/* Upload section */}
                         <div className="flex flex-col gap-2">
-                            <label className="font-medium mb-1">Upload CSV file with questions</label>
+                            <label className="font-medium mb-1">
+                                Upload CSV file with questions
+                            </label>
                             <input
                                 type="file"
                                 accept=".csv"
-                                onChange={e => setCsvFile(e.target.files[0])}
+                                onChange={(e) => setCsvFile(e.target.files[0])}
                                 disabled={loading || csvLoading}
                             />
-                            {csvFile && <span className="text-sm text-green-600">Selected: {csvFile.name}</span>}
+                            {csvFile && (
+                                <span className="text-sm text-green-600">
+                                    Selected: {csvFile.name}
+                                </span>
+                            )}
                             <div className="text-xs text-gray-500 dark:text-gray-300 mt-1">
-                                The CSV file must have columns: <b>title, content, difficulty, sampleAnswer1, sampleAnswer2</b>
+                                The CSV file must have columns:{" "}
+                                <b>
+                                    title, content, difficulty, sampleAnswer1,
+                                    sampleAnswer2
+                                </b>
                             </div>
                         </div>
                     </div>
@@ -268,10 +348,22 @@ export default function HRCreateQuestionModal({
                     </button>
                     <button
                         type="submit"
-                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition ${(loading || csvLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        disabled={loading || csvLoading || (mode === 'csv' && !csvFile)}
+                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition ${
+                            loading || csvLoading
+                                ? "opacity-50 cursor-not-allowed"
+                                : ""
+                        }`}
+                        disabled={
+                            loading ||
+                            csvLoading ||
+                            (mode === "csv" && !csvFile)
+                        }
                     >
-                        {(loading || csvLoading) ? 'Processing...' : (mode === 'csv' ? 'Import CSV' : 'Create Question')}
+                        {loading || csvLoading
+                            ? "Processing..."
+                            : mode === "csv"
+                            ? "Import CSV"
+                            : "Create Question"}
                     </button>
                 </div>
                 {success && (

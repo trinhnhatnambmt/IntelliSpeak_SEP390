@@ -33,6 +33,9 @@ import Companies from "./pages/main/companies/Companies";
 import CompanyDetail from "./pages/main/companies/CompanyDetail";
 import ChooseLanguage from "./pages/main/interview/ChooseLanguage";
 import Complaint from "./pages/main/complaint/Complaint";
+import InterviewSessionDetail from "./pages/main/interview/interviewSessionDetail";
+import CompanyJdDetail from "./pages/main/companies/CompanyJdDetail";
+import CompareCV from "./components/jobDescription/CompareCV";
 
 const ProtectedRoutes = ({ user }) => {
     if (!user) return <Navigate to="/" replace={true} />;
@@ -57,6 +60,7 @@ const App = () => {
             {/* After analyze */}
             <Route path="/resume/:id" element={<Resume />} />
             <Route path="/jd/:id" element={<JobDescription />} />
+            <Route path="/jd/:id/compare" element={<CompareCV />} />
 
             <Route element={<ProtectedRoutes user={currentUser} />}>
                 <Route path="/main" element={<MainPage />}>
@@ -84,6 +88,10 @@ const App = () => {
                     {/* Companies */}
                     <Route path="companies" element={<Companies />} />
                     <Route path="company/:id" element={<CompanyDetail />} />
+                    <Route
+                        path="companyJdDetail/:id"
+                        element={<CompanyJdDetail />}
+                    />
 
                     <Route path="payment" element={<Payment />} />
                     <Route path="settings" element={<Settings />} />
@@ -94,6 +102,11 @@ const App = () => {
                         element={<SinglePostPage />}
                     />
                     <Route path="myPostPage" element={<MyPostPage />} />
+
+                    <Route
+                        path="interviewSessionDetail/:id"
+                        element={<InterviewSessionDetail />}
+                    />
 
                     {/* HR */}
                     <Route path="updateHR" element={<UpdateHR />} />
