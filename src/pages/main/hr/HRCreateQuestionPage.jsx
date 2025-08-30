@@ -267,8 +267,8 @@ export default function HRCreateQuestionPage() {
             <div className="flex border-b mb-6 overflow-x-auto">
                 <button
                     className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "session"
-                            ? "border-b-2 border-blue-500 text-blue-500"
-                            : "text-gray-500 dark:text-gray-400"
+                        ? "border-b-2 border-blue-500 text-blue-500"
+                        : "text-gray-500 dark:text-gray-400"
                         }`}
                     onClick={() => setActiveTab("session")}
                 >
@@ -276,8 +276,8 @@ export default function HRCreateQuestionPage() {
                 </button>
                 <button
                     className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "question"
-                            ? "border-b-2 border-blue-500 text-blue-500"
-                            : "text-gray-500 dark:text-gray-400"
+                        ? "border-b-2 border-blue-500 text-blue-500"
+                        : "text-gray-500 dark:text-gray-400"
                         }`}
                     onClick={() => setActiveTab("question")}
                 >
@@ -285,8 +285,8 @@ export default function HRCreateQuestionPage() {
                 </button>
                 <button
                     className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "jd"
-                            ? "border-b-2 border-blue-500 text-blue-500"
-                            : "text-gray-500 dark:text-gray-400"
+                        ? "border-b-2 border-blue-500 text-blue-500"
+                        : "text-gray-500 dark:text-gray-400"
                         }`}
                     onClick={() => setActiveTab("jd")}
                 >
@@ -294,8 +294,8 @@ export default function HRCreateQuestionPage() {
                 </button>
                 <button
                     className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "candidates"
-                            ? "border-b-2 border-blue-500 text-blue-500"
-                            : "text-gray-500 dark:text-gray-400"
+                        ? "border-b-2 border-blue-500 text-blue-500"
+                        : "text-gray-500 dark:text-gray-400"
                         }`}
                     onClick={() => setActiveTab("candidates")}
                 >
@@ -329,6 +329,7 @@ export default function HRCreateQuestionPage() {
                     setSelectedDifficulty={setSelectedDifficulty}
                     tagsInMyQuestions={tagsInMyQuestions}
                     setShowCreateQuestionModal={setShowCreateQuestionModal}
+                    fetchMyQuestions={fetchMyQuestions}
                 />
             ) : activeTab === "jd" ? (
                 <HRJDUploadTab />
