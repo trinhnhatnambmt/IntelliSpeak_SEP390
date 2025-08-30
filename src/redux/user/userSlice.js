@@ -54,6 +54,18 @@ export const updateUserAPI = createAsyncThunk(
     }
 );
 
+export const resetPasswordAPI = createAsyncThunk(
+    "user/resetPasswordAPI",
+    async ({ resetToken, new_password, repeat_password }) => {
+        const response = await authorizedAxiosInstance.post(
+            `${API_ROOT}/auth/reset-password?resetToken=${resetToken}`,
+            { new_password, repeat_password }
+        );
+        toast.success("Password reset successfully!");
+        return response.data;
+    }
+);
+
 //Khởi tạo một cái Slice trong kho lưu trữ Redux Store
 export const userSlice = createSlice({
     name: "user",
@@ -82,6 +94,13 @@ export const userSlice = createSlice({
         builder.addCase(getUserProfileAPI.fulfilled, (state, action) => {
             const user = action.payload;
             state.currentUser = user;
+        });
+        builder.addCase(resetPasswordAPI.fulfilled, (state, action) => {
+            // Nếu API trả về thông tin user mới, cập nhật currentUser
+            if (action.payload?.user) {
+                state.currentUser = action.payload.user;
+            }
+            // Nếu không trả về user, không cần làm gì thêm vì toast đã thông báo
         });
     },
 });

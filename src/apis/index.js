@@ -568,3 +568,28 @@ export const createInterviewSessionAPI = async (data) => {
     );
     return response.data;
 };
+
+export const getHrSubmittedCvAPI = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/api/cv/hr/view-submitted-cv`
+    );
+    return response.data;
+};
+
+// ==== APPROVE CV ====
+export const approveCvAPI = async (submissionId) => {
+    const response = await authorizedAxiosInstance.put(
+        `${API_ROOT}/api/cv/hr/submission/${submissionId}/approve`
+    );
+    toast.success(response.data.message || "CV approved successfully!");
+    return response.data;
+};
+
+// ==== REJECT CV ====
+export const rejectCvAPI = async (submissionId) => {
+    const response = await authorizedAxiosInstance.put(
+        `${API_ROOT}/api/cv/hr/submission/${submissionId}/reject`
+    );
+    toast.success(response.data.message || "CV rejected successfully!");
+    return response.data;
+};

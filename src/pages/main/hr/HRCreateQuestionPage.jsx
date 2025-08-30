@@ -266,45 +266,41 @@ export default function HRCreateQuestionPage() {
             </h2>
             <div className="flex border-b mb-6 overflow-x-auto">
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${
-                        activeTab === "session"
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "session"
                             ? "border-b-2 border-blue-500 text-blue-500"
                             : "text-gray-500 dark:text-gray-400"
-                    }`}
+                        }`}
                     onClick={() => setActiveTab("session")}
                 >
                     Interview Template Management ({mySessions.length})
                 </button>
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${
-                        activeTab === "question"
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "question"
                             ? "border-b-2 border-blue-500 text-blue-500"
                             : "text-gray-500 dark:text-gray-400"
-                    }`}
+                        }`}
                     onClick={() => setActiveTab("question")}
                 >
                     Question Management
                 </button>
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${
-                        activeTab === "jd"
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "jd"
                             ? "border-b-2 border-blue-500 text-blue-500"
                             : "text-gray-500 dark:text-gray-400"
-                    }`}
+                        }`}
                     onClick={() => setActiveTab("jd")}
                 >
                     JD Upload
                 </button>
-                {/* <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${
-                        activeTab === "candidates"
+                <button
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "candidates"
                             ? "border-b-2 border-blue-500 text-blue-500"
                             : "text-gray-500 dark:text-gray-400"
-                    }`}
+                        }`}
                     onClick={() => setActiveTab("candidates")}
                 >
                     Potential Candidates
-                </button> */}
+                </button>
             </div>
             {isLoading ? (
                 <div className="flex justify-center items-center py-10">
