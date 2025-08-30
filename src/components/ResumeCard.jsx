@@ -1,31 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import ScoreCircle from "./ScoreCircle";
 import { Switch } from "antd";
 
 const ResumeCard = ({
-    resume: { id, overallScore, imageUrls, cvTitle, createAt },
+    resume: { id, overallScore, imageUrls, cvTitle, createAt, active },
+    onActivate,
 }) => {
     const navigate = useNavigate();
-    const [isActive, setIsActive] = useState(false);
-
-    const toggle = () => {
-        setIsActive(!isActive);
-    };
 
     return (
         <div className="mt-2 group resume-card relative z-10 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-gray-200 dark:border-gray-500 bg-white dark:bg-[#0e0c15]">
             {/* Header */}
             <div className="flex justify-between items-start p-5">
                 <div className="flex flex-col gap-1 max-w-[65%]">
-                    {cvTitle ? (
+                    {cvTitle && (
                         <h2
                             className="text-2xl font-bold text-black dark:text-white break-words cursor-pointer"
                             onClick={() => navigate(`/resume/${id}`)}
                         >
                             {cvTitle}
                         </h2>
-                    ) : null}
+                    )}
 
                     <h3 className="text-lg text-gray-500 dark:text-gray-300 break-words">
                         Created at: {createAt}
@@ -33,15 +29,18 @@ const ResumeCard = ({
 
                     {/* Switch Active/Inactive */}
                     <div className="flex items-center gap-2 mt-2">
-                        <Switch checked={isActive} onClick={toggle} />
+                        <Switch
+                            checked={active}
+                            onClick={() => onActivate(id)}
+                        />
                         <span
                             className={`text-sm font-medium ${
-                                isActive
+                                active
                                     ? "text-green-600 dark:text-green-400"
                                     : "text-gray-400 dark:text-gray-500"
                             }`}
                         >
-                            {isActive ? "Active" : "Inactive"}
+                            {active ? "Active" : "Inactive"}
                         </span>
                     </div>
                 </div>

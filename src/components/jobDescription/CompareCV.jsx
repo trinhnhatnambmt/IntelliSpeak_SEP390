@@ -168,9 +168,9 @@ const CompareCV = () => {
                                 matchedMust.map((skill, index) => (
                                     <li
                                         key={index}
-                                        className="flex items-center gap-2"
+                                        className="flex items-center gap-2 text-lg"
                                     >
-                                        <CheckCircle className="w-4 h-4 text-green-500" />
+                                        <CheckCircle className="w-4 h-4 text-green-500 " />
                                         {skill}
                                     </li>
                                 ))
@@ -190,7 +190,7 @@ const CompareCV = () => {
                                 missingMust.map((skill, index) => (
                                     <li
                                         key={index}
-                                        className="flex items-center gap-2"
+                                        className="flex items-center gap-2 text-lg"
                                     >
                                         <XCircle className="w-4 h-4 text-red-500" />
                                         {skill}
@@ -212,7 +212,7 @@ const CompareCV = () => {
                                 matchedNice.map((skill, index) => (
                                     <li
                                         key={index}
-                                        className="flex items-center gap-2"
+                                        className="flex items-center gap-2 text-lg"
                                     >
                                         <CheckCircle className="w-4 h-4 text-green-500" />
                                         {skill}
@@ -234,7 +234,7 @@ const CompareCV = () => {
                                 extraCvSkills.map((skill, index) => (
                                     <li
                                         key={index}
-                                        className="flex items-center gap-2"
+                                        className="flex items-center gap-2 text-lg"
                                     >
                                         <svg
                                             className="w-4 h-4 text-blue-500"
@@ -267,7 +267,9 @@ const CompareCV = () => {
                         </h3>
                         <ul className="list-disc pl-5 text-gray-700 dark:text-gray-300 text-sm space-y-2">
                             {reasons.map((reason, index) => (
-                                <li key={index}>{reason}</li>
+                                <li key={index} className="text-lg">
+                                    {reason}
+                                </li>
                             ))}
                         </ul>
                     </div>
@@ -277,7 +279,9 @@ const CompareCV = () => {
                         </h3>
                         <ul className="list-disc pl-5 text-gray-700 dark:text-gray-300 text-sm space-y-2">
                             {recommendations.map((rec, index) => (
-                                <li key={index}>{rec}</li>
+                                <li key={index} className="text-lg">
+                                    {rec}
+                                </li>
                             ))}
                         </ul>
                     </div>
