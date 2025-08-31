@@ -600,3 +600,25 @@ export const rejectCvAPI = async (submissionId) => {
     toast.success(response.data.message || "CV rejected successfully!");
     return response.data;
 };
+
+// ==== UPDATE QUESTION ====
+export const updateQuestionAPI = async (questionId, data) => {
+    const response = await authorizedAxiosInstance.put(
+        `${API_ROOT}/question/${questionId}`,
+        {
+            title: data.title,
+            content: data.content,
+            suitableAnswer1: data.suitableAnswer1,
+            suitableAnswer2: data.suitableAnswer2,
+            difficulty: data.difficulty,
+            source: data.source,
+        }
+    );
+    return response.data;
+};
+
+// ==== DELETE QUESTION ====
+export const deleteQuestionAPI = async (questionId) => {
+    const response = await authorizedAxiosInstance.delete(`${API_ROOT}/question/${questionId}`);
+    return response.data;
+};
