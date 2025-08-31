@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button, Input, Modal } from "antd";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -8,50 +8,50 @@ const SecuritySettings = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newPassword, setNewPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
-    const [currentPassword, setResetToken] = useState("");
+    const [currentPassword, setCurrentPassword] = useState(""); // Fixed naming
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
-
 
     const openResetPasswordModal = () => {
         setNewPassword("");
         setRepeatPassword("");
-        setResetToken("");
+        setCurrentPassword("");
         setIsModalOpen(true);
     };
 
     const handleResetPassword = async () => {
-        if (newPassword !== repeatPassword) {
-            toast.error("Passwords do not match.");
+        if (!currentPassword) {
+            toast.error("Current password is required.");
             return;
         }
-        if (!newPassword || newPassword.length < 6) {
-            toast.error("Password must be at least 6 characters long.");
+        if (newPassword !== repeatPassword) {
+            toast.error("Passwords do not match.");
             return;
         }
 
         setIsLoading(true);
         try {
+            console.log("Request payload:", { currentPassword, newPassword, repeatPassword });
             await toast.promise(
                 dispatch(
                     resetPasswordAPI({
-                        current_password: currentPassword,
-                        new_password: newPassword,
-                        repeat_password: repeatPassword,
+                        currentPassword,
+                        newPassword,
+                        repeatPassword,
                     })
                 ).unwrap(),
                 {
                     pending: "Resetting password...",
                     success: "Password reset successfully!",
-                    error: "Failed to reset password. Please try again.",
+                    error: (error) => error || "Failed to reset password. Please try again.",
                 }
             );
             setIsModalOpen(false);
             setNewPassword("");
             setRepeatPassword("");
-            setResetToken("");
+            setCurrentPassword("");
         } catch (error) {
-            // Lỗi đã được xử lý trong toast.promise
+            // Error handled by toast.promise
         } finally {
             setIsLoading(false);
         }
@@ -103,7 +103,7 @@ const SecuritySettings = () => {
                     <Input.Password
                         placeholder="Current Password"
                         value={currentPassword}
-                        onChange={(e) => setResetToken(e.target.value)}
+                        onChange={(e) => setCurrentPassword(e.target.value)} // Fixed setter
                     />
                     <Input.Password
                         placeholder="New Password"
