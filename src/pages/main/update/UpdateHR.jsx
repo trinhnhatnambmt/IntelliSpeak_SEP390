@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { applyForHrAPI, getAllCvAPI, uploadPDF, getAllCompaniesToReqHR } from "~/apis";
+import { applyForHrAPI, getAllCvAPI, uploadPDF, getAllCompaniesToReqHR, getHrApplicationStatusAPI } from "~/apis";
 import { useDispatch } from "react-redux";
 import { getUserProfileAPI } from "~/redux/user/userSlice";
 import HrApplicationStatus from "~/components/HrApplicationStatus";
@@ -23,6 +23,11 @@ const UpdateHR = () => {
     });
 
     const [companies, setCompanies] = useState([]);
+    const [hrStatus, setHrStatus] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isProcessingCV, setIsProcessingCV] = useState(false);
+    const [existingCvs, setExistingCvs] = useState([]);
+    const [showExistingCvs, setShowExistingCvs] = useState(false);
 
     useEffect(() => {
         const fetchCompanies = async () => {
@@ -38,10 +43,17 @@ const UpdateHR = () => {
         fetchCompanies();
     }, []);
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [isProcessingCV, setIsProcessingCV] = useState(false);
-    const [existingCvs, setExistingCvs] = useState([]);
-    const [showExistingCvs, setShowExistingCvs] = useState(false);
+    useEffect(() => {
+        const fetchHrStatus = async () => {
+            try {
+                const res = await getHrApplicationStatusAPI();
+                setHrStatus(res?.data || null);
+            } catch {
+                setHrStatus(null);
+            }
+        };
+        fetchHrStatus();
+    }, []);
 
     useEffect(() => {
         const loadUserProfile = async () => {
@@ -51,7 +63,6 @@ const UpdateHR = () => {
                 console.error("Error loading user profile:", error);
             }
         };
-
         loadUserProfile();
     }, [dispatch]);
 
@@ -138,7 +149,6 @@ const UpdateHR = () => {
 
                 const uploadResponse = await uploadPDF(reqData);
                 console.log("uploadResponse", uploadResponse);
-                // Join all URLs with ';' if multiple pages exist
                 if (Array.isArray(uploadResponse) && uploadResponse.length > 0) {
                     cvUrl = uploadResponse.join(';');
                 } else {
@@ -149,7 +159,6 @@ const UpdateHR = () => {
                 }
                 setIsProcessingCV(false);
             }
-
 
             const applicationData = {
                 companyId: formData.companyId === "other" ? 0 : Number(formData.companyId),
@@ -163,8 +172,6 @@ const UpdateHR = () => {
             console.log("applicationData", applicationData);
 
             await applyForHrAPI(applicationData);
-
-            // Optionally, you can trigger a refresh in HrApplicationStatus via a state or context if needed
 
             setFormData({
                 companyId: "",
@@ -182,32 +189,25 @@ const UpdateHR = () => {
         } catch (error) {
             console.error("Error details:", error.response?.data);
         } finally {
-            // Refetch user profile to update role immediately after successful HR application
             dispatch(getUserProfileAPI());
+            const res = await getHrApplicationStatusAPI();
+            setHrStatus(res?.data || null); // Refetch hrStatus to update UI
             setIsLoading(false);
             setIsProcessingCV(false);
         }
     };
 
-    // HR Application Status is now handled in HrApplicationStatus component
-
     return (
-        <div className="container mx-auto px-5 py-10">
-            <div className="flex flex-col lg:flex-row gap-6">
-                {/* HR Application Status Panel - Left Side */}
-                <div className="lg:w-1/3">
+        <div className="container mx-auto px-5 py-10 flex justify-center">
+            <div className="w-full max-w-2xl">
+                {hrStatus ? (
                     <HrApplicationStatus />
-                </div>
-
-                {/* Application Form - Right Side */}
-                <div className="lg:w-2/3">
+                ) : (
                     <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
                         <h2 className="text-2xl font-bold mb-6 text-black dark:text-white">
                             HR Application Form
                         </h2>
-
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            {/* Company Field */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Company*
@@ -237,8 +237,6 @@ const UpdateHR = () => {
                                     />
                                 )}
                             </div>
-
-                            {/* Email Field */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Email*
@@ -252,10 +250,8 @@ const UpdateHR = () => {
                                     className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white p-2"
                                 />
                             </div>
-
-                            {/* Phone Field */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font transversal-medium text-gray-700 dark:text-gray-300">
                                     Phone Number*
                                 </label>
                                 <input
@@ -266,10 +262,8 @@ const UpdateHR = () => {
                                     onChange={handleChange}
                                     placeholder="+84..."
                                     className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white p-2"
-                                />
+                                    investigated />
                             </div>
-
-                            {/* Experience Years */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Years of Experience*
@@ -284,8 +278,6 @@ const UpdateHR = () => {
                                     className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white p-2"
                                 />
                             </div>
-
-                            {/* LinkedIn */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     LinkedIn Profile
@@ -299,8 +291,6 @@ const UpdateHR = () => {
                                     className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white p-2"
                                 />
                             </div>
-
-                            {/* Motivation */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Why do you want to become an HR?*
@@ -314,8 +304,6 @@ const UpdateHR = () => {
                                     className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white p-2"
                                 ></textarea>
                             </div>
-
-                            {/* CV Selection Section */}
                             <div className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -331,7 +319,6 @@ const UpdateHR = () => {
                                         className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white p-2"
                                     />
                                 </div>
-
                                 <div className="flex gap-2">
                                     <button
                                         type="button"
@@ -342,7 +329,6 @@ const UpdateHR = () => {
                                         {formData.selectedCv ? "Existing CV Selected" : "Choose from Existing CVs"}
                                     </button>
                                 </div>
-
                                 {showExistingCvs && (
                                     <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 max-h-60 overflow-y-auto">
                                         <h3 className="text-sm font-medium mb-2">Your CVs</h3>
@@ -367,7 +353,6 @@ const UpdateHR = () => {
                                         )}
                                     </div>
                                 )}
-
                                 {!formData.selectedCv && (
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -384,7 +369,6 @@ const UpdateHR = () => {
                                         )}
                                     </div>
                                 )}
-
                                 {formData.selectedCv && (
                                     <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
                                         <div className="flex items-center gap-2">
@@ -403,7 +387,6 @@ const UpdateHR = () => {
                                     </div>
                                 )}
                             </div>
-
                             <button
                                 type="submit"
                                 disabled={isLoading || isProcessingCV}
@@ -421,7 +404,7 @@ const UpdateHR = () => {
                             </button>
                         </form>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );
