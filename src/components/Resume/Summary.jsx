@@ -26,23 +26,23 @@ const Category = ({ title, score }) => {
 };
 
 const Summary = ({ feedback }) => {
-    const toneAndStyleScore = feedback?.categories?.find(
+    const toneAndStyleScore = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "toneAndStyle"
     )?.score;
-    const contentScore = feedback?.categories?.find(
+    const contentScore = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "content"
     )?.score;
-    const structureScore = feedback?.categories?.find(
+    const structureScore = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "structure"
     )?.score;
-    const skillsScore = feedback?.categories?.find(
+    const skillsScore = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "skills"
     )?.score;
 
     return (
         <div className="bg-white rounded-2xl shadow-md w-full">
             <div className="flex flex-row items-center p-4 gap-8">
-                <ScoreGauge score={feedback?.overallScore} />
+                <ScoreGauge score={feedback?.evaluate.overallScore} />
                 <div className="flex flex-col gap-2">
                     <h2 className="text-2xl font-bold text-gray-500">
                         Your CV total score

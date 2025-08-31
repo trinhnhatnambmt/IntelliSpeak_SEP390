@@ -12,6 +12,7 @@ import {
     Briefcase,
     ClipboardEdit,
     MessageCircleCode,
+    BadgeDollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -84,6 +85,11 @@ export default function WalletProfile() {
             icon: <MessageCircleCode className="w-5 h-5" />,
             label: "Status",
             href: "/main/complaint",
+        },
+        {
+            icon: <BadgeDollarSign className="w-5 h-5" />,
+            label: "Transaction",
+            href: "/main/transaction",
         },
         {
             icon: <Crown className="w-5 h-5" />,

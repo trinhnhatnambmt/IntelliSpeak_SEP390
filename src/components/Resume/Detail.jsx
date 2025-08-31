@@ -103,34 +103,34 @@ const CategoryContent = ({ tips }) => {
 
 const Details = ({ feedback }) => {
     //toneAndStyle
-    const toneAndStyleScore = feedback?.categories?.find(
+    const toneAndStyleScore = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "toneAndStyle"
     )?.score;
-    const toneAndStyleTips = feedback?.categories?.find(
+    const toneAndStyleTips = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "toneAndStyle"
     )?.tips;
 
     //content
-    const contentScore = feedback?.categories?.find(
+    const contentScore = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "content"
     )?.score;
-    const contentTips = feedback?.categories?.find(
+    const contentTips = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "content"
     )?.tips;
 
     //structure
-    const structureScore = feedback?.categories?.find(
+    const structureScore = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "structure"
     )?.score;
-    const structureTips = feedback?.categories?.find(
+    const structureTips = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "structure"
     )?.tips;
 
     //skills
-    const skillsScore = feedback?.categories?.find(
+    const skillsScore = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "skills"
     )?.score;
-    const skillsTips = feedback?.categories?.find(
+    const skillsTips = feedback?.evaluate.categories?.find(
         (cat) => cat.categoryName === "skills"
     )?.tips;
 
