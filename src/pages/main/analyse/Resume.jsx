@@ -13,7 +13,7 @@ const Resume = () => {
 
     useEffect(() => {
         getResumeFeedbackAPI(id).then((res) => {
-            console.log("🚀 ~ Resume ~ res:", res);
+            // console.log("🚀 ~ Resume ~ res:", res);
             setFeedback(res);
         });
     }, [id]);
@@ -79,6 +79,7 @@ const Resume = () => {
                                 }
                             />
                             <Details feedback={feedback || mockFeedback} />
+                            <h2 className="text-4xl font-bold">Suggested Interview Sessions</h2>
                             {feedback?.recommendSessions?.map((session) => (
                                 <SessionCard session={session} />
                             ))}

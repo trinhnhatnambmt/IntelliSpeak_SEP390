@@ -1,6 +1,20 @@
-// Phần import giữ nguyên
 import dayjs from "dayjs";
-import { CalendarIcon, House, Star } from "lucide-react";
+import {
+    Activity,
+    AlertCircle,
+    CalendarIcon,
+    Check,
+    CheckCircle,
+    Ear,
+    House,
+    Info,
+    Lightbulb,
+    ListCheck,
+    MessageSquare,
+    MessageSquareCode,
+    Star,
+    XCircle,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,6 +33,7 @@ const FeedBack = () => {
     useEffect(() => {
         if (!interviewFeedbackRedux && id) {
             getInterviewHistoryById(id).then((data) => {
+                console.log(data);
                 setInterviewFeedback(data);
             });
         }
@@ -27,9 +42,6 @@ const FeedBack = () => {
     const formattedDate = dayjs(interviewFeedback?.startedAt).format(
         "MMM DD, YYYY – h:mm A"
     );
-
-    // const currentInterviewSession = useSelector(selectCurrentInterviewSession);
-    // console.log("🚀 ~ FeedBack ~ currentInterviewSession:", currentInterviewSession)
 
     return (
         <div className="max-w-5xl mx-auto px-6 py-20">
@@ -53,73 +65,155 @@ const FeedBack = () => {
 
             <div className="border-t border-gray-300 dark:border-gray-600 mb-8"></div>
 
-            <p className="text-lg leading-relaxed text-center text-gray-800 dark:text-gray-300 mb-12">
-                {/* {interviewFeedback?.aiOverallEvaluate} */}
-            </p>
+            <div className="space-y-12">
+                <div className="bg-white dark:bg-[#1e1e2f] border border-gray-200 dark:border-gray-700 rounded-xl p-8 shadow-sm relative">
+                    <h2 className="text-3xl font-semibold mb-4 text-gray-900 dark:text-white relative">
+                        Overall Evaluation
+                    </h2>
+                    <p className="text-xl text-gray-700 dark:text-white leading-relaxed bg-indigo-50 dark:bg-indigo-900/30 p-4 rounded-lg">
+                        {interviewFeedback?.aiOverallEvaluate ||
+                            "No overall evaluation provided."}
+                    </p>
+                </div>
 
-            <div>
-                <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">
-                    Feedback by question:
-                </h2>
-                {interviewFeedback?.results?.map((result, index) => (
-                    <div
-                        key={result.questionId}
-                        className="bg-white dark:bg-[#1e1e2f] border border-gray-200 dark:border-gray-700 rounded-xl p-6 mb-8 shadow-sm"
-                    >
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                            {index + 1}. {result.question}
-                        </h3>
+                <div>
+                    <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white flex items-center gap-2 relative">
+                        <MessageSquare className="text-indigo-500" />
+                        Feedback by Question
+                    </h2>
 
-                        <div className="space-y-3 text-gray-700 dark:text-gray-300">
-                            <p>
-                                <strong>Suggested answer 1:</strong>{" "}
-                                {result.suitableAnswer1 || "No answer"}
-                            </p>
-                            <p>
-                                <strong>Suggested answer 2:</strong>{" "}
-                                {result.suitableAnswer2 || "No answer"}
-                            </p>
-                            <p>
-                                <strong>Your answer:</strong>{" "}
-                                {result.userAnswer || "No answer"}
-                            </p>
-                            <p>
-                                <strong>Correctness:</strong>{" "}
-                                {result.feedback.knowledge.correctness}
-                            </p>
-                            <p>
-                                <strong>Clarity:</strong>{" "}
-                                {result.feedback.communication.clarity}
-                            </p>
-                            <p>
-                                <strong>Conciseness:</strong>{" "}
-                                {result.feedback.communication.conciseness}
-                            </p>
-                            <p>
-                                <strong>Use of terminology:</strong>{" "}
-                                {result.feedback.communication.terminology}
-                            </p>
-                            <p>
-                                <strong>Strengths:</strong>{" "}
-                                {result.feedback.knowledge.strengths || "None"}
-                            </p>
-                            <p>
-                                <strong>Needs improvement:</strong>{" "}
-                                {result.feedback.knowledge.improvement}
-                            </p>
+                    {interviewFeedback?.results?.map((result, index) => (
+                        <div
+                            key={result.questionId}
+                            className="relative bg-white dark:bg-[#1e1e2f] border border-gray-200 dark:border-gray-700 rounded-xl p-8 mb-6 shadow-sm transition-all hover:shadow-md"
+                        >
+                            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                                {index + 1}. {result.question}
+                            </h3>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700 dark:text-gray-300">
+                                <div className="space-y-4">
+                                    <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg ">
+                                        <strong className="text-blue-700 dark:text-blue-300 flex items-center gap-1">
+                                            <Info className="text-blue-500 w-[20px]" />
+                                            Suggested Answer 1
+                                        </strong>
+                                        <p className="mt-2">
+                                            {result.suitableAnswer1 ||
+                                                "No answer provided"}
+                                        </p>
+                                    </div>
+                                    <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+                                        <strong className="text-blue-700 dark:text-blue-300 flex items-center gap-1">
+                                            <Info className="text-blue-500 w-[20px]" />
+                                            Suggested Answer 2
+                                        </strong>
+                                        <p className="mt-2">
+                                            {result.suitableAnswer2 ||
+                                                "No answer provided"}
+                                        </p>
+                                    </div>
+                                    <div className="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg">
+                                        <strong className="text-purple-700 dark:text-purple-300 flex items-center gap-1">
+                                            <MessageSquareCode className="text-purple-500 w-[20px]" />
+                                            Your Answer
+                                        </strong>
+                                        <p className="mt-2">
+                                            {result.userAnswer ||
+                                                "No answer provided"}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="bg-teal-50 dark:bg-teal-900/30 p-4 rounded-lg">
+                                        <strong className="text-teal-700 dark:text-teal-300 flex items-center gap-1">
+                                            <Check className="text-teal-500 w-[20px]" />
+                                            Correctness
+                                        </strong>
+                                        <p className="mt-2">
+                                            {
+                                                result.feedback.knowledge
+                                                    .correctness
+                                            }
+                                        </p>
+                                    </div>
+                                    <div className="bg-cyan-50 dark:bg-cyan-900/30 p-4 rounded-lg">
+                                        <strong className="text-cyan-700 dark:text-cyan-300 flex items-center gap-1">
+                                            <Activity className="text-cyan-500 w-[20px]" />
+                                            Clarity
+                                        </strong>
+                                        <p className="mt-2">
+                                            {
+                                                result.feedback.communication
+                                                    .clarity
+                                            }
+                                        </p>
+                                    </div>
+                                    <div className="bg-sky-50 dark:bg-sky-900/30 p-4 rounded-lg">
+                                        <strong className="text-sky-700 dark:text-sky-300 flex items-center gap-1">
+                                            <Ear className="text-sky-500 w-[20px]" />
+                                            Conciseness:
+                                        </strong>
+                                        <p className="mt-1">
+                                            {
+                                                result.feedback.communication
+                                                    .conciseness
+                                            }
+                                        </p>
+                                    </div>
+                                    <div className="bg-indigo-50 dark:bg-indigo-900/30 p-4 rounded-lg">
+                                        <strong className="text-indigo-700 dark:text-indigo-300 flex items-center gap-1">
+                                            <ListCheck className="text-indigo-300 w-[20px] " />
+                                            Use of Terminology:
+                                        </strong>
+                                        <p className="mt-1">
+                                            {
+                                                result.feedback.communication
+                                                    .terminology
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 border-t border-gray-200 dark:border-gray-600 pt-6">
+                                <div className="space-y-4">
+                                    <div className="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg">
+                                        <strong className="text-green-700 dark:text-green-300 flex items-center gap-1">
+                                            <Lightbulb className="text-green-500 w-[20px]" />
+                                            Strengths:
+                                        </strong>
+                                        <p className="mt-2 text-gray-600 dark:text-gray-400">
+                                            {result.feedback.knowledge
+                                                .strengths || "None"}
+                                        </p>
+                                    </div>
+                                    <div className="bg-red-50 dark:bg-red-900/30 p-4 rounded-lg ">
+                                        <strong className="text-red-700 dark:text-red-300 flex items-center gap-1">
+                                            <XCircle className="text-red-500 w-[20px]" />
+                                            Needs Improvement:
+                                        </strong>
+                                        <p className="mt-2 text-gray-600 dark:text-gray-400">
+                                            {
+                                                result.feedback.knowledge
+                                                    .improvement
+                                            }
+                                        </p>
+                                    </div>
+                                    <div className="bg-emerald-50 dark:bg-emerald-900/30 p-4 rounded-lg">
+                                        <strong className="text-emerald-700 dark:text-emerald-300 text-xl  flex items-center gap-1">
+                                            <CheckCircle className="text-emerald-500 w-[20px]" />
+                                            Conclusion:
+                                        </strong>
+                                        <p className="mt-1 text-xl text-gray-600 dark:text-white">
+                                            {result.feedback.conclusion}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                        <div className="mt-6">
-                            <h4 className="text-lg font-semibold mb-2 text-green-500">
-                                Conclusion:
-                            </h4>
-
-                            <p className="text-gray-600 dark:text-gray-400 mt-1">
-                                {result.feedback.conclusion}
-                            </p>
-                        </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
 
             <div className="flex justify-center gap-4 mt-12">
