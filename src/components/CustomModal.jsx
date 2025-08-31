@@ -26,8 +26,7 @@ export default function CustomModal({
                 style={{
                     background: backgroundColor,
                     minWidth: 320,
-                    maxWidth: 480,
-                    width: "100%",
+                    width: "70%",
                     maxHeight: '90vh',
                     display: 'flex',
                     flexDirection: 'column',

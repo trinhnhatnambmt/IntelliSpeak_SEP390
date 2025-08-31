@@ -28,7 +28,7 @@ export default function HRPotentialCandidatesTab() {
                 return {
                     id: cv.cvSubmissionId || index + 1,
                     submissionId: cv.cvSubmissionId,
-                    name: cv.userEmail.split("@")[0].replace(/\./g, " "),
+                    name: cv.userName || cv.userEmail.split("@")[0].replace(/\./g, " "),
                     email: cv.userEmail,
                     phone: cv.userPhone || "N/A",
                     position: cv.jobTitle || "N/A",
@@ -162,37 +162,39 @@ export default function HRPotentialCandidatesTab() {
                 bodyStyle={{ padding: "1rem", overflowY: "auto" }}
             >
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white">{cvTitle}</h3>
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">CV Title: {cvTitle}</h3>
+                        {selectedSubmissionId && (
+                            <div className="flex gap-3">
+                                <button
+                                    className={`px-3 py-1 bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-100 rounded text-xs hover:bg-green-200 dark:hover:bg-green-700 ${isActionLoading || candidates.find(c => c.submissionId === selectedSubmissionId)?.note !== "Not Viewed" ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    onClick={() => handleApprove(selectedSubmissionId)}
+                                    disabled={isActionLoading || candidates.find(c => c.submissionId === selectedSubmissionId)?.note !== "Not Viewed"}
+                                >
+                                    Approve
+                                </button>
+                                <button
+                                    className={`px-3 py-1 bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-100 rounded text-xs hover:bg-red-200 dark:hover:bg-red-700 ${isActionLoading || candidates.find(c => c.submissionId === selectedSubmissionId)?.note !== "Not Viewed" ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    onClick={() => handleReject(selectedSubmissionId)}
+                                    disabled={isActionLoading || candidates.find(c => c.submissionId === selectedSubmissionId)?.note !== "Not Viewed"}
+                                >
+                                    Reject
+                                </button>
+                            </div>
+                        )}
+                    </div>
                     {cvImgUrls.length > 0 ? (
                         cvImgUrls.map((url, index) => (
                             <img
                                 key={index}
                                 src={url}
                                 alt={`Candidate CV ${index + 1}`}
-                                className="max-h-[60vh] w-full rounded border border-gray-200 dark:border-[#333]"
-                                style={{ objectFit: "contain" }}
+                                className="rounded border border-gray-200 dark:border-[#333]"
+                                style={{ width: "100%", objectFit: "contain" }}
                             />
                         ))
                     ) : (
                         <p className="text-gray-500 dark:text-gray-400 text-center">No CV available</p>
-                    )}
-                    {selectedSubmissionId && (
-                        <div className="flex justify-center gap-3 mt-4">
-                            <button
-                                className={`px-3 py-1 bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-100 rounded text-xs hover:bg-green-200 dark:hover:bg-green-700 ${isActionLoading || candidates.find(c => c.submissionId === selectedSubmissionId)?.note !== "Not Viewed" ? "opacity-50 cursor-not-allowed" : ""}`}
-                                onClick={() => handleApprove(selectedSubmissionId)}
-                                disabled={isActionLoading || candidates.find(c => c.submissionId === selectedSubmissionId)?.note !== "Not Viewed"}
-                            >
-                                Approve
-                            </button>
-                            <button
-                                className={`px-3 py-1 bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-100 rounded text-xs hover:bg-red-200 dark:hover:bg-red-700 ${isActionLoading || candidates.find(c => c.submissionId === selectedSubmissionId)?.note !== "Not Viewed" ? "opacity-50 cursor-not-allowed" : ""}`}
-                                onClick={() => handleReject(selectedSubmissionId)}
-                                disabled={isActionLoading || candidates.find(c => c.submissionId === selectedSubmissionId)?.note !== "Not Viewed"}
-                            >
-                                Reject
-                            </button>
-                        </div>
                     )}
                 </div>
             </CustomModal>
