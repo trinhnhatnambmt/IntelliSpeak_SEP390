@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { getHrApplicationStatusAPI } from "~/apis";
+import { Modal } from "antd"; // Import antd Modal
 import { SquareChartGantt, CheckCircle, XCircle, Clock, AlertCircle, Building2, Phone, Globe, Linkedin, FileText as FileTextIcon, Calendar, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 
 const HrApplicationStatus = () => {
     const [hrStatus, setHrStatus] = useState(null);
     const [cvPages, setCvPages] = useState([]);
     const [currentCvPage, setCurrentCvPage] = useState(0);
+    const [isModalVisible, setIsModalVisible] = useState(false); // State for Modal visibility
 
     useEffect(() => {
         const fetchHrStatus = async () => {
@@ -45,10 +47,20 @@ const HrApplicationStatus = () => {
             setCurrentCvPage(currentCvPage + 1);
         }
     };
+
     const prevCvPage = () => {
         if (currentCvPage > 0) {
             setCurrentCvPage(currentCvPage - 1);
         }
+    };
+
+    const showModal = () => {
+        setIsModalVisible(true);
+        setCurrentCvPage(0); // Reset to first page when opening Modal
+    };
+
+    const handleModalClose = () => {
+        setIsModalVisible(false);
     };
 
     return (
@@ -151,15 +163,13 @@ const HrApplicationStatus = () => {
                                         )}
                                     </div>
                                     <div className="flex justify-between items-center mt-2">
-                                        <a
-                                            href={cvPages[0]}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
+                                        <button
+                                            onClick={showModal}
                                             className="text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
                                         >
                                             <Eye className="w-4 h-4" />
                                             View Full CV
-                                        </a>
+                                        </button>
                                         {cvPages.length > 1 && (
                                             <div className="flex gap-1">
                                                 {cvPages.map((_, index) => (
@@ -185,6 +195,59 @@ const HrApplicationStatus = () => {
                             </div>
                         </div>
                     </div>
+                    <Modal
+                        title="CV Preview"
+                        open={isModalVisible}
+                        onCancel={handleModalClose}
+                        footer={null}
+                        width="70%"
+                        style={{ top: 20 }}
+                        bodyStyle={{ padding: '16px', maxHeight: '80vh', overflowY: 'auto' }}
+                    >
+                        {cvPages.length > 0 ? (
+                            <div className="flex flex-col items-center">
+                                <img
+                                    src={cvPages[currentCvPage]}
+                                    alt={`CV Page ${currentCvPage + 1}`}
+                                    style={{ width: '100%', objectFit: 'contain' }}
+                                />
+                                <div className="flex justify-between items-center w-full mt-4">
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={prevCvPage}
+                                            disabled={currentCvPage === 0}
+                                            className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-full p-2 disabled:opacity-50"
+                                        >
+                                            <ChevronLeft className="w-4 h-4" />
+                                        </button>
+                                        <span className="text-sm text-gray-600 dark:text-gray-300">
+                                            Page {currentCvPage + 1} of {cvPages.length}
+                                        </span>
+                                        <button
+                                            onClick={nextCvPage}
+                                            disabled={currentCvPage === cvPages.length - 1}
+                                            className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-full p-2 disabled:opacity-50"
+                                        >
+                                            <ChevronRight className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                                {cvPages.length > 1 && (
+                                    <div className="flex gap-1 mt-2">
+                                        {cvPages.map((_, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => setCurrentCvPage(index)}
+                                                className={`w-2 h-2 rounded-full ${currentCvPage === index ? 'bg-blue-600 dark:bg-blue-400' : 'bg-gray-400 dark:bg-gray-500'}`}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <p className="text-center text-gray-500 dark:text-gray-400">No CV available</p>
+                        )}
+                    </Modal>
                 </>
             ) : (
                 <div className="p-4 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-center">
@@ -193,7 +256,6 @@ const HrApplicationStatus = () => {
             )}
         </div>
     );
-
 };
 
 export default HrApplicationStatus;

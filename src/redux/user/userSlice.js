@@ -56,10 +56,10 @@ export const updateUserAPI = createAsyncThunk(
 
 export const resetPasswordAPI = createAsyncThunk(
     "user/resetPasswordAPI",
-    async ({ resetToken, new_password, repeat_password }) => {
+    async ({ current_password, new_password, repeat_password }) => {
         const response = await authorizedAxiosInstance.post(
-            `${API_ROOT}/auth/reset-password?resetToken=${resetToken}`,
-            { new_password, repeat_password }
+            `${API_ROOT}/auth/change-password`,
+            { current_password, new_password, repeat_password, }
         );
         toast.success("Password reset successfully!");
         return response.data;

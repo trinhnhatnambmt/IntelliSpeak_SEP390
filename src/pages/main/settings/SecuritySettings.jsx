@@ -3,37 +3,24 @@ import { Button, Input, Modal } from "antd";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { resetPasswordAPI } from "~/redux/user/userSlice";
-import { useLocation } from "react-router-dom";
 
 const SecuritySettings = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newPassword, setNewPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
-    const [resetToken, setResetToken] = useState("");
+    const [currentPassword, setResetToken] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
-    const location = useLocation();
 
-    // Lấy resetToken từ query parameter
-    useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        const token = queryParams.get("resetToken");
-        if (token) {
-            setResetToken(token);
-        }
-    }, [location]);
 
     const openResetPasswordModal = () => {
         setNewPassword("");
         setRepeatPassword("");
+        setResetToken("");
         setIsModalOpen(true);
     };
 
     const handleResetPassword = async () => {
-        if (!resetToken) {
-            toast.error("Please provide a reset token.");
-            return;
-        }
         if (newPassword !== repeatPassword) {
             toast.error("Passwords do not match.");
             return;
@@ -48,7 +35,7 @@ const SecuritySettings = () => {
             await toast.promise(
                 dispatch(
                     resetPasswordAPI({
-                        resetToken,
+                        current_password: currentPassword,
                         new_password: newPassword,
                         repeat_password: repeatPassword,
                     })
@@ -62,6 +49,7 @@ const SecuritySettings = () => {
             setIsModalOpen(false);
             setNewPassword("");
             setRepeatPassword("");
+            setResetToken("");
         } catch (error) {
             // Lỗi đã được xử lý trong toast.promise
         } finally {
@@ -112,11 +100,10 @@ const SecuritySettings = () => {
                 ]}
             >
                 <div className="space-y-4">
-                    <Input
-                        placeholder="Reset Token"
-                        value={resetToken}
+                    <Input.Password
+                        placeholder="Current Password"
+                        value={currentPassword}
                         onChange={(e) => setResetToken(e.target.value)}
-                        disabled={!!new URLSearchParams(location.search).get("resetToken")}
                     />
                     <Input.Password
                         placeholder="New Password"
