@@ -24,7 +24,7 @@ const SavedForum = () => {
     <div className="bg-white dark:bg-[#1e1e2f] shadow rounded-lg overflow-hidden mb-10">
       <Link to={`/main/singlePostPage/${post.postId}`}>
         <img
-          src={post.image?.[0] || "https://placehold.co/800x300?text=No+Image"}
+          src={post?.thumbnail || "https://placehold.co/800x300?text=No+Image"}
           alt="Post banner"
           className="w-full h-56 object-cover"
         />
@@ -69,8 +69,8 @@ const SavedForum = () => {
     <div className="flex bg-gray-100 dark:bg-[#0e0c15] text-gray-900 dark:text-white transition-colors duration-300 pt-5">
       <div className="mx-auto flex container px-5">
         {/* Left Sidebar */}
-        <SideBar />
-
+        {/* <SideBar /> */}
+        <div className="w-64 h-[fit-content] p-6  hidden lg:block relative z-10 rounded-2xl"></div>
         {/* Main content */}
         <main className="flex-1 max-w-[800px] mx-auto p-6 relative z-10">
           <div className="flex space-x-4 mb-4">

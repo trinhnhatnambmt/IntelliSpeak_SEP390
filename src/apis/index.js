@@ -72,7 +72,30 @@ export const postQuestion = async (data) => {
 // ==== GET MY QUESTIONS ====
 export const getMyQuestionsAPI = async () => {
     const response = await authorizedAxiosInstance.get(
-        `${API_ROOT}/question/my-questions`
+        `${API_ROOT}/question/company`
+    );
+    return response.data;
+};
+
+// ==== UPDATE QUESTION TEMPLATE SESSION ====
+export const updateQuestionTemplateAPI = async (sessionId, data) => {
+    const response = await authorizedAxiosInstance.put(
+        `${API_ROOT}/interview-sessions/update/${sessionId}`,
+        data
+    );
+    return response.data;
+};
+
+// ==== UPDATE INTERVIEW SESSION THUMBNAIL ====
+export const updateInterviewSessionThumbnailAPI = async (sessionId, thumbnailUrl) => {
+    const response = await authorizedAxiosInstance.put(
+        `${API_ROOT}/interview-sessions/thumbnail/${sessionId}`,
+        { thumbnailURL: thumbnailUrl },
+        {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
     );
     return response.data;
 };
@@ -92,13 +115,14 @@ export const getForumPostRepliesAPI = async (postId) => {
 // ==== UPDATE FORUM POST ====
 export const updateForumPostAPI = async (
     postId,
-    { title, content, images, forumTopicTypeId }
+    { title, content, thumbnail, images, forumTopicTypeId }
 ) => {
     const res = await authorizedAxiosInstance.put(
         `${API_ROOT}/forum-post/${postId}`,
         {
             title,
             content,
+            thumbnail,
             images,
             forumTopicTypeId,
         }
@@ -171,18 +195,18 @@ export const getAllForumTopicsAPI = async () => {
 export const postForumAPI = async ({
     title,
     content,
+    thumbnail,
     images,
     forumTopicTypeId,
-    tags,
 }) => {
     const response = await authorizedAxiosInstance.post(
         `${API_ROOT}/forum-post`,
         {
             title,
             content,
+            thumbnail,
             images,
             forumTopicTypeId,
-            tags,
         }
     );
     return response.data;
@@ -199,7 +223,13 @@ export const getForumPostByIdAPI = async (postId) => {
     );
     return res.data;
 };
-
+// ==== GET TOP REPLIED POSTS ====
+export const getTopPostsAPI = async () => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/forum-post/top-replied?limit=5`
+    );
+    return response.data;
+};
 // ==== LIKE / UNLIKE ====
 
 export const likeOrUnlikePostAPI = async ({ postId, liked }) => {

@@ -13,14 +13,8 @@ const Forum = () => {
   const [savedPosts, setSavedPosts] = useState({}); // Track saved state for each post
   const location = useLocation();
 
-  // State for new post (upload)
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [coverImagePreview, setCoverImagePreview] = useState(null);
-  const [coverImageFile, setCoverImageFile] = useState(null);
   const [topics, setTopics] = useState([]);
   const [selectedTopicId, setSelectedTopicId] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [expandForm, setExpandForm] = useState(false);
 
   // Fetch topics for select
@@ -34,41 +28,6 @@ const Forum = () => {
     };
     fetchTopics();
   }, []);
-
-  // Handle image upload for new post
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setCoverImagePreview(URL.createObjectURL(file));
-      setCoverImageFile(file);
-    }
-  };
-
-  // Extract base64 images from HTML content
-  const extractBase64ImagesFromHTML = (htmlContent) => {
-    const div = document.createElement("div");
-    div.innerHTML = htmlContent;
-    const imgTags = div.querySelectorAll("img");
-    const base64Images = [];
-    imgTags.forEach((img) => {
-      const src = img.src;
-      if (src.startsWith("data:image")) {
-        base64Images.push(src);
-      }
-    });
-    return { div, imgTags, base64Images };
-  };
-
-  // Convert base64 to file
-  const convertBase64ToFile = (base64, filename) => {
-    const arr = base64.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) u8arr[n] = bstr.charCodeAt(n);
-    return new File([u8arr], filename, { type: mime });
-  };
 
 
   useEffect(() => {
@@ -158,7 +117,7 @@ const Forum = () => {
     <div className="bg-white dark:bg-[#1e1e2f] shadow rounded-lg overflow-hidden mb-10">
       <Link to={`/main/singlePostPage/${post.postId}`}>
         <img
-          src={post.image?.[0] || "https://placehold.co/800x300?text=No+Image"}
+          src={post?.thumbnail || "https://placehold.co/800x300?text=No+Image"}
           alt="Post banner"
           className="w-full h-56 object-cover"
         />
@@ -216,8 +175,8 @@ const Forum = () => {
     <div className="flex bg-gray-100 dark:bg-[#0e0c15] text-gray-900 dark:text-white transition-colors duration-300 pt-5">
       <div className="mx-auto flex container px-5">
         {/* Left Sidebar */}
-        <SideBar />
-
+        {/* <SideBar /> */}
+        <div className="w-64 h-[fit-content] p-6  hidden lg:block relative z-10 rounded-2xl"></div>
         {/* Main content */}
         <main className="flex-1 max-w-[800px] mx-auto p-6 relative z-10">
           <div className="flex items-center justify-between mb-4">

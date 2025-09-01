@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 const initialForm = {
     topic: "",
-    tag: "",
+    tagIds: [], // Changed from 'tag' to 'tagIds' to store multiple tag IDs
     title: "",
     interviewSessionId: "",
     content: "",
@@ -41,19 +41,30 @@ export default function HRCreateQuestionModal({
     }, [open]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
         if (name === "topic") {
-            setForm((prev) => ({ ...prev, topic: value, tag: "" }));
+            setForm((prev) => ({ ...prev, topic: value, tagIds: [] })); // Reset tagIds when topic changes
             if (onTopicChange) onTopicChange(value);
+        } else if (name === "tagIds") {
+            // Handle checkbox input for multiple tags
+            setForm((prev) => ({
+                ...prev,
+                tagIds: checked
+                    ? [...prev.tagIds, value]
+                    : prev.tagIds.filter((id) => id !== value),
+            }));
         } else {
             setForm((prev) => ({ ...prev, [name]: value }));
         }
     };
-    // console.log(form);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (mode === "manual") {
+            if (!form.tagIds.length) {
+                toast.error("Please select at least one tag.");
+                return;
+            }
             if (onSubmit) {
                 await onSubmit(form, { setSuccess, setForm });
             }
@@ -62,25 +73,28 @@ export default function HRCreateQuestionModal({
                 toast.error("Please select a CSV file to import.");
                 return;
             }
-            if (!form.tag) {
-                toast.error("Please select a tag before importing.");
+            if (!form.tagIds.length) {
+                toast.error("Please select at least one tag before importing.");
                 return;
             }
             setCsvLoading(true);
             try {
+                // Use the first tagId for CSV import (assuming API expects a single tagId)
+                const tagId = form.tagIds[0];
                 await importQuestionsFromCsv(
-                    form.tag,
+                    tagId,
                     csvFile,
                     form.interviewSessionId
                 );
                 toast.success("Questions imported successfully!");
                 setSuccess(true);
                 setCsvFile(null);
+                setForm(initialForm); // Reset form after successful import
                 if (onClose) onClose();
             } catch (err) {
                 toast.error(
                     err?.response?.data?.message ||
-                        "Failed to import questions from CSV."
+                    "Failed to import questions from CSV."
                 );
             } finally {
                 setCsvLoading(false);
@@ -93,8 +107,8 @@ export default function HRCreateQuestionModal({
         typeof document !== "undefined" &&
         document.documentElement.classList.contains("dark");
 
-    // Only show mode selection after topic and tag are selected
-    const canChooseMode = form.topic && form.tag;
+    // Only show mode selection after topic and at least one tag are selected
+    const canChooseMode = form.topic && form.tagIds.length > 0;
 
     return (
         <CustomModal
@@ -134,26 +148,31 @@ export default function HRCreateQuestionModal({
                 </div>
                 <div>
                     <label className="block mb-1 font-medium">
-                        Tag <span className="text-red-500">*</span>
+                        Tags <span className="text-red-500">*</span>
                     </label>
-                    <select
-                        name="tag"
-                        value={form.tag}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:text-white"
-                        required
-                        disabled={loading}
-                    >
-                        <option value="">Select tag</option>
-                        {tags.map((t) => (
-                            <option
-                                key={t.tagId || t.id}
-                                value={t.tagId || t.id}
+                    <div className="flex flex-wrap gap-2">
+                        {tags.map((tag) => (
+                            <label
+                                key={tag.tagId || tag.id}
+                                className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]"
                             >
-                                {t.title}
-                            </option>
+                                <input
+                                    type="checkbox"
+                                    name="tagIds"
+                                    value={tag.tagId || tag.id}
+                                    checked={form.tagIds.includes(
+                                        String(tag.tagId || tag.id)
+                                    )}
+                                    onChange={handleChange}
+                                    disabled={loading}
+                                    className="cursor-pointer"
+                                />
+                                <span className="text-xs text-gray-700 dark:text-gray-200">
+                                    {tag.title}
+                                </span>
+                            </label>
                         ))}
-                    </select>
+                    </div>
                 </div>
                 <div>
                     <label className="block mb-1 font-medium">
@@ -183,11 +202,10 @@ export default function HRCreateQuestionModal({
                     <div className="flex border-b border-gray-200 dark:border-neutral-700 mb-4">
                         <button
                             type="button"
-                            className={`px-6 py-2 -mb-px font-semibold border-b-2 transition focus:outline-none ${
-                                mode === "manual"
+                            className={`px-6 py-2 -mb-px font-semibold border-b-2 transition focus:outline-none ${mode === "manual"
                                     ? "border-blue-500 text-blue-600 dark:text-blue-400"
                                     : "border-transparent text-gray-500 dark:text-gray-300 hover:text-blue-500"
-                            }`}
+                                }`}
                             onClick={() => setMode("manual")}
                             disabled={loading}
                         >
@@ -195,11 +213,10 @@ export default function HRCreateQuestionModal({
                         </button>
                         <button
                             type="button"
-                            className={`px-6 py-2 -mb-px font-semibold border-b-2 transition focus:outline-none ${
-                                mode === "csv"
+                            className={`px-6 py-2 -mb-px font-semibold border-b-2 transition focus:outline-none ${mode === "csv"
                                     ? "border-blue-500 text-blue-600 dark:text-blue-400"
                                     : "border-transparent text-gray-500 dark:text-gray-300 hover:text-blue-500"
-                            }`}
+                                }`}
                             onClick={() => setMode("csv")}
                             disabled={loading}
                         >
@@ -348,11 +365,10 @@ export default function HRCreateQuestionModal({
                     </button>
                     <button
                         type="submit"
-                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition ${
-                            loading || csvLoading
+                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition ${loading || csvLoading
                                 ? "opacity-50 cursor-not-allowed"
                                 : ""
-                        }`}
+                            }`}
                         disabled={
                             loading ||
                             csvLoading ||
@@ -362,8 +378,8 @@ export default function HRCreateQuestionModal({
                         {loading || csvLoading
                             ? "Processing..."
                             : mode === "csv"
-                            ? "Import CSV"
-                            : "Create Question"}
+                                ? "Import CSV"
+                                : "Create Question"}
                     </button>
                 </div>
                 {success && (

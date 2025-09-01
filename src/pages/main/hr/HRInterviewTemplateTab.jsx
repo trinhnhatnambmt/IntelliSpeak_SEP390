@@ -92,18 +92,17 @@ export default function HRInterviewTemplateTab({
                                     </p>
                                     <div className="flex flex-wrap gap-2 mt-2 items-center">
                                         <span className="px-2 py-1 bg-gray-50 dark:bg-neutral-800 rounded text-xs text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-neutral-700">
-                                            Limit questions:{" "}
+                                            Questions:{" "}
                                             {session.totalQuestion}
                                         </span>
                                         <span
-                                            className={`px-2 py-1 text-xs rounded-full border ${
-                                                session.difficulty === "EASY"
+                                            className={`px-2 py-1 text-xs rounded-full border ${session.difficulty === "EASY"
                                                     ? "bg-green-50 text-green-700 border-green-100 dark:bg-green-900 dark:text-green-200"
                                                     : session.difficulty ===
-                                                      "MEDIUM"
-                                                    ? "bg-yellow-50 text-yellow-700 border-yellow-100 dark:bg-yellow-900 dark:text-yellow-200"
-                                                    : "bg-red-50 text-red-700 border-red-100 dark:bg-red-900 dark:text-red-200"
-                                            }`}
+                                                        "MEDIUM"
+                                                        ? "bg-yellow-50 text-yellow-700 border-yellow-100 dark:bg-yellow-900 dark:text-yellow-200"
+                                                        : "bg-red-50 text-red-700 border-red-100 dark:bg-red-900 dark:text-red-200"
+                                                }`}
                                         >
                                             {session.difficulty.charAt(0) +
                                                 session.difficulty
@@ -144,47 +143,47 @@ export default function HRInterviewTemplateTab({
                                     </button>
                                     {openSessionMenuId ===
                                         session.interviewSessionId && (
-                                        <div className="absolute right-0 mt-2 w-36 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-lg z-10 py-2">
-                                            <button
-                                                className="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-neutral-800 rounded transition"
-                                                onClick={() => {
-                                                    console.log(mySessions);
-                                                    navigate(
-                                                        `/main/interviewSessionDetail/${session.interviewSessionId}`
-                                                    );
-                                                }}
-                                            >
-                                                Detail
-                                            </button>
-                                            <button
-                                                className="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-neutral-800 rounded transition"
-                                                onClick={() => {
-                                                    setOpenSessionMenuId(null);
-                                                    setEditSessionModal({
-                                                        open: true,
-                                                        session,
-                                                    });
-                                                }}
-                                            >
-                                                Edit
-                                            </button>
-                                            <Popconfirm
-                                                title="Delete interview session"
-                                                description="Are you sure to delete this  interview session?"
-                                                onConfirm={() =>
-                                                    handleDeleteInterviewSession(
-                                                        session.interviewSessionId
-                                                    )
-                                                }
-                                                okText="Yes"
-                                                cancelText="No"
-                                            >
-                                                <button className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-50 dark:hover:bg-neutral-800 rounded transition">
-                                                    Delete
+                                            <div className="absolute right-0 mt-2 w-36 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-lg z-10 py-2">
+                                                <button
+                                                    className="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-neutral-800 rounded transition"
+                                                    onClick={() => {
+                                                        console.log(mySessions);
+                                                        navigate(
+                                                            `/main/interviewSessionDetail/${session.interviewSessionId}`
+                                                        );
+                                                    }}
+                                                >
+                                                    Detail
                                                 </button>
-                                            </Popconfirm>
-                                        </div>
-                                    )}
+                                                <button
+                                                    className="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-neutral-800 rounded transition"
+                                                    onClick={() => {
+                                                        setOpenSessionMenuId(null);
+                                                        setEditSessionModal({
+                                                            open: true,
+                                                            session,
+                                                        });
+                                                    }}
+                                                >
+                                                    Edit
+                                                </button>
+                                                <Popconfirm
+                                                    title="Delete interview session"
+                                                    description="Are you sure to delete this  interview session?"
+                                                    onConfirm={() =>
+                                                        handleDeleteInterviewSession(
+                                                            session.interviewSessionId
+                                                        )
+                                                    }
+                                                    okText="Yes"
+                                                    cancelText="No"
+                                                >
+                                                    <button className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-50 dark:hover:bg-neutral-800 rounded transition">
+                                                        Delete
+                                                    </button>
+                                                </Popconfirm>
+                                            </div>
+                                        )}
                                 </div>
                             </div>
                         ))}

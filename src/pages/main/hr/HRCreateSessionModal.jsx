@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import CustomModal from "../../../components/CustomModal";
-import { uploadImageAPI, getAllTag } from "~/apis/index";
+import { uploadImageAPI, getTagsOfTopic } from "~/apis/index";
 import { toast } from "react-toastify";
-import { all } from "axios";
+
 export default function HRCreateSessionModal({
     open,
     onClose,
@@ -16,23 +16,29 @@ export default function HRCreateSessionModal({
     const [thumbnailUploading, setThumbnailUploading] = useState(false);
     const [allTags, setAllTags] = useState([]);
 
+    // Fetch tags when topicId changes
     useEffect(() => {
         const fetchTags = async () => {
-            try {
-                const res = await getAllTag();
-                // API returns { code, message, data: [...] }
-                setAllTags(res || []);
-                // Đừng log ở đây vì allTags chưa cập nhật kịp!
-            } catch {
+            if (!templateForm.topicId) {
                 setAllTags([]);
+                return;
+            }
+            try {
+                const res = await getTagsOfTopic(templateForm.topicId);
+                // Assuming API returns an array of tags or { data: [...] }
+                setAllTags(res.data || res || []);
+            } catch (err) {
+                console.error("Error fetching tags for topic:", err);
+                setAllTags([]);
+                toast.error("Failed to fetch tags for the selected topic");
             }
         };
         fetchTags();
-    }, []);
+    }, [templateForm.topicId]);
 
-    // Log allTags mỗi khi nó thay đổi
+    // Log allTags when it changes
     useEffect(() => {
-        console.log("all tag", allTags);
+        console.log("Tags for selected topic:", allTags);
     }, [allTags]);
 
     // Handle input changes for form fields
@@ -58,12 +64,11 @@ export default function HRCreateSessionModal({
             setTemplateForm((prev) => ({
                 ...prev,
                 [name]: value,
+                // Reset tagIds when topic changes to ensure only valid tags are selected
+                ...(name === "topicId" ? { tagIds: [] } : {}),
             }));
         }
     };
-
-    // Detect dark mode
-    const isDark = document.documentElement.classList.contains("dark");
 
     // Handle image upload for thumbnail
     const handleThumbnailUpload = async (e) => {
@@ -85,6 +90,9 @@ export default function HRCreateSessionModal({
             setThumbnailUploading(false);
         }
     };
+
+    // Detect dark mode
+    const isDark = document.documentElement.classList.contains("dark");
 
     return (
         <CustomModal
@@ -161,22 +169,6 @@ export default function HRCreateSessionModal({
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
-                        Total Questions <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        type="number"
-                        name="totalQuestion"
-                        value={templateForm.totalQuestion}
-                        onChange={handleChange}
-                        className="w-full p-2 border border-gray-200 dark:border-[#333] rounded-lg dark:bg-[#23232a] dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400 dark:placeholder-gray-500"
-                        required
-                        disabled={templateLoading}
-                        min={1}
-                        placeholder="Enter total questions"
-                    />
-                </div>
-                <div>
-                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
                         Difficulty <span className="text-red-500">*</span>
                     </label>
                     <select
@@ -222,28 +214,35 @@ export default function HRCreateSessionModal({
                     <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
                         Tags <span className="text-red-500">*</span>
                     </label>
-                    <div className="flex flex-wrap gap-2">
-                        {allTags.map((tag) => (
-                            <label
-                                key={tag.id}
-                                className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]"
-                            >
-                                <input
-                                    type="checkbox"
-                                    name="tagIds"
-                                    value={tag.id}
-                                    checked={templateForm.tagIds.includes(
-                                        String(tag.id)
-                                    )}
-                                    onChange={handleChange}
-                                    disabled={templateLoading}
-                                />
-                                <span className="text-xs text-gray-700 dark:text-gray-200">
-                                    {tag.title}
-                                </span>
-                            </label>
-                        ))}
-                    </div>
+                    {templateForm.topicId ? (
+                        <div className="flex flex-wrap gap-2">
+                            {allTags.map((tag) => (
+                                <label
+                                    key={tag.tagId || tag.id}
+                                    className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        name="tagIds"
+                                        value={tag.tagId || tag.id}
+                                        checked={templateForm.tagIds.includes(
+                                            String(tag.tagId || tag.id)
+                                        )}
+                                        onChange={handleChange}
+                                        disabled={templateLoading}
+                                        className="cursor-pointer"
+                                    />
+                                    <span className="text-xs text-gray-700 dark:text-gray-200">
+                                        {tag.title}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-sm text-gray-500 dark:text-gray-300">
+                            Please select a topic to view available tags.
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex gap-3 mt-4">
@@ -257,11 +256,8 @@ export default function HRCreateSessionModal({
                     </button>
                     <button
                         type="submit"
-                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition ${
-                            templateLoading
-                                ? "opacity-50 cursor-not-allowed"
-                                : ""
-                        }`}
+                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition ${templateLoading ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                         disabled={templateLoading}
                     >
                         {templateLoading ? "Processing..." : "Create"}

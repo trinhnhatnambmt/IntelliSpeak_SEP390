@@ -99,19 +99,17 @@ export default function HRCreateQuestionPage() {
         setIsLoading(true);
         try {
             const res = await getMyInterviewSessionsAPI();
-            // Đảm bảo luôn là mảng
+            // Ensure it's always an array
             const sessions = Array.isArray(res) ? res : res?.data || [];
             setMySessions(sessions);
         } catch (error) {
             console.error("Error fetching interview sessions:", error);
             toast.error("Failed to fetch interview sessions");
-            setMySessions([]); // fallback về mảng rỗng nếu lỗi
+            setMySessions([]); // Fallback to empty array if error
         } finally {
             setIsLoading(false);
         }
     };
-
-    const interviewSessionId = mySessions?.map((s) => s.interviewSessionId);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -164,10 +162,6 @@ export default function HRCreateQuestionPage() {
         }
     };
 
-    // Remove handleChange, handleSubmit for inline form, use modal instead
-
-    // handleTemplateChange is not used
-
     const handleCreateQuestion = async (modalForm, { setSuccess, setForm }) => {
         setIsLoading(true);
         const tagId = Number(modalForm.tag);
@@ -205,7 +199,7 @@ export default function HRCreateQuestionPage() {
         e.preventDefault();
         setTemplateLoading(true);
         try {
-            // Chuẩn hóa dữ liệu gửi lên API
+            // Normalize data for API
             const payload = {
                 title: templateForm.title.trim(),
                 description: templateForm.description.trim(),
@@ -264,41 +258,37 @@ export default function HRCreateQuestionPage() {
             </h2>
             <div className="flex border-b mb-6 overflow-x-auto">
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${
-                        activeTab === "session"
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "session"
                             ? "border-b-2 border-blue-500 text-blue-500"
                             : "text-gray-500 dark:text-gray-400"
-                    }`}
+                        }`}
                     onClick={() => setActiveTab("session")}
                 >
                     Interview Template Management ({mySessions.length})
                 </button>
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${
-                        activeTab === "question"
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "question"
                             ? "border-b-2 border-blue-500 text-blue-500"
                             : "text-gray-500 dark:text-gray-400"
-                    }`}
+                        }`}
                     onClick={() => setActiveTab("question")}
                 >
                     Question Management
                 </button>
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${
-                        activeTab === "jd"
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "jd"
                             ? "border-b-2 border-blue-500 text-blue-500"
                             : "text-gray-500 dark:text-gray-400"
-                    }`}
+                        }`}
                     onClick={() => setActiveTab("jd")}
                 >
                     JD Upload
                 </button>
                 <button
-                    className={`py-2 px-4 font-medium whitespace-nowrap ${
-                        activeTab === "candidates"
+                    className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "candidates"
                             ? "border-b-2 border-blue-500 text-blue-500"
                             : "text-gray-500 dark:text-gray-400"
-                    }`}
+                        }`}
                     onClick={() => setActiveTab("candidates")}
                 >
                     Potential Candidates
