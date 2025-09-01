@@ -37,6 +37,9 @@ import InterviewSessionDetail from "./pages/main/interview/interviewSessionDetai
 import CompanyJdDetail from "./pages/main/companies/CompanyJdDetail";
 import CompareCV from "./components/jobDescription/CompareCV";
 import Transaction from "./pages/main/transaction/Transaction";
+import Info from "./pages/main/personal/Info";
+import Daily from "./pages/main/personal/Daily";
+import History from "./pages/main/personal/History";
 
 const ProtectedRoutes = ({ user }) => {
     if (!user) return <Navigate to="/" replace={true} />;
@@ -82,6 +85,11 @@ const App = () => {
                     {/* Analyze  */}
                     <Route path="analyze/CV" element={<Analyze />} />
                     <Route path="analyze/JD" element={<Analyze />} />
+
+                    {/* Profile */}
+                    <Route path="profile/info" element={<Profile />} />
+                    <Route path="profile/daily" element={<Profile />} />
+                    <Route path="profile/history" element={<Profile />} />
 
                     {/* Upload cv/jd */}
                     <Route path="upload" element={<UploadPage />} />
