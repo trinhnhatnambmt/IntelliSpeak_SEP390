@@ -13,7 +13,7 @@ export default function HRQuestionManagementTab({
     setSelectedDifficulty,
     tagsInMyQuestions,
     setShowCreateQuestionModal,
-    fetchMyQuestions, // Added prop
+    fetchMyQuestions,
 }) {
     const [showEditModal, setShowEditModal] = useState({ open: false, question: null });
     const [showEditConfirmModal, setShowEditConfirmModal] = useState({ open: false, question: null });
@@ -21,6 +21,8 @@ export default function HRQuestionManagementTab({
     const [companyName, setCompanyName] = useState("");
     const [formValues, setFormValues] = useState({});
     const [isFormChanged, setIsFormChanged] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1); // State for current page
+    const itemsPerPage = 5; // Number of questions per page
     const isDark = document.documentElement.classList.contains("dark");
 
     // Fetch HR application status to get company name
@@ -86,6 +88,10 @@ export default function HRQuestionManagementTab({
         await deleteQuestionAPI(showDeleteModal.question.questionId);
         setShowDeleteModal({ open: false, question: null });
         await fetchMyQuestions();
+        // Reset to first page if current page is empty after deletion
+        if (filteredQuestions.length <= (currentPage - 1) * itemsPerPage) {
+            setCurrentPage(1);
+        }
     };
 
     const filteredQuestions = myQuestions.filter((question) => {
@@ -107,6 +113,60 @@ export default function HRQuestionManagementTab({
         return matchesSearch && matchesTag && matchesDifficulty;
     });
 
+    // Pagination logic
+    const totalPages = Math.ceil(filteredQuestions.length / itemsPerPage);
+    const paginatedQuestions = filteredQuestions.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    // Handle page change
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+    // Generate page numbers for display
+    const getPageNumbers = () => {
+        const maxPagesToShow = 5;
+        const pages = [];
+        let startPage, endPage;
+
+        if (totalPages <= maxPagesToShow) {
+            // Show all pages if totalPages <= maxPagesToShow
+            startPage = 1;
+            endPage = totalPages;
+        } else {
+            // Calculate start and end pages to show maxPagesToShow pages
+            const halfPagesToShow = Math.floor(maxPagesToShow / 2);
+            startPage = Math.max(1, currentPage - halfPagesToShow);
+            endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+            // Adjust if endPage is less than maxPagesToShow
+            if (endPage - startPage + 1 < maxPagesToShow) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+        }
+
+        // Add page numbers
+        for (let i = startPage; i <= endPage; i++) {
+            pages.push(i);
+        }
+
+        // Add ellipsis if necessary
+        if (startPage > 1) {
+            pages.unshift("...");
+            pages.unshift(1);
+        }
+        if (endPage < totalPages) {
+            pages.push("...");
+            pages.push(totalPages);
+        }
+
+        return pages;
+    };
+
     return (
         <div className="space-y-4">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
@@ -117,12 +177,18 @@ export default function HRQuestionManagementTab({
                         placeholder="Search questions..."
                         className="px-3 py-1 border rounded-md dark:bg-neutral-800 dark:border-neutral-700 flex-grow"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setCurrentPage(1); // Reset to first page on search
+                        }}
                     />
                     <select
                         className="px-3 py-1 border rounded-md dark:bg-neutral-800 dark:border-neutral-700 text-sm"
                         value={selectedTagFilter}
-                        onChange={(e) => setSelectedTagFilter(e.target.value)}
+                        onChange={(e) => {
+                            setSelectedTagFilter(e.target.value);
+                            setCurrentPage(1); // Reset to first page on tag filter
+                        }}
                     >
                         <option value="">All Tags</option>
                         {tagsInMyQuestions.map((tag) => (
@@ -134,7 +200,10 @@ export default function HRQuestionManagementTab({
                     <select
                         className="px-3 py-1 border rounded-md dark:bg-neutral-800 dark:border-neutral-700 text-sm"
                         value={selectedDifficulty}
-                        onChange={(e) => setSelectedDifficulty(e.target.value)}
+                        onChange={(e) => {
+                            setSelectedDifficulty(e.target.value);
+                            setCurrentPage(1); // Reset to first page on difficulty filter
+                        }}
                     >
                         <option value="">All Difficulties</option>
                         <option value="EASY">Easy</option>
@@ -151,11 +220,16 @@ export default function HRQuestionManagementTab({
             </div>
             {filteredQuestions.length === 0 ? (
                 <div className="text-center py-10">
-                    {searchTerm ? (
+                    {searchTerm || selectedTagFilter || selectedDifficulty ? (
                         <>
                             <p className="text-gray-500 dark:text-gray-400">No matching questions found</p>
                             <button
-                                onClick={() => setSearchTerm("")}
+                                onClick={() => {
+                                    setSearchTerm("");
+                                    setSelectedTagFilter("");
+                                    setSelectedDifficulty("");
+                                    setCurrentPage(1);
+                                }}
                                 className="mt-4 px-4 py-2 bg-gray-100 dark:bg-neutral-700 rounded-md hover:bg-gray-200 dark:hover:bg-neutral-600"
                             >
                                 Clear Filter
@@ -174,99 +248,144 @@ export default function HRQuestionManagementTab({
                     )}
                 </div>
             ) : (
-                <div className="space-y-4">
-                    {filteredQuestions.map((question) => (
-                        <div
-                            key={question.questionId}
-                            className="p-4 border rounded-lg dark:border-neutral-700 hover:shadow-md transition-shadow relative"
-                        >
-                            <div className="flex justify-between items-start">
-                                <div className="flex-1">
-                                    <h4 className="font-medium text-lg">{question.title}</h4>
-                                    <p className="text-gray-600 dark:text-gray-300 mt-1 whitespace-pre-line">
-                                        {question.content}
-                                    </p>
-                                    <div className="flex flex-wrap items-center gap-3 mt-3">
-                                        <span
-                                            className={`px-2 py-1 text-xs rounded-full ${question.difficulty === "EASY"
-                                                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                                : question.difficulty === "MEDIUM"
-                                                    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                                                    : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                                                }`}
+                <>
+                    <div className="space-y-4">
+                        {paginatedQuestions.map((question) => (
+                            <div
+                                key={question.questionId}
+                                className="p-4 border rounded-lg dark:border-neutral-700 hover:shadow-md transition-shadow relative"
+                            >
+                                <div className="flex justify-between items-start">
+                                    <div className="flex-1">
+                                        <h4 className="font-medium text-lg">{question.title}</h4>
+                                        <p className="text-gray-600 dark:text-gray-300 mt-1 whitespace-pre-line">
+                                            {question.content}
+                                        </p>
+                                        <div className="flex flex-wrap items-center gap-3 mt-3">
+                                            <span
+                                                className={`px-2 py-1 text-xs rounded-full ${question.difficulty === "EASY"
+                                                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                                    : question.difficulty === "MEDIUM"
+                                                        ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                                                        : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                                                    }`}
+                                            >
+                                                {question.difficulty.charAt(0) + question.difficulty.slice(1).toLowerCase()}
+                                            </span>
+                                            {question.tags.length > 0 && (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {question.tags.map((tag) => (
+                                                        <span
+                                                            key={tag.tagId}
+                                                            className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full"
+                                                        >
+                                                            {tag.title}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {/* Three-dot menu with ⋮ icon */}
+                                    <Menu as="div" className="relative">
+                                        <Menu.Button className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-700">
+                                            <span className="text-gray-500 dark:text-gray-400 text-lg font-medium">⋮</span>
+                                        </Menu.Button>
+                                        <Transition
+                                            as={React.Fragment}
+                                            enter="transition ease-out duration-100"
+                                            enterFrom="transform opacity-0 scale-95"
+                                            enterTo="transform opacity-100 scale-100"
+                                            leave="transition ease-in duration-75"
+                                            leaveFrom="transform opacity-100 scale-100"
+                                            leaveTo="transform opacity-0 scale-95"
                                         >
-                                            {question.difficulty.charAt(0) + question.difficulty.slice(1).toLowerCase()}
-                                        </span>
-                                        {question.tags.length > 0 && (
-                                            <div className="flex flex-wrap gap-2">
-                                                {question.tags.map((tag) => (
-                                                    <span
-                                                        key={tag.tagId}
-                                                        className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full"
-                                                    >
-                                                        {tag.title}
-                                                    </span>
-                                                ))}
-                                            </div>
+                                            <Menu.Items className="absolute right-0 mt-2 w-32 origin-top-right bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-md shadow-lg z-10">
+                                                <Menu.Item>
+                                                    {({ active }) => (
+                                                        <button
+                                                            className={`w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 ${active ? "bg-gray-100 dark:bg-neutral-700" : ""}`}
+                                                            onClick={() => setShowEditModal({ open: true, question })}
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                    )}
+                                                </Menu.Item>
+                                                <Menu.Item>
+                                                    {({ active }) => (
+                                                        <button
+                                                            className={`w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 ${active ? "bg-gray-100 dark:bg-neutral-700" : ""}`}
+                                                            onClick={() => setShowDeleteModal({ open: true, question })}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    )}
+                                                </Menu.Item>
+                                            </Menu.Items>
+                                        </Transition>
+                                    </Menu>
+                                </div>
+                                {(question.suitableAnswer1 || question.suitableAnswer2) && (
+                                    <div className="mt-3 p-3 bg-gray-50 dark:bg-neutral-800 rounded">
+                                        <p className="font-medium">Sample Answer 1:</p>
+                                        <p className="mt-1 whitespace-pre-line">{question.suitableAnswer1}</p>
+                                        {question.suitableAnswer2 && (
+                                            <>
+                                                <p className="font-medium mt-3">Sample Answer 2:</p>
+                                                <p className="mt-1 whitespace-pre-line">{question.suitableAnswer2}</p>
+                                            </>
                                         )}
                                     </div>
-                                </div>
-                                {/* Three-dot menu with ⋮ icon */}
-                                <Menu as="div" className="relative">
-                                    <Menu.Button className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-700">
-                                        <span className="text-gray-500 dark:text-gray-400 text-lg font-medium">⋮</span>
-                                    </Menu.Button>
-                                    <Transition
-                                        as={React.Fragment}
-                                        enter="transition ease-out duration-100"
-                                        enterFrom="transform opacity-0 scale-95"
-                                        enterTo="transform opacity-100 scale-100"
-                                        leave="transition ease-in duration-75"
-                                        leaveFrom="transform opacity-100 scale-100"
-                                        leaveTo="transform opacity-0 scale-95"
-                                    >
-                                        <Menu.Items className="absolute right-0 mt-2 w-32 origin-top-right bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-md shadow-lg z-10">
-                                            <Menu.Item>
-                                                {({ active }) => (
-                                                    <button
-                                                        className={`w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 ${active ? "bg-gray-100 dark:bg-neutral-700" : ""
-                                                            }`}
-                                                        onClick={() => setShowEditModal({ open: true, question })}
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                )}
-                                            </Menu.Item>
-                                            <Menu.Item>
-                                                {({ active }) => (
-                                                    <button
-                                                        className={`w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 ${active ? "bg-gray-100 dark:bg-neutral-700" : ""
-                                                            }`}
-                                                        onClick={() => setShowDeleteModal({ open: true, question })}
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                )}
-                                            </Menu.Item>
-                                        </Menu.Items>
-                                    </Transition>
-                                </Menu>
+                                )}
                             </div>
-                            {(question.suitableAnswer1 || question.suitableAnswer2) && (
-                                <div className="mt-3 p-3 bg-gray-50 dark:bg-neutral-800 rounded">
-                                    <p className="font-medium">Sample Answer 1:</p>
-                                    <p className="mt-1 whitespace-pre-line">{question.suitableAnswer1}</p>
-                                    {question.suitableAnswer2 && (
-                                        <>
-                                            <p className="font-medium mt-3">Sample Answer 2:</p>
-                                            <p className="mt-1 whitespace-pre-line">{question.suitableAnswer2}</p>
-                                        </>
-                                    )}
-                                </div>
-                            )}
+                        ))}
+                    </div>
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                        <div className="flex justify-center items-center mt-6 gap-2">
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${currentPage === 1
+                                        ? "bg-gray-200 text-gray-400 dark:bg-neutral-700 dark:text-neutral-400 cursor-not-allowed"
+                                        : "bg-blue-500 text-white hover:bg-blue-600 dark:hover:bg-blue-700"
+                                    }`}
+                                aria-label="Previous page"
+                            >
+                                ← Previous
+                            </button>
+                            <div className="flex gap-1">
+                                {getPageNumbers().map((page, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => typeof page === "number" && handlePageChange(page)}
+                                        className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${page === currentPage
+                                                ? "bg-blue-500 text-white dark:bg-blue-600"
+                                                : typeof page === "number"
+                                                    ? "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-neutral-800 dark:text-gray-200 dark:hover:bg-neutral-700"
+                                                    : "text-gray-500 dark:text-gray-400 cursor-default"
+                                            }`}
+                                        disabled={typeof page !== "number"}
+                                        aria-label={typeof page === "number" ? `Page ${page}` : undefined}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                            </div>
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${currentPage === totalPages
+                                        ? "bg-gray-200 text-gray-400 dark:bg-neutral-700 dark:text-neutral-400 cursor-not-allowed"
+                                        : "bg-blue-500 text-white hover:bg-blue-600 dark:hover:bg-blue-700"
+                                    }`}
+                                aria-label="Next page"
+                            >
+                                Next →
+                            </button>
                         </div>
-                    ))}
-                </div>
+                    )}
+                </>
             )}
             {/* Edit Question Modal using CustomModal */}
             {showEditModal.open && showEditModal.question && (

@@ -7,8 +7,8 @@ import { uploadImageAPI, postForumAPI, getAllForumTopicsAPI } from "~/apis/index
 const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-    const [coverImagePreview, setCoverImagePreview] = useState(null);
-    const [coverImageFile, setCoverImageFile] = useState(null);
+    const [thumbnailPreview, setThumbnailPreview] = useState(null);
+    const [thumbnailFile, setThumbnailFile] = useState(null);
     const [topics, setTopics] = useState([]);
     const [selectedTopicId, setSelectedTopicId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -30,18 +30,18 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
         if (!isOpen) {
             setTitle("");
             setContent("");
-            setCoverImagePreview(null);
-            setCoverImageFile(null);
+            setThumbnailPreview(null);
+            setThumbnailFile(null);
             setSelectedTopicId(null);
         }
     }, [isOpen]);
 
-    // Handle image upload
-    const handleImageUpload = (e) => {
+    // Handle thumbnail upload
+    const handleThumbnailUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setCoverImagePreview(URL.createObjectURL(file));
-            setCoverImageFile(file);
+            setThumbnailPreview(URL.createObjectURL(file));
+            setThumbnailFile(file);
         }
     };
 
@@ -102,25 +102,39 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
 
             const { div, imgTags, base64Images } = extractBase64ImagesFromHTML(content);
 
-            const allImages = [];
-            if (coverImageFile) allImages.push(coverImageFile);
             const contentImagesAsFiles = base64Images.map((base64, i) =>
                 convertBase64ToFile(base64, `content_img_${i}.png`)
             );
-            allImages.push(...contentImagesAsFiles);
+            const allImages = [...(thumbnailFile ? [thumbnailFile] : []), ...contentImagesAsFiles];
 
             let uploadedUrls = [];
             if (allImages.length > 0) {
                 uploadedUrls = await uploadImageAPI(allImages);
             }
 
-            imgTags.forEach((img) => img.remove());
+            // Split uploaded URLs: first URL is thumbnail (if thumbnailFile exists), rest are content images
+            const thumbnailUrl = thumbnailFile ? uploadedUrls[0] : null;
+            const contentImageUrls = thumbnailFile ? uploadedUrls.slice(1) : uploadedUrls;
+
+            imgTags.forEach((img, index) => {
+                if (contentImageUrls[index]) {
+                    img.src = contentImageUrls[index];
+                    // Apply consistent width to content images
+                    img.style.width = "100%"; // Set to 100% to match container width
+                    img.style.maxWidth = "600px"; // Optional: cap max width
+                    img.style.height = "auto"; // Maintain aspect ratio
+                    img.classList.add("content-image"); // Add class for additional styling
+                } else {
+                    img.remove();
+                }
+            });
             const newContent = div.innerHTML;
 
             const payload = {
                 title,
                 content: newContent,
-                images: uploadedUrls,
+                thumbnail: thumbnailUrl,
+                images: contentImageUrls,
                 forumTopicTypeId: Number(selectedTopicId),
             };
 
@@ -136,8 +150,8 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
             // Reset form and close modal
             setTitle("");
             setContent("");
-            setCoverImagePreview(null);
-            setCoverImageFile(null);
+            setThumbnailPreview(null);
+            setThumbnailFile(null);
             setSelectedTopicId(null);
 
             // Notify parent component
@@ -182,19 +196,19 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
                 </button>
                 <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">✍️ Create New Post</h1>
 
-                {/* Cover Image */}
+                {/* Thumbnail */}
                 <div className="mb-6">
-                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Cover Image</label>
+                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Thumbnail Image</label>
                     <input
                         type="file"
                         accept="image/*"
-                        onChange={handleImageUpload}
+                        onChange={handleThumbnailUpload}
                         className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer dark:file:bg-blue-500 dark:hover:file:bg-blue-600"
                     />
-                    {coverImagePreview && (
+                    {thumbnailPreview && (
                         <img
-                            src={coverImagePreview}
-                            alt="Preview"
+                            src={thumbnailPreview}
+                            alt="Thumbnail Preview"
                             className="mt-4 rounded-lg max-h-64 object-cover w-full border border-gray-300 dark:border-neutral-700"
                         />
                     )}

@@ -163,7 +163,7 @@ const MyPostPage = () => {
             </div>
             <Link to={`/main/singlePostPage/${post.postId}`}>
                 <img
-                    src={post.image?.[0] || "https://placehold.co/800x300?text=No+Image"}
+                    src={post?.thumbnail || "https://placehold.co/800x300?text=No+Image"}
                     alt="Post banner"
                     className="w-full h-56 object-cover"
                 />

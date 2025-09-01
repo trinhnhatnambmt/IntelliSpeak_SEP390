@@ -7,8 +7,8 @@ import { uploadImageAPI, updateForumPostAPI, getAllForumTopicsAPI } from "~/apis
 const EditPostModal = ({ isOpen, onClose, post, onPostUpdated }) => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-    const [coverImagePreview, setCoverImagePreview] = useState(null);
-    const [coverImageFile, setCoverImageFile] = useState(null);
+    const [thumbnailPreview, setThumbnailPreview] = useState(null);
+    const [thumbnailFile, setThumbnailFile] = useState(null);
     const [topics, setTopics] = useState([]);
     const [selectedTopicId, setSelectedTopicId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -17,8 +17,8 @@ const EditPostModal = ({ isOpen, onClose, post, onPostUpdated }) => {
         if (isOpen && post) {
             setTitle(post.title || "");
             setContent(post.content || "");
-            setCoverImagePreview(post.image?.[0] || null);
-            setCoverImageFile(null);
+            setThumbnailPreview(post.thumbnail || null);
+            setThumbnailFile(null);
             setSelectedTopicId(post.forumTopicTypeId || post.forumTopicType?.id || null);
         }
     }, [isOpen, post]);
@@ -33,12 +33,12 @@ const EditPostModal = ({ isOpen, onClose, post, onPostUpdated }) => {
         }
     }, [isOpen]);
 
-    // Handle image upload
-    const handleImageUpload = (e) => {
+    // Handle thumbnail upload
+    const handleThumbnailUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setCoverImagePreview(URL.createObjectURL(file));
-            setCoverImageFile(file);
+            setThumbnailPreview(URL.createObjectURL(file));
+            setThumbnailFile(file);
         }
     };
 
@@ -48,13 +48,17 @@ const EditPostModal = ({ isOpen, onClose, post, onPostUpdated }) => {
         div.innerHTML = htmlContent;
         const imgTags = div.querySelectorAll("img");
         const base64Images = [];
+        const existingImages = [];
+
         imgTags.forEach((img) => {
             const src = img.src;
             if (src.startsWith("data:image")) {
                 base64Images.push(src);
+            } else {
+                existingImages.push({ src, element: img });
             }
         });
-        return { div, imgTags, base64Images };
+        return { div, imgTags, base64Images, existingImages };
     };
 
     // Convert base64 to file
@@ -81,54 +85,67 @@ const EditPostModal = ({ isOpen, onClose, post, onPostUpdated }) => {
         const loadingToastId = toast.loading("Updating post...");
         try {
             // Process content images
-            const { div, imgTags, base64Images } = extractBase64ImagesFromHTML(content);
-            imgTags.forEach((img) => img.remove());
-            const newContent = div.innerHTML;
-            // Prepare images array for API
-            let imagesPayload = [];
-            if (post.image && post.image.length > 0) {
-                imagesPayload = post.image.map(img => ({
-                    id: img.id,
-                    url: img.url
-                }));
-            }
-            // Handle new cover image upload if changed
-            let uploadedUrls = [];
-            if (coverImageFile) {
-                uploadedUrls = await uploadImageAPI([coverImageFile]);
-                if (uploadedUrls.length > 0) {
-                    if (imagesPayload.length > 0) {
-                        imagesPayload[0] = { url: uploadedUrls[0] };
-                    } else {
-                        imagesPayload.push({ url: uploadedUrls[0] });
-                    }
-                }
-            }
-            // Handle content images (base64 to upload)
+            const { div, imgTags, base64Images, existingImages } = extractBase64ImagesFromHTML(content);
+
             const contentImagesAsFiles = base64Images.map((base64, i) =>
                 convertBase64ToFile(base64, `content_img_${i}.png`)
             );
-            if (contentImagesAsFiles.length > 0) {
-                const contentImageUrls = await uploadImageAPI(contentImagesAsFiles);
-                contentImageUrls.forEach(url => {
-                    imagesPayload.push({ url });
-                });
+            const allImages = [...(thumbnailFile ? [thumbnailFile] : []), ...contentImagesAsFiles];
+
+            let uploadedUrls = [];
+            if (allImages.length > 0) {
+                uploadedUrls = await uploadImageAPI(allImages);
             }
+
+            // Split uploaded URLs: first URL is thumbnail (if thumbnailFile exists), rest are content images
+            const thumbnailUrl = thumbnailFile ? uploadedUrls[0] : post.thumbnail;
+            const contentImageUrls = thumbnailFile ? uploadedUrls.slice(1) : uploadedUrls;
+
+            // Preserve existing images and their IDs
+            let imagesPayload = post.images && Array.isArray(post.images)
+                ? post.images.map(img => ({
+                    id: img.id,
+                    url: img.url
+                }))
+                : [];
+
+            // Update content images with new URLs and apply consistent width
+            let urlIndex = 0;
+            imgTags.forEach((img) => {
+                const isBase64 = img.src.startsWith("data:image");
+                if (isBase64 && contentImageUrls[urlIndex]) {
+                    img.src = contentImageUrls[urlIndex];
+                    imagesPayload.push({ url: contentImageUrls[urlIndex] });
+                    urlIndex++;
+                }
+                // Apply consistent width to all images (existing and new)
+                img.style.width = "100%";
+                img.style.maxWidth = "600px";
+                img.style.height = "auto";
+                img.classList.add("content-image");
+            });
+
+            const newContent = div.innerHTML;
+
             // Prepare the final payload
             const payload = {
                 title,
                 content: newContent,
-                forumTopicTypeId: Number(selectedTopicId),
+                thumbnail: thumbnailUrl,
                 images: imagesPayload,
+                forumTopicTypeId: Number(selectedTopicId),
             };
+
             // Call API to update post
             await updateForumPostAPI(post.postId, payload);
+
             toast.update(loadingToastId, {
                 render: "Post updated successfully!",
                 type: "success",
                 isLoading: false,
                 autoClose: 3000,
             });
+
             if (onPostUpdated) onPostUpdated();
             onClose();
         } catch (err) {
@@ -165,19 +182,19 @@ const EditPostModal = ({ isOpen, onClose, post, onPostUpdated }) => {
                     </svg>
                 </button>
                 <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Edit Post</h2>
-                {/* Cover Image */}
+                {/* Thumbnail */}
                 <div className="mb-6">
-                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Cover Image</label>
+                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-neutral-300">Thumbnail Image</label>
                     <input
                         type="file"
                         accept="image/*"
-                        onChange={handleImageUpload}
+                        onChange={handleThumbnailUpload}
                         className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer dark:file:bg-blue-500 dark:hover:file:bg-blue-600"
                     />
-                    {coverImagePreview && (
+                    {thumbnailPreview && (
                         <img
-                            src={coverImagePreview}
-                            alt="Preview"
+                            src={thumbnailPreview}
+                            alt="Thumbnail Preview"
                             className="mt-4 rounded-lg max-h-64 object-cover w-full border border-gray-300 dark:border-neutral-700"
                         />
                     )}

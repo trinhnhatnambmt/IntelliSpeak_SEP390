@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { updateQuestionTemplateAPI, getAllTag, updateInterviewSessionThumbnailAPI } from "~/apis/index";
+import { updateQuestionTemplateAPI, getTagsOfTopic, updateInterviewSessionThumbnailAPI } from "~/apis/index";
 import CustomModal from "../../../components/CustomModal";
 import { uploadImageAPI } from "~/apis/index";
 import { toast } from "react-toastify";
@@ -22,6 +22,9 @@ export default function HREditSessionModal({
     });
     const [pendingThumbnail, setPendingThumbnail] = useState(null); // Store uploaded thumbnail URL temporarily
     const [thumbnailFile, setThumbnailFile] = useState(null); // Store the selected file for preview
+    const [allTags, setAllTags] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [thumbnailUploading, setThumbnailUploading] = useState(false);
 
     // Compare current form with original session to disable Save button if unchanged
     const isUnchanged = useMemo(() => {
@@ -43,22 +46,32 @@ export default function HREditSessionModal({
         );
     }, [form, session]);
 
-    const [loading, setLoading] = useState(false);
-    const [thumbnailUploading, setThumbnailUploading] = useState(false);
-    const [allTags, setAllTags] = useState([]);
-
+    // Fetch tags when topicId changes or modal opens
     useEffect(() => {
         const fetchTags = async () => {
-            try {
-                const res = await getAllTag();
-                setAllTags(res || []);
-            } catch {
+            if (!form.topicId) {
                 setAllTags([]);
-                toast.error("Failed to fetch tags");
+                return;
+            }
+            try {
+                const res = await getTagsOfTopic(form.topicId);
+                const tagsData = res.data || res || [];
+                setAllTags(tagsData);
+                // Filter tagIds to only include tags valid for the current topic
+                setForm((prev) => ({
+                    ...prev,
+                    tagIds: prev.tagIds.filter((id) =>
+                        tagsData.some((tag) => String(tag.tagId || tag.id) === id)
+                    ),
+                }));
+            } catch (err) {
+                console.error("Error fetching tags for topic:", err);
+                setAllTags([]);
+                toast.error("Failed to fetch tags for the selected topic");
             }
         };
         fetchTags();
-    }, []);
+    }, [form.topicId]);
 
     // Handle file selection for thumbnail
     const handleThumbnailSelect = async (e) => {
@@ -90,7 +103,6 @@ export default function HREditSessionModal({
         }
         setThumbnailUploading(true);
         try {
-            // Log the data before updating
             console.log("Thumbnail update data:", {
                 sessionId: session.interviewSessionId,
                 thumbnailUrl: pendingThumbnail,
@@ -126,12 +138,18 @@ export default function HREditSessionModal({
             setForm((prev) => ({
                 ...prev,
                 [name]: value,
+                // Reset tagIds when topic changes to ensure only valid tags are selected
+                ...(name === "topicId" ? { tagIds: [] } : {}),
             }));
         }
     };
 
     const handleUpdate = async (e) => {
         e.preventDefault();
+        if (!form.tagIds.length) {
+            toast.error("Please select at least one tag.");
+            return;
+        }
         setLoading(true);
         try {
             const payload = {
@@ -141,6 +159,7 @@ export default function HREditSessionModal({
                 difficulty: form.difficulty,
                 tagIds: form.tagIds.map((id) => Number(id)),
             };
+            console.log("Update session payload:", payload);
             await updateQuestionTemplateAPI(session.interviewSessionId, payload);
             toast.success("Interview session updated successfully!");
             if (onUpdated) await onUpdated();
@@ -157,11 +176,6 @@ export default function HREditSessionModal({
 
     // Detect dark mode
     const isDark = document.documentElement.classList.contains("dark");
-
-    // Find the current topic to display as default
-    const currentTopic = topics.find(
-        (t) => String(t.topicId || t.id) === String(session?.topicId)
-    );
 
     return (
         <CustomModal
@@ -278,51 +292,50 @@ export default function HREditSessionModal({
                         required
                         disabled={loading}
                     >
-                        <option value="">
-                            {currentTopic ? currentTopic.title : "Select topic"}
-                        </option>
-                        {topics
-                            .filter(
-                                (t) =>
-                                    String(t.topicId || t.id) !==
-                                    String(session?.topicId)
-                            )
-                            .map((t) => (
-                                <option
-                                    key={t.topicId || t.id}
-                                    value={t.topicId || t.id}
-                                >
-                                    {t.title}
-                                </option>
-                            ))}
+                        <option value="" disabled>Select topic</option>
+                        {topics.map((t) => (
+                            <option
+                                key={t.topicId || t.id}
+                                value={t.topicId || t.id}
+                            >
+                                {t.title}
+                            </option>
+                        ))}
                     </select>
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
                         Tags <span className="text-red-500">*</span>
                     </label>
-                    <div className="flex flex-wrap gap-2">
-                        {allTags.map((tag) => (
-                            <label
-                                key={tag.tagId || tag.id}
-                                className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]"
-                            >
-                                <input
-                                    type="checkbox"
-                                    name="tagIds"
-                                    value={tag.tagId || tag.id}
-                                    checked={form.tagIds.includes(
-                                        String(tag.tagId || tag.id)
-                                    )}
-                                    onChange={handleChange}
-                                    disabled={loading}
-                                />
-                                <span className="text-xs text-gray-700 dark:text-gray-200">
-                                    {tag.title}
-                                </span>
-                            </label>
-                        ))}
-                    </div>
+                    {form.topicId ? (
+                        <div className="flex flex-wrap gap-2">
+                            {allTags.map((tag) => (
+                                <label
+                                    key={tag.tagId || tag.id}
+                                    className="flex items-center gap-1 bg-gray-50 dark:bg-[#23232a] px-2 py-1 rounded border border-gray-200 dark:border-[#333]"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        name="tagIds"
+                                        value={tag.tagId || tag.id}
+                                        checked={form.tagIds.includes(
+                                            String(tag.tagId || tag.id)
+                                        )}
+                                        onChange={handleChange}
+                                        disabled={loading}
+                                        className="cursor-pointer"
+                                    />
+                                    <span className="text-xs text-gray-700 dark:text-gray-200">
+                                        {tag.title}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-sm text-gray-500 dark:text-gray-300">
+                            Please select a topic to view available tags.
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex gap-3 mt-4">

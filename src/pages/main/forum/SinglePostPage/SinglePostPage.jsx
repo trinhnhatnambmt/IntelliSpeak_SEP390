@@ -63,7 +63,8 @@ const SinglePostPage = () => {
       setCommentContent("");
       await fetchComments();
     } catch (err) {
-      toast.error("Failed to submit comment!");
+      // toast.error("Failed to submit comment!");
+      console.log("Failed to submit comment!", err);
     } finally {
       setIsCommentLoading(false);
     }
@@ -84,7 +85,7 @@ const SinglePostPage = () => {
           <div className="flex items-center mb-4">
             <img
               src={
-                post.userAvatar ||
+                post.avatar ||
                 "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
               }
               className="w-10 h-10 rounded-full"
@@ -129,10 +130,10 @@ const SinglePostPage = () => {
             {parse(post.content || "")}
           </div>
 
-          {/* Post Images (bỏ ảnh đầu tiên đã là cover) */}
-          {post.image && post.image.length > 1 && (
+          {/* Post Images ( không bỏ ảnh đầu tiên đã bỏ là cover) */}
+          {/* {post.image && post.image.length > 0 && (
             <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {post.image.slice(1).map((imgUrl, index) => (
+              {post.image.map((imgUrl, index) => (
                 <img
                   key={index}
                   src={imgUrl}
@@ -141,7 +142,7 @@ const SinglePostPage = () => {
                 />
               ))}
             </div>
-          )}
+          )} */}
 
           {/* Comment Section */}
           <div ref={commentRef} className="mt-10">
@@ -225,7 +226,7 @@ const SinglePostPage = () => {
         </div>
 
         {/* Right Sidebar */}
-        <RightSideBar />
+        {/* <RightSideBar /> */}
       </div>
     </div>
   );
