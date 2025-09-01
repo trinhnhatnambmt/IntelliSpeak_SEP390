@@ -159,7 +159,7 @@ export default function HRCreateSessionModal({
                         placeholder="Enter session description"
                     />
                 </div>
-                <div>
+                {/* <div>
                     <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
                         Total Questions <span className="text-red-500">*</span>
                     </label>
@@ -174,7 +174,7 @@ export default function HRCreateSessionModal({
                         min={1}
                         placeholder="Enter total questions"
                     />
-                </div>
+                </div> */}
                 <div>
                     <label className="block mb-1 font-medium text-gray-700 dark:text-gray-100">
                         Difficulty <span className="text-red-500">*</span>
@@ -257,11 +257,10 @@ export default function HRCreateSessionModal({
                     </button>
                     <button
                         type="submit"
-                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition ${
-                            templateLoading
+                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition ${templateLoading
                                 ? "opacity-50 cursor-not-allowed"
                                 : ""
-                        }`}
+                            }`}
                         disabled={templateLoading}
                     >
                         {templateLoading ? "Processing..." : "Create"}

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { createInterviewSessionAPI, getAllTag } from "~/apis/index"; // thêm getAllTag
+import { updateQuestionTemplateAPI, getAllTag, updateInterviewSessionThumbnailAPI } from "~/apis/index";
 import CustomModal from "../../../components/CustomModal";
 import { uploadImageAPI } from "~/apis/index";
 import { toast } from "react-toastify";
@@ -16,14 +16,14 @@ export default function HREditSessionModal({
         title: session?.title || "",
         description: session?.description || "",
         interviewSessionThumbnail: session?.interviewSessionThumbnail || "",
-        totalQuestion: session?.totalQuestion || "",
         difficulty: session?.difficulty || "",
         topicId: session?.topicId || "",
         tagIds: session?.tags?.map((t) => String(t.tagId)) || [],
-        questionIds: session?.questionIds?.map((q) => String(q)) || [],
     });
+    const [pendingThumbnail, setPendingThumbnail] = useState(null); // Store uploaded thumbnail URL temporarily
+    const [thumbnailFile, setThumbnailFile] = useState(null); // Store the selected file for preview
 
-    // So sánh form hiện tại với session gốc
+    // Compare current form with original session to disable Save button if unchanged
     const isUnchanged = useMemo(() => {
         if (!session) return true;
         const compareArr = (a, b) =>
@@ -34,22 +34,15 @@ export default function HREditSessionModal({
         return (
             form.title === (session.title || "") &&
             form.description === (session.description || "") &&
-            form.interviewSessionThumbnail ===
-                (session.interviewSessionThumbnail || "") &&
-            String(form.totalQuestion) ===
-                String(session.totalQuestion || "") &&
             form.difficulty === (session.difficulty || "") &&
             String(form.topicId) === String(session.topicId || "") &&
             compareArr(
                 form.tagIds,
                 session.tags?.map((t) => String(t.tagId)) || []
-            ) &&
-            compareArr(
-                form.questionIds,
-                session.questionIds?.map((q) => String(q)) || []
             )
         );
     }, [form, session]);
+
     const [loading, setLoading] = useState(false);
     const [thumbnailUploading, setThumbnailUploading] = useState(false);
     const [allTags, setAllTags] = useState([]);
@@ -61,27 +54,59 @@ export default function HREditSessionModal({
                 setAllTags(res || []);
             } catch {
                 setAllTags([]);
+                toast.error("Failed to fetch tags");
             }
         };
         fetchTags();
     }, []);
 
-    // Handle image upload for thumbnail
-    const handleThumbnailUpload = async (e) => {
+    // Handle file selection for thumbnail
+    const handleThumbnailSelect = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
         setThumbnailUploading(true);
         try {
             const urls = await uploadImageAPI([file]);
-            if (urls && urls.length > 0) {
-                setForm((prev) => ({
-                    ...prev,
-                    interviewSessionThumbnail: urls[0],
-                }));
-                toast.success("Upload successful!");
+            if (urls && Array.isArray(urls) && urls.length > 0 && typeof urls[0] === "string") {
+                setPendingThumbnail(urls[0]); // Store the uploaded URL
+                setThumbnailFile(URL.createObjectURL(file)); // Create a local URL for preview
+                toast.success("Thumbnail uploaded successfully! Click 'Update Thumbnail' to save.");
+            } else {
+                throw new Error("Invalid image upload response");
             }
         } catch (err) {
-            toast.error("Upload failed!");
+            console.error("Error uploading thumbnail:", err);
+            toast.error("Failed to upload thumbnail!");
+        } finally {
+            setThumbnailUploading(false);
+        }
+    };
+
+    // Handle thumbnail update submission
+    const handleThumbnailUpdate = async () => {
+        if (!pendingThumbnail) {
+            toast.error("No thumbnail selected to update!");
+            return;
+        }
+        setThumbnailUploading(true);
+        try {
+            // Log the data before updating
+            console.log("Thumbnail update data:", {
+                sessionId: session.interviewSessionId,
+                thumbnailUrl: pendingThumbnail,
+            });
+            await updateInterviewSessionThumbnailAPI(session.interviewSessionId, pendingThumbnail);
+            setForm((prev) => ({
+                ...prev,
+                interviewSessionThumbnail: pendingThumbnail,
+            }));
+            setPendingThumbnail(null); // Clear pending thumbnail after successful update
+            setThumbnailFile(null); // Clear local preview
+            toast.success("Thumbnail updated successfully!");
+            if (onUpdated) await onUpdated(); // Refresh session data
+        } catch (err) {
+            console.error("Error updating thumbnail:", err);
+            toast.error("Failed to update thumbnail!");
         } finally {
             setThumbnailUploading(false);
         }
@@ -97,14 +122,6 @@ export default function HREditSessionModal({
                     ? [...prev.tagIds, tagId]
                     : prev.tagIds.filter((id) => id !== tagId),
             }));
-        } else if (name === "questionIds") {
-            const qId = value;
-            setForm((prev) => ({
-                ...prev,
-                questionIds: checked
-                    ? [...prev.questionIds, qId]
-                    : prev.questionIds.filter((id) => id !== qId),
-            }));
         } else {
             setForm((prev) => ({
                 ...prev,
@@ -117,21 +134,22 @@ export default function HREditSessionModal({
         e.preventDefault();
         setLoading(true);
         try {
-            // TODO: Gọi API update session ở đây, ví dụ:
-            // await updateInterviewSessionAPI(session.interviewSessionId, payload);
-            // Nếu không có API update thì có thể dùng createInterviewSessionAPI như mẫu
-            await createInterviewSessionAPI({
-                ...form,
-                totalQuestion: Number(form.totalQuestion),
+            const payload = {
                 topicId: Number(form.topicId),
+                title: form.title.trim(),
+                description: form.description.trim(),
+                difficulty: form.difficulty,
                 tagIds: form.tagIds.map((id) => Number(id)),
-                questionIds: form.questionIds.map((id) => Number(id)),
-                interviewSessionId: session.interviewSessionId,
-            });
+            };
+            await updateQuestionTemplateAPI(session.interviewSessionId, payload);
+            toast.success("Interview session updated successfully!");
             if (onUpdated) await onUpdated();
             onClose();
         } catch (err) {
-            // TODO: show toast error
+            console.error("Error updating interview session:", err);
+            toast.error(
+                err.response?.data?.message || "Failed to update interview session!"
+            );
         } finally {
             setLoading(false);
         }
@@ -139,6 +157,12 @@ export default function HREditSessionModal({
 
     // Detect dark mode
     const isDark = document.documentElement.classList.contains("dark");
+
+    // Find the current topic to display as default
+    const currentTopic = topics.find(
+        (t) => String(t.topicId || t.id) === String(session?.topicId)
+    );
+
     return (
         <CustomModal
             open={open}
@@ -152,15 +176,15 @@ export default function HREditSessionModal({
             className="hr-edit-session-modal"
         >
             <form onSubmit={handleUpdate} className="space-y-4">
-                {/* Thumbnail upload on top, only upload, no URL input */}
+                {/* Thumbnail upload */}
                 <div>
                     <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
                         Thumbnail <span className="text-red-500">*</span>
                     </label>
-                    {form.interviewSessionThumbnail && !thumbnailUploading && (
+                    {(form.interviewSessionThumbnail || thumbnailFile) && !thumbnailUploading && (
                         <div className="flex justify-center">
                             <img
-                                src={form.interviewSessionThumbnail}
+                                src={thumbnailFile || form.interviewSessionThumbnail}
                                 alt="Thumbnail Preview"
                                 className="w-1/2 max-h-64 object-contain rounded border border-gray-200 dark:border-[#333] mb-3"
                             />
@@ -170,7 +194,7 @@ export default function HREditSessionModal({
                         <input
                             type="file"
                             accept="image/*"
-                            onChange={handleThumbnailUpload}
+                            onChange={handleThumbnailSelect}
                             disabled={loading || thumbnailUploading}
                             className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer dark:file:bg-blue-500 dark:hover:file:bg-blue-600"
                         />
@@ -180,6 +204,17 @@ export default function HREditSessionModal({
                             </span>
                         )}
                     </div>
+                    {pendingThumbnail && (
+                        <button
+                            type="button"
+                            onClick={handleThumbnailUpdate}
+                            disabled={loading || thumbnailUploading}
+                            className={`mt-2 py-2 px-4 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition ${loading || thumbnailUploading ? "opacity-50 cursor-not-allowed" : ""
+                                }`}
+                        >
+                            {thumbnailUploading ? "Updating..." : "Update Thumbnail"}
+                        </button>
+                    )}
                 </div>
                 <div>
                     <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
@@ -209,22 +244,6 @@ export default function HREditSessionModal({
                         required
                         disabled={loading}
                         placeholder="Enter session description"
-                    />
-                </div>
-                <div>
-                    <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
-                        Total Questions <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        type="number"
-                        name="totalQuestion"
-                        value={form.totalQuestion}
-                        onChange={handleChange}
-                        className="w-full p-2 border border-gray-200 dark:border-neutral-700 rounded-lg dark:bg-neutral-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        required
-                        disabled={loading}
-                        min={1}
-                        placeholder="Enter total questions"
                     />
                 </div>
                 <div>
@@ -259,15 +278,23 @@ export default function HREditSessionModal({
                         required
                         disabled={loading}
                     >
-                        <option value="">Select topic</option>
-                        {topics.map((t) => (
-                            <option
-                                key={t.topicId || t.id}
-                                value={t.topicId || t.id}
-                            >
-                                {t.title}
-                            </option>
-                        ))}
+                        <option value="">
+                            {currentTopic ? currentTopic.title : "Select topic"}
+                        </option>
+                        {topics
+                            .filter(
+                                (t) =>
+                                    String(t.topicId || t.id) !==
+                                    String(session?.topicId)
+                            )
+                            .map((t) => (
+                                <option
+                                    key={t.topicId || t.id}
+                                    value={t.topicId || t.id}
+                                >
+                                    {t.title}
+                                </option>
+                            ))}
                     </select>
                 </div>
                 <div>
@@ -309,11 +336,8 @@ export default function HREditSessionModal({
                     </button>
                     <button
                         type="submit"
-                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition ${
-                            loading || isUnchanged
-                                ? "opacity-50 cursor-not-allowed"
-                                : ""
-                        }`}
+                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition ${loading || isUnchanged ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                         disabled={loading || isUnchanged}
                     >
                         {loading ? "Saving..." : "Save"}

@@ -76,6 +76,30 @@ export const getMyQuestionsAPI = async () => {
     );
     return response.data;
 };
+
+// ==== UPDATE QUESTION TEMPLATE SESSION ====
+export const updateQuestionTemplateAPI = async (sessionId, data) => {
+    const response = await authorizedAxiosInstance.put(
+        `${API_ROOT}/interview-sessions/update/${sessionId}`,
+        data
+    );
+    return response.data;
+};
+
+// ==== UPDATE INTERVIEW SESSION THUMBNAIL ====
+export const updateInterviewSessionThumbnailAPI = async (sessionId, thumbnailUrl) => {
+    const response = await authorizedAxiosInstance.put(
+        `${API_ROOT}/interview-sessions/thumbnail/${sessionId}`,
+        thumbnailUrl,
+        {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+    );
+    return response.data;
+};
+
 // ==== TAGS ====
 export const getAllTag = async () => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/tag`);

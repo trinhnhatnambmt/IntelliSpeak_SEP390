@@ -82,7 +82,7 @@ const SecuritySettings = () => {
             </section>
 
             <Modal
-                title="Reset Password"
+                title="Change Password"
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
                 footer={[
