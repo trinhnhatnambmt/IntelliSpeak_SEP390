@@ -79,7 +79,7 @@ const LineChart = ({ dailyScores }) => {
         },
         scales: {
             y: {
-                min: 1,
+                min: 0,
                 max: 10,
                 ticks: {
                     stepSize: 1,

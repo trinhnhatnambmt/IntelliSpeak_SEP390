@@ -619,6 +619,24 @@ export const updateQuestionAPI = async (questionId, data) => {
 
 // ==== DELETE QUESTION ====
 export const deleteQuestionAPI = async (questionId) => {
-    const response = await authorizedAxiosInstance.delete(`${API_ROOT}/question/${questionId}`);
+    const response = await authorizedAxiosInstance.delete(
+        `${API_ROOT}/question/${questionId}`
+    );
+    return response.data;
+};
+
+export const forgotPassAPI = async (data) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/auth/forgot-password`,
+        data
+    );
+    return response.data;
+};
+
+export const resetPassAPI = async (data, token) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/auth/reset-password?token=${token}`,
+        data
+    );
     return response.data;
 };

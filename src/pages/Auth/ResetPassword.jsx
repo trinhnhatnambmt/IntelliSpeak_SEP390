@@ -1,62 +1,52 @@
-import { Eye, EyeOff } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-    authThumb,
-    squarelogo,
-    intellispeakdark,
-    intellispeak,
-} from "~/assets";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { intellispeak, intellispeakdark, squarelogo } from "~/assets";
 import {
-    EMAIL_RULE,
-    EMAIL_RULE_MESSAGE,
     FIELD_REQUIRED_MESSAGE,
+    PASSWORD_CONFIRMATION_MESSAGE,
+    PASSWORD_RULE,
+    PASSWORD_RULE_MESSAGE,
 } from "~/utils/validators";
+import { Eye, EyeOffIcon } from "lucide-react";
 import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
-import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { loginUserAPI } from "~/redux/user/userSlice";
+import { resetPassAPI } from "~/apis";
 
-const LoginForm = () => {
+const ResetPassword = () => {
     const [isVisible, setIsVisible] = useState(false);
+    const [isVisible2, setIsVisible2] = useState(false);
     const [logo, setLogo] = useState(intellispeak);
+    const { search } = useLocation();
+    const token = new URLSearchParams(search).get("token");
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     const {
         register,
         handleSubmit,
         formState: { errors },
+        watch,
     } = useForm();
 
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-        const handleChange = (e) => {
-            setLogo(e.matches ? intellispeakdark : intellispeak);
-        };
-        handleChange(mediaQuery);
-        mediaQuery.addEventListener("change", handleChange);
-        return () => mediaQuery.removeEventListener("change", handleChange);
-    }, []);
-
-    const submitLogin = (data) => {
-        const { email, password } = data;
+    const submitResetPass = (data) => {
+        const { password, password_Confirmation } = data;
         toast
             .promise(
-                dispatch(
-                    loginUserAPI({
-                        email,
-                        password,
-                    })
+                resetPassAPI(
+                    {
+                        new_password: password,
+                        repeat_password: password_Confirmation,
+                    },
+                    token
                 ),
                 {
-                    pending: "Signing into your account...",
+                    pending: "Please wait...",
                 }
             )
             .then((res) => {
                 if (!res.error) {
-                    navigate("/main");
+                    toast.success(res?.message);
+                    navigate("/login");
                 }
             });
     };
@@ -64,12 +54,10 @@ const LoginForm = () => {
     return (
         <div className="relative mx-auto">
             <div className="flex justify-between">
-                {/* FORM SECTION */}
                 <form
-                    onSubmit={handleSubmit(submitLogin)}
+                    onSubmit={handleSubmit(submitResetPass)}
                     className="relative flex flex-col gap-5 justify-center items-center w-1/2 bg-gray-50 dark:bg-gray-900"
                 >
-                    {/* Logo */}
                     <div
                         className="absolute top-5 left-5 cursor-pointer flex items-center gap-2"
                         onClick={() => navigate("/")}
@@ -90,55 +78,29 @@ const LoginForm = () => {
                             className="h-10 w-auto hidden dark:block"
                         />
                     </div>
-
                     <h1 className="font-bold text-4xl text-gray-800 dark:text-white">
-                        Login
+                        Reset password
                     </h1>
 
-                    {/* Email Field */}
-                    <div className="w-96 mx-auto">
-                        <label
-                            htmlFor="email"
-                            className="text-sm font-normal text-gray-700 dark:text-gray-300"
-                        >
-                            Email
-                        </label>
-                        <div className="relative mt-1">
-                            <input
-                                id="email"
-                                placeholder="Enter your email"
-                                className="w-full outline-none focus-within:border-blue-500 rounded-md p-2 border-[1px] border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                                {...register("email", {
-                                    required: FIELD_REQUIRED_MESSAGE,
-                                    pattern: {
-                                        value: EMAIL_RULE,
-                                        message: EMAIL_RULE_MESSAGE,
-                                    },
-                                })}
-                            />
-                            <FieldErrorAlert
-                                errors={errors}
-                                fieldName={"email"}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Password Field */}
                     <div className="w-96 mx-auto">
                         <label
                             htmlFor="pass"
                             className="text-sm font-normal text-gray-700 dark:text-gray-300"
                         >
-                            Password
+                            New password
                         </label>
                         <div className="relative mt-1">
                             <input
                                 type={isVisible ? "text" : "password"}
                                 id="pass"
-                                placeholder="Enter your password"
+                                placeholder="Password"
                                 className="w-full outline-none focus-within:border-blue-500 rounded-md p-2 border-[1px] border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                 {...register("password", {
                                     required: FIELD_REQUIRED_MESSAGE,
+                                    pattern: {
+                                        value: PASSWORD_RULE,
+                                        message: PASSWORD_RULE_MESSAGE,
+                                    },
                                 })}
                             />
                             <div
@@ -148,7 +110,7 @@ const LoginForm = () => {
                                 {isVisible ? (
                                     <Eye size={22} />
                                 ) : (
-                                    <EyeOff size={22} />
+                                    <EyeOffIcon size={22} />
                                 )}
                             </div>
                             <FieldErrorAlert
@@ -157,27 +119,52 @@ const LoginForm = () => {
                             />
                         </div>
                     </div>
-
-                    <div className="w-96 mx-auto flex items-center">
-                        <Link
-                            to="/forgotPass"
-                            className="ml-auto font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm"
+                    <div className="w-96 mx-auto">
+                        <label
+                            htmlFor="confirmPass"
+                            className="text-sm font-normal text-gray-700 dark:text-gray-300"
                         >
-                            Forgot your password?
-                        </Link>
+                            Confirm new password
+                        </label>
+                        <div className="relative mt-1">
+                            <input
+                                type={isVisible2 ? "text" : "password"}
+                                id="confirmPass"
+                                placeholder="Confirm Password"
+                                className="w-full outline-none focus-within:border-blue-500 rounded-md p-2 border-[1px] border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                {...register("password_Confirmation", {
+                                    validate: (value) => {
+                                        if (value === watch("password")) {
+                                            return true;
+                                        }
+                                        return PASSWORD_CONFIRMATION_MESSAGE;
+                                    },
+                                })}
+                            />
+                            <div
+                                className="absolute top-3 right-4 text-2xl text-gray-500 dark:text-gray-400 cursor-pointer"
+                                onClick={() => setIsVisible2((prev) => !prev)}
+                            >
+                                {isVisible2 ? (
+                                    <Eye size={22} />
+                                ) : (
+                                    <EyeOffIcon size={22} />
+                                )}
+                            </div>
+                            <FieldErrorAlert
+                                errors={errors}
+                                fieldName={"password_Confirmation"}
+                            />
+                        </div>
                     </div>
-
-                    {/* Submit */}
                     <div className="w-96 mx-auto mt-4">
                         <button
                             type="submit"
                             className="interceptor-loading w-full bg-blue-600 hover:bg-blue-700 text-white border border-blue-700 dark:border-blue-800 py-2 rounded-md font-medium transition duration-500 cursor-pointer"
                         >
-                            Sign In
+                            Reset password
                         </button>
                     </div>
-
-                    {/* OR Divider */}
                     <div className="w-96 mx-auto my-4 flex items-center">
                         <div className="flex-grow h-[0.5px] bg-gray-300 dark:bg-gray-600" />
                         <span className="px-3 text-sm text-gray-500 dark:text-gray-400">
@@ -186,35 +173,33 @@ const LoginForm = () => {
                         <div className="flex-grow h-[0.5px] bg-gray-300 dark:bg-gray-600" />
                     </div>
 
-                    {/* Register Redirect */}
                     <div className="w-96 mx-auto my-4 flex items-center">
                         <span className="px-3 text-sm text-gray-600 dark:text-gray-400">
-                            Don’t have an account?{" "}
+                            Back to
                             <Link
-                                to="/register"
+                                to="/login"
                                 className="underline ml-1 font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                             >
-                                Sign Up
+                                Login
                             </Link>
                         </span>
                     </div>
                 </form>
 
-                {/* IMAGE SECTION */}
                 <div className="w-1/2 relative">
                     <img
-                        src={authThumb}
+                        src="https://images.unsplash.com/photo-1592659762303-90081d34b277?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                         alt="Authentication Background"
                         className="w-full h-screen object-cover"
                     />
-                    <div className="absolute bottom-10 left-10 flex flex-col text-white bg-opacity-40">
+                    <div className="absolute bottom-10 left-5 flex flex-col text-white bg-n-9/40 backdrop-blur border border-n-1/10 rounded-2xl p-5">
                         <h2 className="text-3xl font-bold mb-2">
-                            ✨ Kickstart Your Career Journey ✨
+                            ✨Join the Future of Interviewing✨
                         </h2>
                         <p className="text-lg max-w-xl text-gray-200 ml-12">
-                            Log in to enter an AI-powered virtual interview
-                            space, tailored to you, and connect with global
-                            recruiters.
+                            Create a free account to start practicing your
+                            interview skills, receive instant AI feedback, and
+                            discover career opportunities tailored to you.
                         </p>
                     </div>
                 </div>
@@ -223,4 +208,4 @@ const LoginForm = () => {
     );
 };
 
-export default LoginForm;
+export default ResetPassword;
