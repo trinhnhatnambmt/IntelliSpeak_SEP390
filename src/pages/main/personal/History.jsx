@@ -7,6 +7,7 @@ const History = () => {
 
     useEffect(() => {
         getAllInterviewHistory().then((res) => {
+            console.log(res);
             setInterviews(res);
         });
     }, []);
@@ -26,6 +27,7 @@ const History = () => {
                             startedAt={interview?.startedAt}
                             totalQuestion={interview?.totalQuestion}
                             interviewHistoryId={interview?.interviewHistoryId}
+                            startedAt={interview?.startedAt}
                         />
                     ))}
                 </div>
