@@ -617,6 +617,14 @@ export const updateQuestionAPI = async (questionId, data) => {
     return response.data;
 };
 
+export const updataQuestionInDetailAPI = async (id, data) => {
+    const response = await authorizedAxiosInstance.put(
+        `${API_ROOT}/question/${id}`,
+        data
+    );
+    return response.data;
+};
+
 // ==== DELETE QUESTION ====
 export const deleteQuestionAPI = async (questionId) => {
     const response = await authorizedAxiosInstance.delete(
@@ -637,6 +645,20 @@ export const resetPassAPI = async (data, token) => {
     const response = await authorizedAxiosInstance.post(
         `${API_ROOT}/auth/reset-password?token=${token}`,
         data
+    );
+    return response.data;
+};
+
+export const deleteJdFromHrAPI = async (companyJdId) => {
+    const response = await authorizedAxiosInstance.delete(
+        `${API_ROOT}/api/jd/company/${companyJdId}`
+    );
+    return response.data;
+};
+
+export const deleteInterviewSessionFromHrAPI = async (id) => {
+    const response = await authorizedAxiosInstance.delete(
+        `${API_ROOT}/interview-sessions/delete/${id}`
     );
     return response.data;
 };

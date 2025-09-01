@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { deleteQuestionFromSessionAPI, getDetailSessionAPI } from "~/apis";
+import {
+    deleteQuestionFromSessionAPI,
+    getDetailSessionAPI,
+    updataQuestionInDetailAPI,
+} from "~/apis";
 import { Clock, BarChart, Tag, Layers, MoreVertical } from "lucide-react";
 import { toast } from "react-toastify";
+import { Dropdown, Menu, Button, Modal, Form, Input, Select } from "antd";
+
+const { Option } = Select;
 
 const InterviewSessionDetail = () => {
     const { id } = useParams();
     const [session, setSession] = useState(null);
-    const [showDelete, setShowDelete] = useState({});
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [editingQuestion, setEditingQuestion] = useState(null);
+    const [form] = Form.useForm();
 
     const interviewSessionId = session?.interviewSessionId;
 
     useEffect(() => {
         getDetailSessionAPI(id).then((res) => setSession(res));
     }, [id]);
-
-    const toggleDeleteButton = (questionId) => {
-        setShowDelete((prev) => ({
-            ...prev,
-            [questionId]: !prev[questionId],
-        }));
-    };
 
     const handleDelete = (questionId) => {
         deleteQuestionFromSessionAPI(interviewSessionId, questionId).then(
@@ -30,6 +32,54 @@ const InterviewSessionDetail = () => {
             }
         );
     };
+
+    const handleEdit = (question) => {
+        setEditingQuestion(question);
+        form.setFieldsValue({
+            title: question.title,
+            content: question.content,
+            suitableAnswer1: question.suitableAnswer1,
+            suitableAnswer2: question.suitableAnswer2,
+            difficulty: question.difficulty,
+            source: question.source,
+        });
+        setIsModalVisible(true);
+    };
+
+    const handleModalOk = () => {
+        form.validateFields().then((values) => {
+            updataQuestionInDetailAPI(editingQuestion.questionId, values)
+                .then((res) => {
+                    toast.success("Question updated successfully!");
+                    setIsModalVisible(false);
+                    form.resetFields();
+                    getDetailSessionAPI(id).then((res) => setSession(res));
+                })
+                .catch(() => {
+                    toast.error("Failed to update question.");
+                });
+        });
+    };
+
+    const handleModalCancel = () => {
+        setIsModalVisible(false);
+        form.resetFields();
+    };
+
+    const menu = (question) => (
+        <Menu>
+            <Menu.Item key="edit" onClick={() => handleEdit(question)}>
+                Edit Question
+            </Menu.Item>
+            <Menu.Item
+                key="delete"
+                onClick={() => handleDelete(question.questionId)}
+                style={{ color: "red" }}
+            >
+                Delete Question
+            </Menu.Item>
+        </Menu>
+    );
 
     if (!session)
         return (
@@ -106,56 +156,164 @@ const InterviewSessionDetail = () => {
             </div>
 
             {/* Questions Section */}
-            <div className="bg-gray-800 rounded-2xl shadow-xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-4">
+            <div className="bg-gray-800 rounded-2xl shadow-xl p-8">
+                <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+                    <Layers size={24} className="text-blue-400 mr-2" />
                     Questions
                 </h2>
-                <div className="space-y-6">
-                    {session.questions.map((q) => (
+                <div className="space-y-8">
+                    {session.questions.map((q, index) => (
                         <div
                             key={q.questionId}
-                            className="border border-gray-700 rounded-xl p-4 hover:shadow-lg transition-all bg-gray-700/50 relative"
+                            className="border border-gray-600 rounded-xl p-6 bg-gradient-to-br from-gray-700 to-gray-800 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                         >
-                            <div className="flex justify-between items-start">
-                                <h3 className="text-lg font-bold text-white mb-2">
-                                    {q.title}
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-xl font-semibold text-blue-200">
+                                    {index + 1}. {q.title}
                                 </h3>
-                                <button
-                                    onClick={() =>
-                                        toggleDeleteButton(q.questionId)
-                                    }
-                                    className="text-gray-400 hover:text-white transition"
-                                    aria-label="More options"
+                                <Dropdown
+                                    overlay={() => menu(q)}
+                                    trigger={["click"]}
                                 >
-                                    <MoreVertical size={20} />
-                                </button>
+                                    <Button
+                                        type="text"
+                                        icon={<MoreVertical size={24} />}
+                                        className="text-gray-300 hover:text-blue-400 transition-transform duration-200 hover:scale-110"
+                                        aria-label="More options"
+                                    />
+                                </Dropdown>
                             </div>
-                            <p className="text-gray-300 mb-3">{q.content}</p>
-                            <div className="text-sm text-gray-400">
+                            <p className="text-gray-200 text-base leading-relaxed mb-4">
+                                {q.content}
+                            </p>
+                            <div className="text-sm text-gray-300 space-y-2">
                                 <p>
-                                    <strong>Answer 1:</strong>{" "}
+                                    <strong className="text-blue-300">
+                                        Answer 1:
+                                    </strong>{" "}
                                     {q.suitableAnswer1}
                                 </p>
                                 <p>
-                                    <strong>Answer 2:</strong>{" "}
+                                    <strong className="text-blue-300">
+                                        Answer 2:
+                                    </strong>{" "}
                                     {q.suitableAnswer2}
                                 </p>
                             </div>
-                            <div className="mt-3 text-xs text-gray-500">
-                                Difficulty: {q.difficulty} | Source: {q.source}
+                            <div className="mt-4 text-xs text-gray-400 flex gap-4">
+                                <span className="flex items-center gap-1">
+                                    <BarChart
+                                        size={14}
+                                        className="text-blue-400"
+                                    />
+                                    Difficulty:{" "}
+                                    <span className="font-medium">
+                                        {q.difficulty}
+                                    </span>
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <Tag size={14} className="text-blue-400" />
+                                    Source:{" "}
+                                    <span className="font-medium">
+                                        {q.source}
+                                    </span>
+                                </span>
                             </div>
-                            {showDelete[q.questionId] && (
-                                <button
-                                    onClick={() => handleDelete(q.questionId)}
-                                    className="mt-3 bg-red-600 text-white px-3 py-1 rounded-md text-sm hover:bg-red-700 transition"
-                                >
-                                    Delete Question
-                                </button>
-                            )}
                         </div>
                     ))}
                 </div>
             </div>
+
+            {/* Edit Question Modal */}
+            <Modal
+                title="Edit Question"
+                visible={isModalVisible}
+                onOk={handleModalOk}
+                onCancel={handleModalCancel}
+                okText="Save"
+                cancelText="Cancel"
+            >
+                <Form form={form} layout="vertical">
+                    <Form.Item
+                        name="title"
+                        label="Title"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please enter the title",
+                            },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="content"
+                        label="Content"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please enter the content",
+                            },
+                        ]}
+                    >
+                        <Input.TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item
+                        name="suitableAnswer1"
+                        label="Suitable Answer 1"
+                        rules={[
+                            {
+                                required: true,
+                                message:
+                                    "Please enter the first suitable answer",
+                            },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="suitableAnswer2"
+                        label="Suitable Answer 2"
+                        rules={[
+                            {
+                                required: true,
+                                message:
+                                    "Please enter the second suitable answer",
+                            },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="difficulty"
+                        label="Difficulty"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please select the difficulty",
+                            },
+                        ]}
+                    >
+                        <Select>
+                            <Option value="EASY">Easy</Option>
+                            <Option value="MEDIUM">Medium</Option>
+                            <Option value="HARD">Hard</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name="source"
+                        label="Source"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please enter the source",
+                            },
+                        ]}
+                    >
+                        <Input disabled />
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 };
