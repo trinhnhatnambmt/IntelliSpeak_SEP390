@@ -1,10 +1,10 @@
-export const FIELD_REQUIRED_MESSAGE = "Khu vực này là bắt buộc";
+export const FIELD_REQUIRED_MESSAGE = "This field is required";
 export const EMAIL_RULE = /^\S+@\S+\.\S+$/;
-export const EMAIL_RULE_MESSAGE = "Email không hợp lệ. (example@haha.com)";
+export const EMAIL_RULE_MESSAGE = "Invalid email address. (example@haha.com)";
 export const PASSWORD_RULE = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d\W]{8,256}$/;
 export const PASSWORD_RULE_MESSAGE =
-    "Password phải có ít nhất 8 ký tự, bao gồm chữ cái và số.";
-export const PASSWORD_CONFIRMATION_MESSAGE = "Mật khẩu không trùng khớp!";
+    "Password must be at least 8 characters long and include both letters and numbers.";
+export const PASSWORD_CONFIRMATION_MESSAGE = "Passwords do not match!";
 
 // Liên quan đến Validate File
 export const LIMIT_COMMON_FILE_SIZE = 20 * 1024 * 1024; // 20MB

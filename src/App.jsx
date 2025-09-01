@@ -123,6 +123,8 @@ const App = () => {
             <Route element={<PublicRoutes user={currentUser} />}>
                 <Route path="/login" element={<Auth />} />
                 <Route path="/register" element={<Auth />} />
+                <Route path="/forgotPass" element={<Auth />} />
+                <Route path="/reset-password" element={<Auth />} />
             </Route>
         </Routes>
     );

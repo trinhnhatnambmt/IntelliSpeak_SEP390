@@ -64,9 +64,10 @@ const Hero = () => {
                 </h1>
 
                 <p className="md:text-xl relative z-10 pointer-events-none text-n-6 dark:text-white-50 transition-colors duration-500">
-                    Boost your confidence in every interview 🧑‍🎓 – Practice your
-                    speaking skills, record answers, and get feedback to improve
-                    your voice, clarity, pace, and delivery
+                    Boost your confidence in every IT interview 💻 – Practice
+                    coding challenges and technical questions, record your
+                    answers, and get feedback to improve your problem-solving,
+                    clarity, pace, and delivery
                 </p>
             </div>
             <div className="flex items-center gap-4">
