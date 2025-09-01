@@ -1,7 +1,13 @@
-import { SquareChartGantt } from "lucide-react";
+import { Popconfirm, Progress } from "antd";
+import { Delete, SquareChartGantt, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { addJDForCompanyAPI, getJdCompanyOfHR } from "~/apis";
+import {
+    addJDForCompanyAPI,
+    deleteJdFromHrAPI,
+    getJdCompanyOfHR,
+} from "~/apis";
 import FileUploader from "~/components/FileUploader";
 
 export default function HRJDUploadTab() {
@@ -9,6 +15,9 @@ export default function HRJDUploadTab() {
     const [statusText, setStatusText] = useState("");
     const [file, setFile] = useState(null);
     const [jobDescriptions, setJobDescriptions] = useState([]);
+    const [progress, setProgress] = useState(0);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchJobDescriptions();
@@ -31,20 +40,36 @@ export default function HRJDUploadTab() {
         const reqData = new FormData();
         reqData.append("file", file);
 
-        addJDForCompanyAPI(reqData).then((res) => {
-            if (!res.error) {
-                toast.success("Uploading JD successfully!");
-                setIsProcessing(false);
-                setStatusText("");
-                setFile(null);
-                fetchJobDescriptions();
-            } else {
-                // Xử lý lỗi nếu cần
-                setIsProcessing(false);
-                setStatusText("");
-                toast.error("Failed to upload JD.");
+        let fakeProgress = 0;
+        const interval = setInterval(() => {
+            fakeProgress += Math.floor(Math.random() * 15) + 5;
+            if (fakeProgress >= 95) {
+                fakeProgress = 95;
+                clearInterval(interval);
             }
-        });
+            setProgress(fakeProgress);
+        }, 500);
+
+        addJDForCompanyAPI(reqData)
+            .then((res) => {
+                if (!res.error) {
+                    toast.success("Uploading JD successfully!");
+                    setIsProcessing(false);
+                    setStatusText("");
+                    setFile(null);
+                    fetchJobDescriptions();
+                } else {
+                    setIsProcessing(false);
+                    setStatusText("");
+                    toast.error("Failed to upload JD.");
+                }
+            })
+            .catch((error) => {
+                clearInterval(interval);
+                setProgress(0);
+                navigate("/main/hr/create-question");
+                window.location.reload();
+            });
     };
 
     const handleSubmit = (e) => {
@@ -53,11 +78,32 @@ export default function HRJDUploadTab() {
         handleAnalyze({ file });
     };
 
+    const handleDeleteJD = (id) => {
+        deleteJdFromHrAPI(id).then((res) => {
+            toast.success(res?.message);
+            fetchJobDescriptions();
+        });
+    };
+
     return (
         <div className="space-y-6">
             {isProcessing ? (
                 <div className="mt-10">
-                    <h2 className="text-2xl">{statusText}</h2>
+                    <div className="flex flex-col items-center mt-6">
+                        <Progress
+                            percent={progress}
+                            percentPosition={{
+                                align: "center",
+                                type: "inner",
+                            }}
+                            size={[800, 15]}
+                            strokeColor={{
+                                "0%": "#108ee9",
+                                "100%": "#87d068",
+                            }}
+                            style={{ marginLeft: "80px" }}
+                        />
+                    </div>
                     <img
                         src="/images/resume-scan.gif"
                         className="mt-[-100px] w-[500px] ml-[180px] relative z-10"
@@ -89,7 +135,6 @@ export default function HRJDUploadTab() {
                         </button>
                     </form>
 
-                    {/* Phần hiển thị danh sách JD */}
                     <div className="mt-10">
                         <h2 className="text-2xl font-medium mb-4">
                             Your Job Descriptions
@@ -99,29 +144,58 @@ export default function HRJDUploadTab() {
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {jobDescriptions.map((jd) => {
-                                    // Lấy link ảnh đầu tiên từ linkToJd (nếu có nhiều trang, tách bằng ';')
                                     const firstImageLink = jd.linkToJd
                                         .split(";")[0]
                                         .trim();
+
                                     return (
-                                        <a
+                                        <div
                                             key={jd.companyJdId}
-                                            href={firstImageLink}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="block border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-200"
+                                            className="relative border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-200"
                                         >
-                                            <img
-                                                src={firstImageLink}
-                                                alt={jd.jobTitle}
-                                                className="w-full h-48 object-cover"
-                                            />
-                                            <div className="p-4">
-                                                <h3 className="text-lg font-semibold">
-                                                    {jd.jobTitle}
-                                                </h3>
+                                            <Popconfirm
+                                                title="Delete JD"
+                                                description="Are you sure to delete this job description?"
+                                                onConfirm={() =>
+                                                    handleDeleteJD(
+                                                        jd.companyJdId
+                                                    )
+                                                }
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <button className="absolute cursor-pointer top-2 right-2 bg-red-500 hover:bg-red-600 text-white text-sm px-1  rounded-full shadow-md transition">
+                                                    <X className="w-[15px]" />
+                                                </button>
+                                            </Popconfirm>
+
+                                            <div
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="block"
+                                            >
+                                                <img
+                                                    src={firstImageLink}
+                                                    alt={jd.jobTitle}
+                                                    className="w-full h-48 object-cover"
+                                                />
+                                                <div className="p-4">
+                                                    <Link
+                                                        to={firstImageLink}
+                                                        className="text-lg font-semibold"
+                                                    >
+                                                        {jd.jobTitle}
+                                                    </Link>
+                                                    {jd.createdAt && (
+                                                        <p className="text-sm text-gray-500">
+                                                            {new Date(
+                                                                jd.createdAt
+                                                            ).toLocaleDateString()}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
-                                        </a>
+                                        </div>
                                     );
                                 })}
                             </div>

@@ -1,6 +1,8 @@
+import { Popconfirm } from "antd";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getDetailSessionAPI } from "~/apis";
+import { toast } from "react-toastify";
+import { deleteInterviewSessionFromHrAPI, getDetailSessionAPI } from "~/apis";
 
 export default function HRInterviewTemplateTab({
     mySessions,
@@ -11,9 +13,17 @@ export default function HRInterviewTemplateTab({
     setOpenSessionMenuId,
     openSessionMenuId,
     setEditSessionModal,
-    setDeleteSessionModal,
 }) {
     const navigate = useNavigate();
+
+    const handleDeleteInterviewSession = (id) => {
+        deleteInterviewSessionFromHrAPI(id).then((res) => {
+            if (!res.error) {
+                toast.success(res?.message);
+                fetchMySessions();
+            }
+        });
+    };
 
     return (
         <div className="space-y-4">
@@ -82,7 +92,7 @@ export default function HRInterviewTemplateTab({
                                     </p>
                                     <div className="flex flex-wrap gap-2 mt-2 items-center">
                                         <span className="px-2 py-1 bg-gray-50 dark:bg-neutral-800 rounded text-xs text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-neutral-700">
-                                            Total Questions:{" "}
+                                            Limit questions:{" "}
                                             {session.totalQuestion}
                                         </span>
                                         <span
@@ -158,18 +168,21 @@ export default function HRInterviewTemplateTab({
                                             >
                                                 Edit
                                             </button>
-                                            <button
-                                                className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-700 rounded transition"
-                                                onClick={() => {
-                                                    setOpenSessionMenuId(null);
-                                                    setDeleteSessionModal({
-                                                        open: true,
-                                                        session,
-                                                    });
-                                                }}
+                                            <Popconfirm
+                                                title="Delete interview session"
+                                                description="Are you sure to delete this  interview session?"
+                                                onConfirm={() =>
+                                                    handleDeleteInterviewSession(
+                                                        session.interviewSessionId
+                                                    )
+                                                }
+                                                okText="Yes"
+                                                cancelText="No"
                                             >
-                                                Delete
-                                            </button>
+                                                <button className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-50 dark:hover:bg-neutral-800 rounded transition">
+                                                    Delete
+                                                </button>
+                                            </Popconfirm>
                                         </div>
                                     )}
                                 </div>
