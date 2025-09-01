@@ -59,7 +59,7 @@ export default function WalletProfile() {
         {
             icon: <BarChart3 className="w-5 h-5" />,
             label: "Profile",
-            href: "/main/profile",
+            href: "/main/profile/info",
         },
 
         {
