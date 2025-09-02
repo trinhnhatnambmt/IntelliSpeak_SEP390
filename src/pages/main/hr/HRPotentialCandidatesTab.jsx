@@ -14,21 +14,26 @@ export default function HRPotentialCandidatesTab() {
     const [isActionLoading, setIsActionLoading] = useState(false);
 
     // Detect dark mode
-    const isDark = document.documentElement.classList.contains('dark');
+    const isDark = document.documentElement.classList.contains("dark");
 
     // Fetch submitted CVs from API
     const fetchCandidates = async () => {
         setIsLoading(true);
         try {
             const res = await getHrSubmittedCvAPI();
+            console.log(res.data);
             const candidatesData = res.data.map((cv, index) => {
-                const cvLinks = cv.memberCvLinkToCv.split(";").filter(url => url);
-                const firstCvLink = cvLinks[0] || "https://via.placeholder.com/600x800?text=CV+Preview";
+                const cvLinks = cv.memberCvLinkToCv
+                    .split(";")
+                    .filter((url) => url);
+                const firstCvLink =
+                    cvLinks[0] ||
+                    "https://via.placeholder.com/600x800?text=CV+Preview";
 
                 return {
                     id: cv.cvSubmissionId || index + 1,
                     submissionId: cv.cvSubmissionId,
-                    name: cv.userName || cv.userEmail.split("@")[0].replace(/\./g, " "),
+                    name: `${cv.firstName} ${cv.lastName}`,
                     email: cv.userEmail,
                     phone: cv.userPhone || "N/A",
                     position: cv.jobTitle || "N/A",
@@ -36,7 +41,12 @@ export default function HRPotentialCandidatesTab() {
                     cvImg: firstCvLink,
                     cvLinks: cvLinks,
                     cvTitle: cv.memberCvTitle || "Untitled CV",
-                    note: cv.isViewed === null ? "Not Viewed" : cv.isViewed ? "Accepted" : "Rejected",
+                    note:
+                        cv.isViewed === null
+                            ? "Not Viewed"
+                            : cv.isViewed
+                            ? "Accepted"
+                            : "Rejected",
                 };
             });
             setCandidates(candidatesData);
@@ -81,10 +91,11 @@ export default function HRPotentialCandidatesTab() {
     }, []);
 
     // Filter candidates based on search term
-    const filtered = candidates.filter(c =>
-        c.name.toLowerCase().includes(search.toLowerCase()) ||
-        c.position.toLowerCase().includes(search.toLowerCase()) ||
-        c.email.toLowerCase().includes(search.toLowerCase())
+    const filtered = candidates.filter(
+        (c) =>
+            c.name.toLowerCase().includes(search.toLowerCase()) ||
+            c.position.toLowerCase().includes(search.toLowerCase()) ||
+            c.email.toLowerCase().includes(search.toLowerCase())
     );
 
     return (
@@ -96,7 +107,7 @@ export default function HRPotentialCandidatesTab() {
                     className="w-full md:w-1/2 px-3 py-2 border rounded-md bg-white dark:bg-[#23232a] border-gray-200 dark:border-[#333] text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     placeholder="Search by name, email, or position..."
                     value={search}
-                    onChange={e => setSearch(e.target.value)}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
             </div>
             {isLoading ? (
@@ -104,22 +115,30 @@ export default function HRPotentialCandidatesTab() {
                     <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 dark:border-blue-400"></div>
                 </div>
             ) : filtered.length === 0 ? (
-                <div className="text-gray-500 dark:text-gray-400">No candidates found.</div>
+                <div className="text-gray-500 dark:text-gray-400">
+                    No candidates found.
+                </div>
             ) : (
                 <ul className="space-y-3">
-                    {filtered.map(candidate => (
+                    {filtered.map((candidate) => (
                         <li
                             key={candidate.id}
                             className="p-4 border rounded-lg bg-white dark:bg-[#23232a] border-gray-200 dark:border-[#333] flex flex-col md:flex-row md:items-center md:justify-between gap-2"
                         >
                             <div>
-                                <div className="font-medium text-gray-900 dark:text-gray-100">{candidate.name}</div>
-                                <div className="text-sm text-gray-500 dark:text-gray-400">{candidate.position}</div>
+                                <div className="font-medium text-gray-900 dark:text-gray-100">
+                                    {candidate.name}
+                                </div>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">
+                                    {candidate.position}
+                                </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">
                                     {candidate.email} | {candidate.phone}
                                 </div>
                                 {candidate.note && (
-                                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">{candidate.note}</div>
+                                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                        {candidate.note}
+                                    </div>
                                 )}
                             </div>
                             <div className="flex items-center gap-3">
@@ -128,23 +147,45 @@ export default function HRPotentialCandidatesTab() {
                                     onClick={() => {
                                         setCVImgUrls(candidate.cvLinks);
                                         setCvTitle(candidate.cvTitle);
-                                        setSelectedSubmissionId(candidate.submissionId);
+                                        setSelectedSubmissionId(
+                                            candidate.submissionId
+                                        );
                                         setShowCVModal(true);
                                     }}
                                 >
                                     View CV
                                 </button>
                                 <button
-                                    className={`px-2 py-1 text-xs bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-100 rounded hover:bg-green-200 dark:hover:bg-green-700 ${isActionLoading || candidate.note !== "Not Viewed" ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    onClick={() => handleApprove(candidate.submissionId)}
-                                    disabled={isActionLoading || candidate.note !== "Not Viewed"}
+                                    className={`px-2 py-1 text-xs bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-100 rounded hover:bg-green-200 dark:hover:bg-green-700 ${
+                                        isActionLoading ||
+                                        candidate.note !== "Not Viewed"
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                    onClick={() =>
+                                        handleApprove(candidate.submissionId)
+                                    }
+                                    disabled={
+                                        isActionLoading ||
+                                        candidate.note !== "Not Viewed"
+                                    }
                                 >
                                     Approve
                                 </button>
                                 <button
-                                    className={`px-2 py-1 text-xs bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-100 rounded hover:bg-red-200 dark:hover:bg-red-700 ${isActionLoading || candidate.note !== "Not Viewed" ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    onClick={() => handleReject(candidate.submissionId)}
-                                    disabled={isActionLoading || candidate.note !== "Not Viewed"}
+                                    className={`px-2 py-1 text-xs bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-100 rounded hover:bg-red-200 dark:hover:bg-red-700 ${
+                                        isActionLoading ||
+                                        candidate.note !== "Not Viewed"
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                    onClick={() =>
+                                        handleReject(candidate.submissionId)
+                                    }
+                                    disabled={
+                                        isActionLoading ||
+                                        candidate.note !== "Not Viewed"
+                                    }
                                 >
                                     Reject
                                 </button>
@@ -156,27 +197,69 @@ export default function HRPotentialCandidatesTab() {
             <CustomModal
                 open={showCVModal}
                 onClose={() => setShowCVModal(false)}
-                title={<span className="text-xl font-bold text-gray-800 dark:text-white">Candidate CV</span>}
-                backgroundColor={isDark ? '#111112' : '#fff'}
+                title={
+                    <span className="text-xl font-bold text-gray-800 dark:text-white">
+                        Candidate CV
+                    </span>
+                }
+                backgroundColor={isDark ? "#111112" : "#fff"}
                 className="dark:bg-[#23232a]"
                 bodyStyle={{ padding: "1rem", overflowY: "auto" }}
             >
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">CV Title: {cvTitle}</h3>
+                        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                            CV Title: {cvTitle}
+                        </h3>
                         {selectedSubmissionId && (
                             <div className="flex gap-3">
                                 <button
-                                    className={`px-3 py-1 bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-100 rounded text-xs hover:bg-green-200 dark:hover:bg-green-700 ${isActionLoading || candidates.find(c => c.submissionId === selectedSubmissionId)?.note !== "Not Viewed" ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    onClick={() => handleApprove(selectedSubmissionId)}
-                                    disabled={isActionLoading || candidates.find(c => c.submissionId === selectedSubmissionId)?.note !== "Not Viewed"}
+                                    className={`px-3 py-1 bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-100 rounded text-xs hover:bg-green-200 dark:hover:bg-green-700 ${
+                                        isActionLoading ||
+                                        candidates.find(
+                                            (c) =>
+                                                c.submissionId ===
+                                                selectedSubmissionId
+                                        )?.note !== "Not Viewed"
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                    onClick={() =>
+                                        handleApprove(selectedSubmissionId)
+                                    }
+                                    disabled={
+                                        isActionLoading ||
+                                        candidates.find(
+                                            (c) =>
+                                                c.submissionId ===
+                                                selectedSubmissionId
+                                        )?.note !== "Not Viewed"
+                                    }
                                 >
                                     Approve
                                 </button>
                                 <button
-                                    className={`px-3 py-1 bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-100 rounded text-xs hover:bg-red-200 dark:hover:bg-red-700 ${isActionLoading || candidates.find(c => c.submissionId === selectedSubmissionId)?.note !== "Not Viewed" ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    onClick={() => handleReject(selectedSubmissionId)}
-                                    disabled={isActionLoading || candidates.find(c => c.submissionId === selectedSubmissionId)?.note !== "Not Viewed"}
+                                    className={`px-3 py-1 bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-100 rounded text-xs hover:bg-red-200 dark:hover:bg-red-700 ${
+                                        isActionLoading ||
+                                        candidates.find(
+                                            (c) =>
+                                                c.submissionId ===
+                                                selectedSubmissionId
+                                        )?.note !== "Not Viewed"
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                    onClick={() =>
+                                        handleReject(selectedSubmissionId)
+                                    }
+                                    disabled={
+                                        isActionLoading ||
+                                        candidates.find(
+                                            (c) =>
+                                                c.submissionId ===
+                                                selectedSubmissionId
+                                        )?.note !== "Not Viewed"
+                                    }
                                 >
                                     Reject
                                 </button>
@@ -194,7 +277,9 @@ export default function HRPotentialCandidatesTab() {
                             />
                         ))
                     ) : (
-                        <p className="text-gray-500 dark:text-gray-400 text-center">No CV available</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-center">
+                            No CV available
+                        </p>
                     )}
                 </div>
             </CustomModal>

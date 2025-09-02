@@ -8,7 +8,7 @@ const TopicDetail = () => {
     const [interviewSessions, setInterviewSessions] = useState([]);
     useEffect(() => {
         getAllInterviewSessionWithId(id).then((res) => {
-            // console.log(res);
+            console.log(res);
             setInterviewSessions(res);
         });
     }, [id]);
@@ -30,6 +30,9 @@ const TopicDetail = () => {
                 {interviewSessions?.interviewSessionDTOs?.map((item, index) => (
                     <TopicDetailCard
                         key={index}
+                        interviewSessionThumbnail={
+                            item?.interviewSessionThumbnail
+                        }
                         interviewSessionId={item?.interviewSessionId}
                         title={item?.title}
                         description={item?.description}

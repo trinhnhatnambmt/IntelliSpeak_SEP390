@@ -31,7 +31,11 @@ const SecuritySettings = () => {
 
         setIsLoading(true);
         try {
-            console.log("Request payload:", { currentPassword, newPassword, repeatPassword });
+            console.log("Request payload:", {
+                currentPassword,
+                newPassword,
+                repeatPassword,
+            });
             await toast.promise(
                 dispatch(
                     resetPasswordAPI({
@@ -43,7 +47,8 @@ const SecuritySettings = () => {
                 {
                     pending: "Resetting password...",
                     success: "Password reset successfully!",
-                    error: (error) => error || "Failed to reset password. Please try again.",
+                    error: (error) =>
+                        error || "Failed to reset password. Please try again.",
                 }
             );
             setIsModalOpen(false);
@@ -72,11 +77,6 @@ const SecuritySettings = () => {
                         label="Set Password"
                         value="Not changed yet"
                         onClick={openResetPasswordModal}
-                    />
-                    <InfoRow
-                        label="Two-factor Authentication"
-                        value="Disabled"
-                        onClick={() => { }}
                     />
                 </div>
             </section>

@@ -1,4 +1,4 @@
-import { Popconfirm, Progress } from "antd";
+import { Image, Popconfirm, Progress } from "antd";
 import { Delete, SquareChartGantt, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,6 +16,7 @@ export default function HRJDUploadTab() {
     const [file, setFile] = useState(null);
     const [jobDescriptions, setJobDescriptions] = useState([]);
     const [progress, setProgress] = useState(0);
+    const [previewOpen, setPreviewOpen] = useState(false);
 
     const navigate = useNavigate();
 
@@ -169,30 +170,37 @@ export default function HRJDUploadTab() {
                                                 </button>
                                             </Popconfirm>
 
-                                            <div
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="block"
-                                            >
+                                            <div>
+                                                <Image
+                                                    src={firstImageLink}
+                                                    alt={jd.jobTitle}
+                                                    style={{ display: "none" }}
+                                                    preview={{
+                                                        visible: previewOpen,
+                                                        onVisibleChange: (
+                                                            visible
+                                                        ) =>
+                                                            setPreviewOpen(
+                                                                visible
+                                                            ),
+                                                    }}
+                                                />
+
                                                 <img
                                                     src={firstImageLink}
                                                     alt={jd.jobTitle}
                                                     className="w-full h-48 object-cover"
                                                 />
+
                                                 <div className="p-4">
-                                                    <Link
-                                                        to={firstImageLink}
-                                                        className="text-lg font-semibold"
+                                                    <p
+                                                        className="text-lg font-semibold text-white cursor-pointer hover:underline"
+                                                        onClick={() =>
+                                                            setPreviewOpen(true)
+                                                        }
                                                     >
                                                         {jd.jobTitle}
-                                                    </Link>
-                                                    {jd.createdAt && (
-                                                        <p className="text-sm text-gray-500">
-                                                            {new Date(
-                                                                jd.createdAt
-                                                            ).toLocaleDateString()}
-                                                        </p>
-                                                    )}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
