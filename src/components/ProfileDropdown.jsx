@@ -26,9 +26,8 @@ export default function WalletProfile() {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
     const dispatch = useDispatch();
-    const currentUser = useSelector(selectCurrentUser);
 
-    // console.log(currentUser);
+    const currentUser = useSelector(selectCurrentUser);
 
     useEffect(() => {
         setMounted(true);
@@ -148,8 +147,19 @@ export default function WalletProfile() {
                         </motion.div>
                         <div className="flex-1">
                             <div className="flex items-center">
-                                <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
-                                    {currentUser?.userName}
+                                <h2
+                                    className="text-xl font-bold text-neutral-900 dark:text-white truncate max-w-[160px]"
+                                    title={
+                                        currentUser?.firstName &&
+                                        currentUser?.lastName
+                                            ? `${currentUser.firstName} ${currentUser.lastName}`
+                                            : currentUser?.userName
+                                    }
+                                >
+                                    {currentUser?.firstName &&
+                                    currentUser?.lastName
+                                        ? `${currentUser.firstName} ${currentUser.lastName}`
+                                        : currentUser?.userName}
                                 </h2>
                                 <motion.div
                                     className="ml-2 flex items-center justify-center w-5 h-5 bg-blue-500 rounded-full"
