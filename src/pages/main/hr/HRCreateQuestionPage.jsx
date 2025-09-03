@@ -96,12 +96,11 @@ export default function HRCreateQuestionPage() {
         setIsLoading(true);
         try {
             const res = await getMyQuestionsAPI();
-            if (res.data) {
-                setMyQuestions(res.data);
-            }
+            setMyQuestions(Array.isArray(res.data) ? res.data : []);
         } catch (error) {
             console.error("Error fetching my questions:", error);
             toast.error("Failed to fetch questions list");
+            setMyQuestions([]);
         } finally {
             setIsLoading(false);
         }
@@ -176,42 +175,63 @@ export default function HRCreateQuestionPage() {
 
     const handleCreateQuestion = async (modalForm, { setSuccess, setForm }) => {
         setIsLoading(true);
-        // const tagId = Number(modalForm.tagId);
+        const payload = { ...modalForm, tagIds: modalForm.tagIds.map(Number) };
+        // Optimistic update
+        setMyQuestions((prev) => [...prev, payload]);
         try {
-            const payload = {
-                title: modalForm.title.trim(),
-                content: modalForm.content.trim(),
-                difficulty: modalForm.difficulty,
-                suitableAnswer1: modalForm.demoAnswer.trim(),
-                suitableAnswer2: modalForm.demoAnswer2
-                    ? modalForm.demoAnswer2.trim()
-                    : "",
-                tagIds: modalForm.tagIds.map(Number),
-                interviewSessionId: Number(modalForm.interviewSessionId),
-                tags: [],
-                deleted: false,
-            };
-            // console.log('tagId', tagId);
-
-            console.log('modalForm', modalForm);
-            console.log('payload', payload);
-
             await postQuestion(payload);
             toast.success("Question created successfully!");
             setSuccess(true);
             setForm(initialForm);
-            await fetchMyQuestions();
-            setActiveTab("question");
             setShowCreateQuestionModal(false);
+            await fetchMyQuestions(); // Đồng bộ lại với server
         } catch (err) {
-            console.error("Error creating question:", err);
-            toast.error(
-                err.response?.data?.message || "Failed to create question!"
-            );
+            setMyQuestions((prev) => prev.filter((q) => q !== payload)); // Rollback
+            toast.error(err.response?.data?.message || "Failed to create question!");
         } finally {
             setIsLoading(false);
         }
     };
+
+    // const handleCreateQuestion = async (modalForm, { setSuccess, setForm }) => {
+    //     setIsLoading(true);
+
+    //     // const tagId = Number(modalForm.tagId);
+    //     try {
+    //         const payload = {
+    //             title: modalForm.title.trim(),
+    //             content: modalForm.content.trim(),
+    //             difficulty: modalForm.difficulty,
+    //             suitableAnswer1: modalForm.demoAnswer.trim(),
+    //             suitableAnswer2: modalForm.demoAnswer2
+    //                 ? modalForm.demoAnswer2.trim()
+    //                 : "",
+    //             tagIds: modalForm.tagIds.map(Number),
+    //             interviewSessionId: Number(modalForm.interviewSessionId),
+    //             tags: [],
+    //             deleted: false,
+    //         };
+    //         // console.log('tagId', tagId);
+
+    //         console.log('modalForm', modalForm);
+    //         console.log('payload', payload);
+
+    //         await postQuestion(payload);
+    //         toast.success("Question created successfully!");
+    //         setSuccess(true);
+    //         setForm(initialForm);
+    //         await fetchMyQuestions();
+    //         setActiveTab("question");
+    //         setShowCreateQuestionModal(false);
+    //     } catch (err) {
+    //         console.error("Error creating question:", err);
+    //         toast.error(
+    //             err.response?.data?.message || "Failed to create question!"
+    //         );
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // };
 
     const handleCreateTemplate = async (e) => {
         e.preventDefault();
