@@ -27,27 +27,19 @@ const TopicDetail = () => {
             </p>
 
             <div className="mt-10 mb-10 w-[80%] relative z-10 flex flex-col gap-5">
-                {interviewSessions?.interviewSessionDTOs.length > 0 ? (
-                    interviewSessions?.interviewSessionDTOs?.map(
-                        (item, index) => (
-                            <TopicDetailCard
-                                key={index}
-                                interviewSessionThumbnail={
-                                    item?.interviewSessionThumbnail
-                                }
-                                interviewSessionId={item?.interviewSessionId}
-                                title={item?.title}
-                                description={item?.description}
-                                difficulty={item?.difficulty}
-                                totalQuestion={item?.totalQuestion}
-                            />
-                        )
-                    )
-                ) : (
-                    <p className="text-gray-500 dark:text-gray-400 text-lg text-center">
-                        No interview session yet
-                    </p>
-                )}
+                {interviewSessions?.interviewSessionDTOs?.map((item, index) => (
+                    <TopicDetailCard
+                        key={index}
+                        interviewSessionThumbnail={
+                            item?.interviewSessionThumbnail
+                        }
+                        interviewSessionId={item?.interviewSessionId}
+                        title={item?.title}
+                        description={item?.description}
+                        difficulty={item?.difficulty}
+                        totalQuestion={item?.totalQuestion}
+                    />
+                ))}
             </div>
         </div>
     );
