@@ -165,7 +165,7 @@ const UpdateHR = () => {
                 companyNameIfNotExist: formData.companyId === "other" ? formData.companyNameIfNotExist : "",
                 phone: formData.phone,
                 country: "Vietnam",
-                experienceYears: formData.experienceYears,
+                experienceYears: formData.experienceYears || 0,
                 linkedinUrl: formData.linkedinUrl,
                 cvUrl: cvUrl
             };
@@ -272,7 +272,7 @@ const UpdateHR = () => {
                                     type="number"
                                     name="experienceYears"
                                     min="0"
-                                    required
+                                    // required
                                     value={formData.experienceYears}
                                     onChange={handleChange}
                                     className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white p-2"
