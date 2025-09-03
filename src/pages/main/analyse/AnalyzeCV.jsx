@@ -1,7 +1,8 @@
 import { Upload } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllCvAPI, updateCvActive } from "~/apis";
+import { toast } from "react-toastify";
+import { deleteCvAPI, getAllCvAPI, updateCvActive } from "~/apis";
 import ResumeCard from "~/components/ResumeCard";
 // import { resumes } from "~/constants";
 
@@ -31,6 +32,17 @@ const AnalyzeCV = () => {
         }
     };
 
+    const handleDeleteCV = (id) => {
+        deleteCvAPI(id).then((res) => {
+            if (!res.error) {
+                toast.success(res?.message);
+                getAllCvAPI().then((res) => {
+                    setResumes(res);
+                });
+            }
+        });
+    };
+
     return (
         <div className="min-h-[60vh] bg-white dark:bg-[#18182a] rounded-2xl shadow-lg p-6 sm:p-10 transition-colors duration-300 ">
             <section className="main-section">
@@ -56,6 +68,7 @@ const AnalyzeCV = () => {
                             key={resume.id}
                             resume={resume}
                             onActivate={handleActivate}
+                            onDelete={handleDeleteCV}
                         />
                     ))}
                 </div>

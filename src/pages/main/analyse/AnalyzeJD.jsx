@@ -1,7 +1,8 @@
 import { Upload } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllJdAPI } from "~/apis";
+import { toast } from "react-toastify";
+import { deleteJdAPI, getAllJdAPI } from "~/apis";
 import JDCard from "~/components/jobDescription/JDCard";
 
 const AnalyzeJD = () => {
@@ -12,6 +13,17 @@ const AnalyzeJD = () => {
             setJobDescriptions(res);
         });
     }, []);
+
+    const handleDeleteJD = (id) => {
+        deleteJdAPI(id).then((res) => {
+            if (!res.error) {
+                toast.success(res?.message);
+                getAllJdAPI().then((res) => {
+                    setJobDescriptions(res);
+                });
+            }
+        });
+    };
 
     return (
         <div className="min-h-[60vh] bg-white dark:bg-[#18182a] rounded-2xl shadow-lg p-6 sm:p-10 transition-colors duration-300">
@@ -34,7 +46,7 @@ const AnalyzeJD = () => {
 
                 <div className="resumes-section">
                     {jobDescriptions?.map((jd) => (
-                        <JDCard key={jd.id} jd={jd} />
+                        <JDCard key={jd.id} jd={jd} onDelete={handleDeleteJD} />
                     ))}
                 </div>
             </section>
