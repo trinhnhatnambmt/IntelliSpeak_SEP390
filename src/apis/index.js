@@ -87,7 +87,10 @@ export const updateQuestionTemplateAPI = async (sessionId, data) => {
 };
 
 // ==== UPDATE INTERVIEW SESSION THUMBNAIL ====
-export const updateInterviewSessionThumbnailAPI = async (sessionId, thumbnailUrl) => {
+export const updateInterviewSessionThumbnailAPI = async (
+    sessionId,
+    thumbnailUrl
+) => {
     const response = await authorizedAxiosInstance.put(
         `${API_ROOT}/interview-sessions/thumbnail/${sessionId}`,
         { thumbnailURL: thumbnailUrl },
@@ -548,6 +551,22 @@ export const getUserTransactionAPI = async () => {
         `${API_ROOT}/transaction/my-transaction`
     );
     return response.data.data;
+};
+
+export const deleteCvAPI = async (id) => {
+    const response = await authorizedAxiosInstance.delete(
+        `${API_ROOT}/api/cv/${id}`
+    );
+
+    return response.data;
+};
+
+export const deleteJdAPI = async (id) => {
+    const response = await authorizedAxiosInstance.delete(
+        `${API_ROOT}/api/jd/${id}`
+    );
+
+    return response.data;
 };
 
 // ==== HR APPLICATION ====

@@ -8,7 +8,7 @@ const TopicDetail = () => {
     const [interviewSessions, setInterviewSessions] = useState([]);
     useEffect(() => {
         getAllInterviewSessionWithId(id).then((res) => {
-            console.log(res);
+            // console.log(res);
             setInterviewSessions(res);
         });
     }, [id]);

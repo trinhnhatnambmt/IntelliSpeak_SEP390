@@ -1,17 +1,34 @@
-import { Clock, Eye, FileText, FileCheck } from "lucide-react";
+import { Popconfirm } from "antd";
+import { Clock, Eye, FileText, FileCheck, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const JDCard = ({ jd }) => {
+const JDCard = ({ jd, onDelete }) => {
     const navigate = useNavigate();
     return (
         <div className="relative bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-indigo-800 shadow-lg p-5 mb-6 max-w-2xl w-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1 z-10">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-100/50 dark:from-indigo-900/50 dark:to-blue-900/50 rounded-2xl opacity-50 z-0"></div>
             <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-3">
-                    <FileText className="w-6 h-6 text-indigo-500 dark:text-indigo-300" />
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
-                        {jd.jobtTitle}
-                    </h3>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 mb-3">
+                        <FileText className="w-6 h-6 text-indigo-500 dark:text-indigo-300" />
+                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
+                            {jd.jobtTitle}
+                        </h3>
+                    </div>
+                    <Popconfirm
+                        title="Delete JD"
+                        description="Are you sure to delete this JD?"
+                        onConfirm={() => onDelete(jd?.jdId)}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <button
+                            className="mt-[-20px] cursor-pointer text-gray-500 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
+                            aria-label="Delete JD"
+                        >
+                            <X />
+                        </button>
+                    </Popconfirm>
                 </div>
 
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-3">
