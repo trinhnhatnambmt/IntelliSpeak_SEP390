@@ -328,7 +328,7 @@ export const interviewer = (
     questionList
 ) => ({
     name: "Interviewer",
-    firstMessage: `Hello ${currentUser?.userName},Thank you for taking the time to speak with me today. I'm excited to learn more about you and your experience.
+    firstMessage: `Hello ,Thank you for taking the time to speak with me today. I'm excited to learn more about you and your experience.
     Are you ready for the ${currentInterviewSession?.title}?`,
 
     transcriber: {
@@ -393,7 +393,7 @@ export const interviewer2 = (
     companyDetail
 ) => ({
     name: "Interviewer",
-    firstMessage: `Good day, ${currentUser?.userName}. I represent ${companyDetail?.name}. Thank you for your interest in our ${currentInterviewSession?.title} opportunity. Please confirm your readiness to proceed.`,
+    firstMessage: `Good day, I represent ${companyDetail?.name}. Thank you for your interest in our ${currentInterviewSession?.title} opportunity. Please confirm your readiness to proceed.`,
     transcriber: {
         provider: "deepgram",
         model: "nova-2",
@@ -453,7 +453,7 @@ export const interviewerVN1 = (
     questionList
 ) => ({
     name: "Người Phỏng Vấn",
-    firstMessage: `Xin chào ${currentUser?.userName}, cảm ơn bạn đã dành thời gian tham gia buổi phỏng vấn hôm nay. 
+    firstMessage: `Xin chào, cảm ơn bạn đã dành thời gian tham gia buổi phỏng vấn hôm nay. 
     Mình rất mong được tìm hiểu thêm về bạn và kinh nghiệm của bạn.
     Bạn đã sẵn sàng cho buổi ${currentInterviewSession?.title} chưa?`,
 
@@ -523,7 +523,7 @@ export const interviewerVN2 = (
     companyDetail
 ) => ({
     name: "Người Phỏng Vấn",
-    firstMessage: `Xin chào ${currentUser?.userName}. Tôi đại diện cho ${companyDetail?.name}. Cảm ơn bạn đã quan tâm đến vị trí ${currentInterviewSession?.title} của chúng tôi. Vui lòng xác nhận rằng bạn đã sẵn sàng để bắt đầu.`,
+    firstMessage: `Xin chào, Tôi đại diện cho ${companyDetail?.name}. Cảm ơn bạn đã quan tâm đến vị trí ${currentInterviewSession?.title} của chúng tôi. Vui lòng xác nhận rằng bạn đã sẵn sàng để bắt đầu.`,
 
     transcriber: {
         provider: "11labs",
