@@ -12,21 +12,14 @@ const RightSidebar = () => {
     // Fetch top replied posts
     useEffect(() => {
         const fetchTopPosts = async () => {
-            try {
-                const response = await getTopPostsAPI();
-                if (response.code === 200) {
-                    setPosts(response.data);
-                } else {
-                    setError("Failed to fetch trending discussions");
-                    toast.error("Failed to fetch trending discussions");
-                }
-            } catch (err) {
-                console.error("Error fetching top posts:", err);
+            const response = await getTopPostsAPI();
+            if (response.code === 200) {
+                setPosts(response.data);
+            } else {
                 setError("Failed to fetch trending discussions");
-                toast.error("Failed to fetch trending discussions");
-            } finally {
-                setIsLoading(false);
+                console.log("fetchTopPosts", response);
             }
+            setIsLoading(false);
         };
         fetchTopPosts();
     }, []);

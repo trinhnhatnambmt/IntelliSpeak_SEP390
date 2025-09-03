@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 
 const initialForm = {
     topic: "",
-    tagIds: [], // Changed from 'tag' to 'tagIds' to store multiple tag IDs
+    tag: "",
+    tagIds: [],
     title: "",
     interviewSessionId: "",
     content: "",
@@ -80,7 +81,9 @@ export default function HRCreateQuestionModal({
             setCsvLoading(true);
             try {
                 // Use the first tagId for CSV import (assuming API expects a single tagId)
-                const tagId = form.tagIds[0];
+                const tagId = form.tagIds;
+                console.log(`data importQuestionsFromCsv tagId: `, tagId);
+
                 await importQuestionsFromCsv(
                     tagId,
                     csvFile,
@@ -92,10 +95,10 @@ export default function HRCreateQuestionModal({
                 setForm(initialForm); // Reset form after successful import
                 if (onClose) onClose();
             } catch (err) {
-                toast.error(
-                    err?.response?.data?.message ||
-                    "Failed to import questions from CSV."
-                );
+                // toast.error(
+                //     err?.response?.data?.message ||
+                //     "Failed to import questions from CSV."
+                // );
             } finally {
                 setCsvLoading(false);
             }
@@ -203,8 +206,8 @@ export default function HRCreateQuestionModal({
                         <button
                             type="button"
                             className={`px-6 py-2 -mb-px font-semibold border-b-2 transition focus:outline-none ${mode === "manual"
-                                    ? "border-blue-500 text-blue-600 dark:text-blue-400"
-                                    : "border-transparent text-gray-500 dark:text-gray-300 hover:text-blue-500"
+                                ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                                : "border-transparent text-gray-500 dark:text-gray-300 hover:text-blue-500"
                                 }`}
                             onClick={() => setMode("manual")}
                             disabled={loading}
@@ -214,8 +217,8 @@ export default function HRCreateQuestionModal({
                         <button
                             type="button"
                             className={`px-6 py-2 -mb-px font-semibold border-b-2 transition focus:outline-none ${mode === "csv"
-                                    ? "border-blue-500 text-blue-600 dark:text-blue-400"
-                                    : "border-transparent text-gray-500 dark:text-gray-300 hover:text-blue-500"
+                                ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                                : "border-transparent text-gray-500 dark:text-gray-300 hover:text-blue-500"
                                 }`}
                             onClick={() => setMode("csv")}
                             disabled={loading}
@@ -366,8 +369,8 @@ export default function HRCreateQuestionModal({
                     <button
                         type="submit"
                         className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md transition ${loading || csvLoading
-                                ? "opacity-50 cursor-not-allowed"
-                                : ""
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
                             }`}
                         disabled={
                             loading ||
