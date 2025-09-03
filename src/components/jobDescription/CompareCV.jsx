@@ -263,7 +263,7 @@ const CompareCV = () => {
                 <div className="grid grid-cols-1 gap-6">
                     <div className="p-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                            Reasons for Match
+                            Analyzing
                         </h3>
                         <ul className="list-disc pl-5 text-gray-700 dark:text-gray-300 text-sm space-y-2">
                             {reasons.map((reason, index) => (
