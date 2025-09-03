@@ -7,7 +7,6 @@ const History = () => {
 
     useEffect(() => {
         getAllInterviewHistory().then((res) => {
-            console.log(res);
             setInterviews(res);
         });
     }, []);
@@ -20,16 +19,24 @@ const History = () => {
                     Your Interview History
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5 relative">
-                    {interviews?.map((interview) => (
-                        <InterviewCard
-                            type="profile"
-                            interviewTitle={interview?.interviewTitle}
-                            startedAt={interview?.startedAt}
-                            totalQuestion={interview?.totalQuestion}
-                            interviewHistoryId={interview?.interviewHistoryId}
-                            startedAt={interview?.startedAt}
-                        />
-                    ))}
+                    {interviews && interviews.length > 0 ? (
+                        interviews.map((interview) => (
+                            <InterviewCard
+                                key={interview?.interviewHistoryId}
+                                type="profile"
+                                interviewTitle={interview?.interviewTitle}
+                                startedAt={interview?.startedAt}
+                                totalQuestion={interview?.totalQuestion}
+                                interviewHistoryId={
+                                    interview?.interviewHistoryId
+                                }
+                            />
+                        ))
+                    ) : (
+                        <p className="text-gray-500 dark:text-gray-400 text-lg">
+                            No interview session yet
+                        </p>
+                    )}
                 </div>
             </div>
         </div>

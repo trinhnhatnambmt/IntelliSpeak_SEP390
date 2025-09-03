@@ -1,13 +1,32 @@
 // ==== IMPORT QUESTIONS FROM CSV ====
-export const importQuestionsFromCsv = async (
-    tagId,
-    file,
-    interviewSessionId
-) => {
+// export const importQuestionsFromCsv = async (
+//     tagId,
+//     file,
+//     interviewSessionId
+// ) => {
+//     const formData = new FormData();
+//     formData.append("file", file);
+//     const response = await authorizedAxiosInstance.post(
+//         `${API_ROOT}/question/import-csv/${tagId}/${interviewSessionId}`,
+//         formData,
+//         {
+//             headers: {
+//                 "Content-Type": "multipart/form-data",
+//             },
+//         }
+//     );
+//     return response.data;
+// };
+
+export const importQuestionsFromCsv = async (tagIds, file, interviewSessionId) => {
     const formData = new FormData();
     formData.append("file", file);
+
+    // Construct query string for tagIds
+    const queryString = tagIds.map(id => `tagIds=${id}`).join('&');
+
     const response = await authorizedAxiosInstance.post(
-        `${API_ROOT}/question/import-csv/${tagId}/${interviewSessionId}`,
+        `${API_ROOT}/question/import-csv/${interviewSessionId}?${queryString}`,
         formData,
         {
             headers: {
@@ -17,11 +36,6 @@ export const importQuestionsFromCsv = async (
     );
     return response.data;
 };
-// import axios from "axios";
-// export const getAllPackagesAPI = async () => {
-//     const response = await axios.get(`${API_ROOT}/package`);
-//     return response.data;
-// };
 // ==== GET ALL PACKAGES ====
 export const getAllPackagesAPI = async () => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/package`);
@@ -130,13 +144,41 @@ export const updateForumPostAPI = async (
     return res.data;
 };
 // ==== REPLY / COMMENT ====
-export const postReplyAPI = async ({ postId, title, content }) => {
+export const postReplyAPI = async ({ postId, content }) => {
     const res = await authorizedAxiosInstance.post(`${API_ROOT}/reply`, {
         postId,
-        title,
         content,
     });
     return res.data;
+};
+
+export const editCommentAPI = async (commentId, content) => {
+    try {
+        const response = await authorizedAxiosInstance.put(
+            `${API_ROOT}/reply/${commentId}`,
+            { content }
+        );
+        toast.success(response.data.message || "Comment updated successfully!");
+        return response.data;
+    } catch (error) {
+        toast.error("Failed to update comment!");
+        console.error("Error updating comment:", error);
+        throw error;
+    }
+};
+
+export const deleteCommentAPI = async (commentId) => {
+    try {
+        const response = await authorizedAxiosInstance.delete(
+            `${API_ROOT}/reply/${commentId}`
+        );
+        toast.success(response.data.message || "Comment deleted successfully!");
+        return response.data;
+    } catch (error) {
+        toast.error("Failed to delete comment!");
+        console.error("Error deleting comment:", error);
+        throw error;
+    }
 };
 // ==== DELETE IMAGE FROM FORUM POST ====
 export const deleteForumPostImageAPI = async (postId, imageId) => {

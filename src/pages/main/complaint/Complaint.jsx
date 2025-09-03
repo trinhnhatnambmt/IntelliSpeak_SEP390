@@ -26,7 +26,7 @@ const Complaint = () => {
             return <Tag color="success">RESOLVED</Tag>;
         }
         if (status === false) {
-            return <Tag color="error">CANCELED</Tag>;
+            return <Tag color="error">REJECTED</Tag>;
         }
     };
 

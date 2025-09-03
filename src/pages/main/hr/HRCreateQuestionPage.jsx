@@ -24,13 +24,25 @@ const difficulties = [
     { value: "HARD", label: "Hard" },
 ];
 
+// const initialForm = {
+//     topic: "",
+//     tag: "",
+//     title: "",
+//     content: "",
+//     difficulty: "",
+//     demoAnswer: "",
+// };
+
 const initialForm = {
     topic: "",
     tag: "",
+    tagIds: [],
     title: "",
+    interviewSessionId: "",
     content: "",
     difficulty: "",
     demoAnswer: "",
+    demoAnswer2: "",
 };
 
 export default function HRCreateQuestionPage() {
@@ -164,7 +176,7 @@ export default function HRCreateQuestionPage() {
 
     const handleCreateQuestion = async (modalForm, { setSuccess, setForm }) => {
         setIsLoading(true);
-        const tagId = Number(modalForm.tag);
+        // const tagId = Number(modalForm.tagId);
         try {
             const payload = {
                 title: modalForm.title.trim(),
@@ -174,10 +186,16 @@ export default function HRCreateQuestionPage() {
                 suitableAnswer2: modalForm.demoAnswer2
                     ? modalForm.demoAnswer2.trim()
                     : "",
-                tagIds: [tagId],
+                tagIds: modalForm.tagIds.map(Number),
+                interviewSessionId: Number(modalForm.interviewSessionId),
                 tags: [],
                 deleted: false,
             };
+            // console.log('tagId', tagId);
+
+            console.log('modalForm', modalForm);
+            console.log('payload', payload);
+
             await postQuestion(payload);
             toast.success("Question created successfully!");
             setSuccess(true);
@@ -232,24 +250,24 @@ export default function HRCreateQuestionPage() {
         }
     };
 
-    const filteredQuestions = myQuestions.filter((question) => {
-        const searchLower = searchTerm.toLowerCase();
-        const matchesSearch =
-            question.title.toLowerCase().includes(searchLower) ||
-            question.content.toLowerCase().includes(searchLower) ||
-            question.tags.some((tag) =>
-                tag.title.toLowerCase().includes(searchLower)
-            ) ||
-            question.difficulty.toLowerCase().includes(searchLower);
-        const matchesTag =
-            !selectedTagFilter ||
-            question.tags.some(
-                (tag) => String(tag.tagId) === String(selectedTagFilter)
-            );
-        const matchesDifficulty =
-            !selectedDifficulty || question.difficulty === selectedDifficulty;
-        return matchesSearch && matchesTag && matchesDifficulty;
-    });
+    // const filteredQuestions = myQuestions.filter((question) => {
+    //     const searchLower = searchTerm.toLowerCase();
+    //     const matchesSearch =
+    //         question.title.toLowerCase().includes(searchLower) ||
+    //         question.content.toLowerCase().includes(searchLower) ||
+    //         question.tags.some((tag) =>
+    //             tag.title.toLowerCase().includes(searchLower)
+    //         ) ||
+    //         question.difficulty.toLowerCase().includes(searchLower);
+    //     const matchesTag =
+    //         !selectedTagFilter ||
+    //         question.tags.some(
+    //             (tag) => String(tag.tagId) === String(selectedTagFilter)
+    //         );
+    //     const matchesDifficulty =
+    //         !selectedDifficulty || question.difficulty === selectedDifficulty;
+    //     return matchesSearch && matchesTag && matchesDifficulty;
+    // });
 
     return (
         <div className="max-w-4xl mx-auto p-4 md:p-8 bg-white dark:bg-neutral-900 rounded-xl shadow-md mt-6 md:mt-10 z-10 relative">
@@ -259,8 +277,8 @@ export default function HRCreateQuestionPage() {
             <div className="flex border-b mb-6 overflow-x-auto">
                 <button
                     className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "session"
-                            ? "border-b-2 border-blue-500 text-blue-500"
-                            : "text-gray-500 dark:text-gray-400"
+                        ? "border-b-2 border-blue-500 text-blue-500"
+                        : "text-gray-500 dark:text-gray-400"
                         }`}
                     onClick={() => setActiveTab("session")}
                 >
@@ -268,8 +286,8 @@ export default function HRCreateQuestionPage() {
                 </button>
                 <button
                     className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "question"
-                            ? "border-b-2 border-blue-500 text-blue-500"
-                            : "text-gray-500 dark:text-gray-400"
+                        ? "border-b-2 border-blue-500 text-blue-500"
+                        : "text-gray-500 dark:text-gray-400"
                         }`}
                     onClick={() => setActiveTab("question")}
                 >
@@ -277,8 +295,8 @@ export default function HRCreateQuestionPage() {
                 </button>
                 <button
                     className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "jd"
-                            ? "border-b-2 border-blue-500 text-blue-500"
-                            : "text-gray-500 dark:text-gray-400"
+                        ? "border-b-2 border-blue-500 text-blue-500"
+                        : "text-gray-500 dark:text-gray-400"
                         }`}
                     onClick={() => setActiveTab("jd")}
                 >
@@ -286,8 +304,8 @@ export default function HRCreateQuestionPage() {
                 </button>
                 <button
                     className={`py-2 px-4 font-medium whitespace-nowrap ${activeTab === "candidates"
-                            ? "border-b-2 border-blue-500 text-blue-500"
-                            : "text-gray-500 dark:text-gray-400"
+                        ? "border-b-2 border-blue-500 text-blue-500"
+                        : "text-gray-500 dark:text-gray-400"
                         }`}
                     onClick={() => setActiveTab("candidates")}
                 >

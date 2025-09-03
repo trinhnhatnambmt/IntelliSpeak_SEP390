@@ -18,7 +18,6 @@ const Info = () => {
 
     useEffect(() => {
         getUserProfileAPI().then((data) => {
-            console.log(data);
             setUserProfile(data);
         });
     }, []);
@@ -107,12 +106,7 @@ const Info = () => {
                                         size={16}
                                     />
                                 )}
-                                <span>
-                                    Email Verification:{" "}
-                                    {userProfile.isEmailVerified
-                                        ? "Verified"
-                                        : "Not Verified"}
-                                </span>
+                                <span>Email Verification: Verified</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 {userProfile.isPhoneVerified ? (

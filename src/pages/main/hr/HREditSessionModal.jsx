@@ -17,11 +17,11 @@ export default function HREditSessionModal({
         description: session?.description || "",
         interviewSessionThumbnail: session?.interviewSessionThumbnail || "",
         difficulty: session?.difficulty || "",
-        topicId: session?.topicId || "",
+        topicId: session?.topic?.topicId || "",
         tagIds: session?.tags?.map((t) => String(t.tagId)) || [],
     });
-    const [pendingThumbnail, setPendingThumbnail] = useState(null); // Store uploaded thumbnail URL temporarily
-    const [thumbnailFile, setThumbnailFile] = useState(null); // Store the selected file for preview
+    const [pendingThumbnail, setPendingThumbnail] = useState(null);
+    const [thumbnailFile, setThumbnailFile] = useState(null);
     const [allTags, setAllTags] = useState([]);
     const [loading, setLoading] = useState(false);
     const [thumbnailUploading, setThumbnailUploading] = useState(false);
@@ -38,7 +38,7 @@ export default function HREditSessionModal({
             form.title === (session.title || "") &&
             form.description === (session.description || "") &&
             form.difficulty === (session.difficulty || "") &&
-            String(form.topicId) === String(session.topicId || "") &&
+            String(form.topicId) === String(session.topic?.topicId || "") &&
             compareArr(
                 form.tagIds,
                 session.tags?.map((t) => String(t.tagId)) || []
@@ -81,8 +81,8 @@ export default function HREditSessionModal({
         try {
             const urls = await uploadImageAPI([file]);
             if (urls && Array.isArray(urls) && urls.length > 0 && typeof urls[0] === "string") {
-                setPendingThumbnail(urls[0]); // Store the uploaded URL
-                setThumbnailFile(URL.createObjectURL(file)); // Create a local URL for preview
+                setPendingThumbnail(urls[0]);
+                setThumbnailFile(URL.createObjectURL(file));
                 toast.success("Thumbnail uploaded successfully! Click 'Update Thumbnail' to save.");
             } else {
                 throw new Error("Invalid image upload response");
@@ -112,10 +112,10 @@ export default function HREditSessionModal({
                 ...prev,
                 interviewSessionThumbnail: pendingThumbnail,
             }));
-            setPendingThumbnail(null); // Clear pending thumbnail after successful update
-            setThumbnailFile(null); // Clear local preview
+            setPendingThumbnail(null);
+            setThumbnailFile(null);
             toast.success("Thumbnail updated successfully!");
-            if (onUpdated) await onUpdated(); // Refresh session data
+            if (onUpdated) await onUpdated();
         } catch (err) {
             console.error("Error updating thumbnail:", err);
             toast.error("Failed to update thumbnail!");
@@ -138,7 +138,6 @@ export default function HREditSessionModal({
             setForm((prev) => ({
                 ...prev,
                 [name]: value,
-                // Reset tagIds when topic changes to ensure only valid tags are selected
                 ...(name === "topicId" ? { tagIds: [] } : {}),
             }));
         }
@@ -174,7 +173,6 @@ export default function HREditSessionModal({
         }
     };
 
-    // Detect dark mode
     const isDark = document.documentElement.classList.contains("dark");
 
     return (
@@ -190,7 +188,6 @@ export default function HREditSessionModal({
             className="hr-edit-session-modal"
         >
             <form onSubmit={handleUpdate} className="space-y-4">
-                {/* Thumbnail upload */}
                 <div>
                     <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
                         Thumbnail <span className="text-red-500">*</span>
@@ -223,8 +220,7 @@ export default function HREditSessionModal({
                             type="button"
                             onClick={handleThumbnailUpdate}
                             disabled={loading || thumbnailUploading}
-                            className={`mt-2 py-2 px-4 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition ${loading || thumbnailUploading ? "opacity-50 cursor-not-allowed" : ""
-                                }`}
+                            className={`mt-2 py-2 px-4 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition ${loading || thumbnailUploading ? "opacity-50 cursor-not-allowed" : ""}`}
                         >
                             {thumbnailUploading ? "Updating..." : "Update Thumbnail"}
                         </button>
@@ -337,7 +333,6 @@ export default function HREditSessionModal({
                         </div>
                     )}
                 </div>
-
                 <div className="flex gap-3 mt-4">
                     <button
                         type="button"
@@ -349,8 +344,7 @@ export default function HREditSessionModal({
                     </button>
                     <button
                         type="submit"
-                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition ${loading || isUnchanged ? "opacity-50 cursor-not-allowed" : ""
-                            }`}
+                        className={`flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition ${loading || isUnchanged ? "opacity-50 cursor-not-allowed" : ""}`}
                         disabled={loading || isUnchanged}
                     >
                         {loading ? "Saving..." : "Save"}

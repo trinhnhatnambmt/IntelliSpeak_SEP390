@@ -7,6 +7,7 @@ const TopicDetailCard = ({
     difficulty,
     totalQuestion,
     interviewSessionId,
+    interviewSessionThumbnail,
 }) => {
     const navigate = useNavigate();
     const submitInterviewSession = () => {
@@ -15,11 +16,15 @@ const TopicDetailCard = ({
     return (
         <div className="w-full rounded-2xl p-[16px] flex gap-5 bg-white dark:bg-[#252525] shadow-md dark:shadow-none transition-colors duration-300">
             <img
-                src="https://images.unsplash.com/photo-1667372393086-9d4001d51cf1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8amF2YXNjcmlwdHxlbnwwfHwwfHx8MA%3D%3D"
+                src={
+                    interviewSessionThumbnail
+                        ? interviewSessionThumbnail
+                        : "https://images.unsplash.com/photo-1667372393086-9d4001d51cf1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8amF2YXNjcmlwdHxlbnwwfHwwfHx8MA%3D%3D"
+                }
                 alt="JavaScript basics"
                 width={255}
                 height={144}
-                className="object-cover rounded-2xl border border-gray-200 dark:border-gray-600"
+                className="object-cover w-[255px] h-[196px] rounded-2xl border border-gray-200 dark:border-gray-600"
             />
             <div className="flex-1">
                 <h3 className="font-extrabold text-2xl text-gray-900 dark:text-white">

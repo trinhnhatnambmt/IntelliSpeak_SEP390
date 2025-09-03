@@ -21,8 +21,8 @@ export default function HRQuestionManagementTab({
     const [companyName, setCompanyName] = useState("");
     const [formValues, setFormValues] = useState({});
     const [isFormChanged, setIsFormChanged] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1); // State for current page
-    const itemsPerPage = 5; // Number of questions per page
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
     const isDark = document.documentElement.classList.contains("dark");
 
     // Fetch HR application status to get company name
@@ -102,7 +102,8 @@ export default function HRQuestionManagementTab({
             question.tags.some((tag) =>
                 tag.title.toLowerCase().includes(searchLower)
             ) ||
-            question.difficulty.toLowerCase().includes(searchLower);
+            question.difficulty.toLowerCase().includes(searchLower) ||
+            (question.interviewSessionName || "").toLowerCase().includes(searchLower);
         const matchesTag =
             !selectedTagFilter ||
             question.tags.some(
@@ -134,27 +135,21 @@ export default function HRQuestionManagementTab({
         let startPage, endPage;
 
         if (totalPages <= maxPagesToShow) {
-            // Show all pages if totalPages <= maxPagesToShow
             startPage = 1;
             endPage = totalPages;
         } else {
-            // Calculate start and end pages to show maxPagesToShow pages
             const halfPagesToShow = Math.floor(maxPagesToShow / 2);
             startPage = Math.max(1, currentPage - halfPagesToShow);
             endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-
-            // Adjust if endPage is less than maxPagesToShow
             if (endPage - startPage + 1 < maxPagesToShow) {
                 startPage = Math.max(1, endPage - maxPagesToShow + 1);
             }
         }
 
-        // Add page numbers
         for (let i = startPage; i <= endPage; i++) {
             pages.push(i);
         }
 
-        // Add ellipsis if necessary
         if (startPage > 1) {
             pages.unshift("...");
             pages.unshift(1);
@@ -170,16 +165,16 @@ export default function HRQuestionManagementTab({
     return (
         <div className="space-y-4">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
-                <h3 className="text-xl font-semibold">My Questions</h3>
+                <h3 className="text-xl font-semibold">Company's Questions</h3>
                 <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto items-center">
                     <input
                         type="text"
-                        placeholder="Search questions..."
+                        placeholder="Search questions or session name..."
                         className="px-3 py-1 border rounded-md dark:bg-neutral-800 dark:border-neutral-700 flex-grow"
                         value={searchTerm}
                         onChange={(e) => {
                             setSearchTerm(e.target.value);
-                            setCurrentPage(1); // Reset to first page on search
+                            setCurrentPage(1);
                         }}
                     />
                     <select
@@ -187,7 +182,7 @@ export default function HRQuestionManagementTab({
                         value={selectedTagFilter}
                         onChange={(e) => {
                             setSelectedTagFilter(e.target.value);
-                            setCurrentPage(1); // Reset to first page on tag filter
+                            setCurrentPage(1);
                         }}
                     >
                         <option value="">All Tags</option>
@@ -202,7 +197,7 @@ export default function HRQuestionManagementTab({
                         value={selectedDifficulty}
                         onChange={(e) => {
                             setSelectedDifficulty(e.target.value);
-                            setCurrentPage(1); // Reset to first page on difficulty filter
+                            setCurrentPage(1);
                         }}
                     >
                         <option value="">All Difficulties</option>
@@ -284,9 +279,16 @@ export default function HRQuestionManagementTab({
                                                     ))}
                                                 </div>
                                             )}
+                                            <span
+                                                className="px-2 py-1 bg-gray-100 text-gray-600 dark:bg-neutral-800 dark:text-gray-300 text-xs rounded-full"
+                                                aria-label={`Interview Session: ${question.interviewSessionName || "Not assigned"}`}
+                                            >
+                                                {question.interviewSessionName
+                                                    ? `${question.interviewSessionName} (ID: ${question.interviewSessionId})`
+                                                    : "Not assigned to a session"}
+                                            </span>
                                         </div>
                                     </div>
-                                    {/* Three-dot menu with ⋮ icon */}
                                     <Menu as="div" className="relative">
                                         <Menu.Button className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-700">
                                             <span className="text-gray-500 dark:text-gray-400 text-lg font-medium">⋮</span>
@@ -304,7 +306,8 @@ export default function HRQuestionManagementTab({
                                                 <Menu.Item>
                                                     {({ active }) => (
                                                         <button
-                                                            className={`w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 ${active ? "bg-gray-100 dark:bg-neutral-700" : ""}`}
+                                                            className={`w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 ${active ? "bg-gray-100 dark:bg-neutral-700" : ""
+                                                                }`}
                                                             onClick={() => setShowEditModal({ open: true, question })}
                                                         >
                                                             Edit
@@ -314,7 +317,8 @@ export default function HRQuestionManagementTab({
                                                 <Menu.Item>
                                                     {({ active }) => (
                                                         <button
-                                                            className={`w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 ${active ? "bg-gray-100 dark:bg-neutral-700" : ""}`}
+                                                            className={`w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 ${active ? "bg-gray-100 dark:bg-neutral-700" : ""
+                                                                }`}
                                                             onClick={() => setShowDeleteModal({ open: true, question })}
                                                         >
                                                             Delete
@@ -340,15 +344,14 @@ export default function HRQuestionManagementTab({
                             </div>
                         ))}
                     </div>
-                    {/* Pagination Controls */}
                     {totalPages > 1 && (
                         <div className="flex justify-center items-center mt-6 gap-2">
                             <button
                                 onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
                                 className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${currentPage === 1
-                                        ? "bg-gray-200 text-gray-400 dark:bg-neutral-700 dark:text-neutral-400 cursor-not-allowed"
-                                        : "bg-blue-500 text-white hover:bg-blue-600 dark:hover:bg-blue-700"
+                                    ? "bg-gray-200 text-gray-400 dark:bg-neutral-700 dark:text-neutral-400 cursor-not-allowed"
+                                    : "bg-blue-500 text-white hover:bg-blue-600 dark:hover:bg-blue-700"
                                     }`}
                                 aria-label="Previous page"
                             >
@@ -360,10 +363,10 @@ export default function HRQuestionManagementTab({
                                         key={index}
                                         onClick={() => typeof page === "number" && handlePageChange(page)}
                                         className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${page === currentPage
-                                                ? "bg-blue-500 text-white dark:bg-blue-600"
-                                                : typeof page === "number"
-                                                    ? "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-neutral-800 dark:text-gray-200 dark:hover:bg-neutral-700"
-                                                    : "text-gray-500 dark:text-gray-400 cursor-default"
+                                            ? "bg-blue-500 text-white dark:bg-blue-600"
+                                            : typeof page === "number"
+                                                ? "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-neutral-800 dark:text-gray-200 dark:hover:bg-neutral-700"
+                                                : "text-gray-500 dark:text-gray-400 cursor-default"
                                             }`}
                                         disabled={typeof page !== "number"}
                                         aria-label={typeof page === "number" ? `Page ${page}` : undefined}
@@ -376,8 +379,8 @@ export default function HRQuestionManagementTab({
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
                                 className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${currentPage === totalPages
-                                        ? "bg-gray-200 text-gray-400 dark:bg-neutral-700 dark:text-neutral-400 cursor-not-allowed"
-                                        : "bg-blue-500 text-white hover:bg-blue-600 dark:hover:bg-blue-700"
+                                    ? "bg-gray-200 text-gray-400 dark:bg-neutral-700 dark:text-neutral-400 cursor-not-allowed"
+                                    : "bg-blue-500 text-white hover:bg-blue-600 dark:hover:bg-blue-700"
                                     }`}
                                 aria-label="Next page"
                             >
@@ -387,7 +390,6 @@ export default function HRQuestionManagementTab({
                     )}
                 </>
             )}
-            {/* Edit Question Modal using CustomModal */}
             {showEditModal.open && showEditModal.question && (
                 <CustomModal
                     open={showEditModal.open}
@@ -492,7 +494,6 @@ export default function HRQuestionManagementTab({
                     </form>
                 </CustomModal>
             )}
-            {/* Edit Confirmation Modal using CustomModal */}
             {showEditConfirmModal.open && showEditConfirmModal.question && (
                 <CustomModal
                     open={showEditConfirmModal.open}
@@ -529,7 +530,6 @@ export default function HRQuestionManagementTab({
                     </div>
                 </CustomModal>
             )}
-            {/* Delete Question Modal using CustomModal */}
             {showDeleteModal.open && showDeleteModal.question && (
                 <CustomModal
                     open={showDeleteModal.open}
@@ -570,7 +570,7 @@ export default function HRQuestionManagementTab({
     );
 }
 
-// CustomModal component (included for completeness)
+// CustomModal component (unchanged, included for completeness)
 function CustomModal({
     open,
     onClose,

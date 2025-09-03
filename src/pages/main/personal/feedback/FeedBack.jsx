@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import {
     Activity,
     AlertCircle,
+    Award,
     CalendarIcon,
     Check,
     CheckCircle,
@@ -33,7 +34,7 @@ const FeedBack = () => {
     useEffect(() => {
         if (!interviewFeedbackRedux && id) {
             getInterviewHistoryById(id).then((data) => {
-                console.log(data);
+                // console.log(data);
                 setInterviewFeedback(data);
             });
         }
@@ -121,6 +122,17 @@ const FeedBack = () => {
                                         <p className="mt-2">
                                             {result.userAnswer ||
                                                 "No answer provided"}
+                                        </p>
+                                    </div>
+                                    <div className="bg-purple-50 dark:bg-yellow-900/30 p-4 rounded-lg">
+                                        <strong className="text-yellow-300 dark:text-yellow-300 flex items-center gap-1">
+                                            <Award className="text-yellow-300 w-[20px]" />
+                                            Your Score
+                                        </strong>
+                                        <p className="mt-2  text-2xl">
+                                            {result.level ||
+                                                "No answer provided"}
+                                            /10
                                         </p>
                                     </div>
                                 </div>
