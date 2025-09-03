@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getResumeFeedbackAPI } from "~/apis";
 import ATS from "~/components/Resume/ATS";
 import Details from "~/components/Resume/Detail";
 import Summary from "~/components/Resume/Summary";
 import mockFeedback from "~/constants/mockdata";
 import SessionCard from "./SessionCard";
+import { useDispatch } from "react-redux";
+import { getUserProfileAPI } from "~/redux/user/userSlice";
 
 const Resume = () => {
     const { id } = useParams();
     const [feedback, setFeedback] = useState(null);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         getResumeFeedbackAPI(id).then((res) => {
@@ -29,7 +33,13 @@ const Resume = () => {
     return (
         <main className="!pt-0">
             <nav className="resume-nav">
-                <Link to="/main/analyze/CV" className="back-button bg-white">
+                <button
+                    onClick={() => {
+                        dispatch(getUserProfileAPI());
+                        navigate("/main/analyze/CV");
+                    }}
+                    className="back-button bg-white"
+                >
                     <img
                         src="/icons/back.svg"
                         alt="logo"
@@ -38,7 +48,7 @@ const Resume = () => {
                     <span className="text-gray-800 text-sm font-semibold">
                         Back to Home
                     </span>
-                </Link>
+                </button>
             </nav>
             <div className="flex flex-row w-full max-lg:flex-col-reverse">
                 <section className="feedback-section bg-[url('/images/bg-small.svg') bg-cover h-[100%] sticky top-0 items-center justify-center">
@@ -79,7 +89,9 @@ const Resume = () => {
                                 }
                             />
                             <Details feedback={feedback || mockFeedback} />
-                            <h2 className="text-4xl font-bold">Suggested Interview Sessions</h2>
+                            <h2 className="text-4xl font-bold">
+                                Suggested Interview Sessions
+                            </h2>
                             {feedback?.recommendSessions?.map((session) => (
                                 <SessionCard session={session} />
                             ))}

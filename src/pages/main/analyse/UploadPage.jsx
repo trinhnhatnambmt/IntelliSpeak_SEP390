@@ -1,10 +1,12 @@
 import { Progress } from "antd";
 import { SquareChartGantt } from "lucide-react";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { uploadResumeAPI } from "~/apis";
 import FileUploader from "~/components/FileUploader";
+import { getUserProfileAPI } from "~/redux/user/userSlice";
 
 const UploadPage = () => {
     const navigate = useNavigate();
@@ -12,6 +14,7 @@ const UploadPage = () => {
     const [progress, setProgress] = useState(0);
     const [file, setFile] = useState(null);
     const [title, setTitle] = useState("");
+    const dispatch = useDispatch();
 
     const handleFileSelect = (file) => {
         setFile(file);
@@ -42,6 +45,8 @@ const UploadPage = () => {
 
                 if (!res.error) {
                     toast.success("Analyze CV successfully!");
+                    dispatch(getUserProfileAPI());
+
                     navigate(`/resume/${res?.evaluation?.id}`);
                 } else {
                     toast.error(
