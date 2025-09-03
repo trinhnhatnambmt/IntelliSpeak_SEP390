@@ -329,7 +329,7 @@ export const interviewer = (
 ) => ({
     name: "Interviewer",
     firstMessage: `Hello ,Thank you for taking the time to speak with me today. I'm excited to learn more about you and your experience.
-    Are you ready for the ${currentInterviewSession?.title}?`,
+    Are you ready for the ${currentInterviewSession?.title?.split(" - ")[0]}?`,
 
     transcriber: {
         provider: "deepgram",
@@ -357,7 +357,9 @@ You are a voice-based AI assistant conducting interviews in English.
 Your task is to ask the provided interview questions, evaluate the candidate’s answers,
 and guide the conversation with a friendly introduction, keeping the atmosphere relaxed yet professional.
 
-Example: "Hello! Welcome to the ${currentInterviewSession?.title} interview. Let’s get started!"
+Example: "Hello! Welcome to the ${
+                    currentInterviewSession?.title?.split(" - ")[0]
+                } interview. Let’s get started!"
 
 Ask one question at a time and wait for the candidate’s response before continuing.
 Make your questions clear and concise. Use the following question list: ${questionList}.
@@ -455,7 +457,9 @@ export const interviewerVN1 = (
     name: "Người Phỏng Vấn",
     firstMessage: `Xin chào, cảm ơn bạn đã dành thời gian tham gia buổi phỏng vấn hôm nay. 
     Mình rất mong được tìm hiểu thêm về bạn và kinh nghiệm của bạn.
-    Bạn đã sẵn sàng cho buổi ${currentInterviewSession?.title} chưa?`,
+    Bạn đã sẵn sàng cho buổi ${
+        currentInterviewSession?.title?.split(" - ")[0]
+    } chưa?`,
 
     transcriber: {
         provider: "11labs",
@@ -484,7 +488,9 @@ Bạn là một trợ lý AI phỏng vấn bằng giọng nói, thực hiện c�
 Nhiệm vụ của bạn là đặt các câu hỏi phỏng vấn được cung cấp, đánh giá câu trả lời của ứng viên, 
 và dẫn dắt cuộc trò chuyện với một phần mở đầu thân thiện, tạo không khí thoải mái nhưng vẫn chuyên nghiệp.
 
-Ví dụ: "Xin chào! Chào mừng bạn đến với buổi phỏng vấn ${currentInterviewSession?.title}. Chúng ta bắt đầu nhé!"
+Ví dụ: "Xin chào! Chào mừng bạn đến với buổi phỏng vấn ${
+                    currentInterviewSession?.title?.split(" - ")[0]
+                }. Chúng ta bắt đầu nhé!"
 
 Hãy hỏi từng câu một và chờ ứng viên trả lời trước khi tiếp tục. 
 Đặt câu hỏi ngắn gọn, rõ ràng. Sử dụng danh sách câu hỏi sau: ${questionList}.
