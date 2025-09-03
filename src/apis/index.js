@@ -655,6 +655,21 @@ export const updataQuestionInDetailAPI = async (id, data) => {
     return response.data;
 };
 
+export const getListQuestionNotInInterviewSessionAPI = async (id) => {
+    const response = await authorizedAxiosInstance.get(
+        `${API_ROOT}/question/company/available-for-session/${id}`
+    );
+    return response.data.data;
+};
+
+export const addQuestionNotInInterviewSessionAPI = async (id, data) => {
+    const response = await authorizedAxiosInstance.post(
+        `${API_ROOT}/interview-sessions/${id}/questions`,
+        data
+    );
+    return response.data;
+};
+
 // ==== DELETE QUESTION ====
 export const deleteQuestionAPI = async (questionId) => {
     const response = await authorizedAxiosInstance.delete(

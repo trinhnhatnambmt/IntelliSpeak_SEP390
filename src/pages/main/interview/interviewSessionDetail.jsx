@@ -3,11 +3,24 @@ import { useParams } from "react-router-dom";
 import {
     deleteQuestionFromSessionAPI,
     getDetailSessionAPI,
+    getListQuestionNotInInterviewSessionAPI,
     updataQuestionInDetailAPI,
+    addQuestionNotInInterviewSessionAPI, // Thêm import này nếu chưa có
 } from "~/apis";
 import { Clock, BarChart, Tag, Layers, MoreVertical } from "lucide-react";
 import { toast } from "react-toastify";
-import { Dropdown, Menu, Button, Modal, Form, Input, Select } from "antd";
+import {
+    Dropdown,
+    Menu,
+    Button,
+    Modal,
+    Form,
+    Input,
+    Select,
+    Checkbox,
+    Empty,
+} from "antd";
+import ModalEditQuestion from "./ModalEditQuestion";
 
 const { Option } = Select;
 
@@ -16,13 +29,31 @@ const InterviewSessionDetail = () => {
     const [session, setSession] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editingQuestion, setEditingQuestion] = useState(null);
+    const [questionNotInInterviewSessions, setQuestionNotInInterviewSessions] =
+        useState([]);
     const [form] = Form.useForm();
+
+    // State mới cho modal add
+    const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+    const [selectedQuestionIds, setSelectedQuestionIds] = useState([]);
 
     const interviewSessionId = session?.interviewSessionId;
 
     useEffect(() => {
         getDetailSessionAPI(id).then((res) => setSession(res));
     }, [id]);
+
+    useEffect(() => {
+        if (interviewSessionId) {
+            // Chỉ gọi khi có id
+            getListQuestionNotInInterviewSessionAPI(interviewSessionId).then(
+                (res) => {
+                    console.log(res);
+                    setQuestionNotInInterviewSessions(res);
+                }
+            );
+        }
+    }, [interviewSessionId]);
 
     const handleDelete = (questionId) => {
         deleteQuestionFromSessionAPI(interviewSessionId, questionId).then(
@@ -66,6 +97,44 @@ const InterviewSessionDetail = () => {
         form.resetFields();
     };
 
+    // Hàm mới cho add question
+    const showAddModal = () => {
+        setIsAddModalVisible(true);
+        setSelectedQuestionIds([]); // Reset selected khi mở modal
+    };
+
+    const handleAddModalOk = () => {
+        if (selectedQuestionIds.length === 0) {
+            toast.error("Please select at least one question.");
+            return;
+        }
+
+        const data = { questionIds: selectedQuestionIds };
+        addQuestionNotInInterviewSessionAPI(interviewSessionId, data)
+            .then((res) => {
+                toast.success("Questions added successfully!");
+                setIsAddModalVisible(false);
+                getDetailSessionAPI(id).then((res) => setSession(res));
+                getListQuestionNotInInterviewSessionAPI(
+                    interviewSessionId
+                ).then((res) => {
+                    setQuestionNotInInterviewSessions(res);
+                });
+            })
+            .catch(() => {
+                toast.error("Failed to add questions.");
+            });
+    };
+
+    const handleAddModalCancel = () => {
+        setIsAddModalVisible(false);
+        setSelectedQuestionIds([]);
+    };
+
+    const handleCheckboxChange = (checkedValues) => {
+        setSelectedQuestionIds(checkedValues);
+    };
+
     const menu = (question) => (
         <Menu>
             <Menu.Item key="edit" onClick={() => handleEdit(question)}>
@@ -76,7 +145,7 @@ const InterviewSessionDetail = () => {
                 onClick={() => handleDelete(question.questionId)}
                 style={{ color: "red" }}
             >
-                Delete Question
+                Remove Question
             </Menu.Item>
         </Menu>
     );
@@ -157,10 +226,15 @@ const InterviewSessionDetail = () => {
 
             {/* Questions Section */}
             <div className="bg-gray-800 rounded-2xl shadow-xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-                    <Layers size={24} className="text-blue-400 mr-2" />
-                    Questions
-                </h2>
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-white flex items-center">
+                        <Layers size={24} className="text-blue-400 mr-2" />
+                        Questions
+                    </h2>
+                    <Button type="primary" onClick={showAddModal}>
+                        Add Question
+                    </Button>
+                </div>
                 <div className="space-y-8">
                     {session.questions.map((q, index) => (
                         <div
@@ -225,94 +299,42 @@ const InterviewSessionDetail = () => {
             </div>
 
             {/* Edit Question Modal */}
-            <Modal
-                title="Edit Question"
-                visible={isModalVisible}
+            <ModalEditQuestion
                 onOk={handleModalOk}
                 onCancel={handleModalCancel}
-                okText="Save"
+                visible={isModalVisible}
+                form={form}
+            />
+
+            {/* Modal mới cho Add Question */}
+            <Modal
+                title="Add Questions to Session"
+                visible={isAddModalVisible}
+                onOk={handleAddModalOk}
+                onCancel={handleAddModalCancel}
+                okText="Add Selected"
                 cancelText="Cancel"
             >
-                <Form form={form} layout="vertical">
-                    <Form.Item
-                        name="title"
-                        label="Title"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please enter the title",
-                            },
-                        ]}
+                {questionNotInInterviewSessions.length > 0 ? (
+                    <Checkbox.Group
+                        style={{ width: "100%" }}
+                        onChange={handleCheckboxChange}
+                        value={selectedQuestionIds}
                     >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="content"
-                        label="Content"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please enter the content",
-                            },
-                        ]}
-                    >
-                        <Input.TextArea rows={4} />
-                    </Form.Item>
-                    <Form.Item
-                        name="suitableAnswer1"
-                        label="Suitable Answer 1"
-                        rules={[
-                            {
-                                required: true,
-                                message:
-                                    "Please enter the first suitable answer",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="suitableAnswer2"
-                        label="Suitable Answer 2"
-                        rules={[
-                            {
-                                required: true,
-                                message:
-                                    "Please enter the second suitable answer",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="difficulty"
-                        label="Difficulty"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please select the difficulty",
-                            },
-                        ]}
-                    >
-                        <Select>
-                            <Option value="EASY">Easy</Option>
-                            <Option value="MEDIUM">Medium</Option>
-                            <Option value="HARD">Hard</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        name="source"
-                        label="Source"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please enter the source",
-                            },
-                        ]}
-                    >
-                        <Input disabled />
-                    </Form.Item>
-                </Form>
+                        <div className="space-y-4">
+                            {questionNotInInterviewSessions.map((q) => (
+                                <Checkbox
+                                    key={q.questionId}
+                                    value={q.questionId}
+                                >
+                                    {q.content}
+                                </Checkbox>
+                            ))}
+                        </div>
+                    </Checkbox.Group>
+                ) : (
+                    <Empty description="No questions available to add." />
+                )}
             </Modal>
         </div>
     );

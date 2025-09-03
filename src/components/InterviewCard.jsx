@@ -8,6 +8,7 @@ const InterviewCard = ({
     totalQuestion,
     interviewHistoryId,
     interviewSessionId,
+    startedAt,
 }) => {
     const [title, createdAt] = interviewTitle.split(" - ");
 
@@ -39,27 +40,35 @@ const InterviewCard = ({
                     Number of questions: {totalQuestion}
                 </div>
                 <h1 className="text-xl font-semibold capitalize">{title}</h1>
-                <p className="text-base leading-[120%] text-neutral-600 dark:text-neutral-300">
-                    {createdAt}
-                </p>
 
                 {type === "main" && (
-                    <button
-                        onClick={submitInterviewSession}
-                        className="cursor-pointer text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 pt-2 flex gap-1 transition-all duration-300"
-                    >
-                        Start Interview
-                    </button>
+                    <div>
+                        <p className="text-base leading-[120%] text-neutral-600 dark:text-neutral-300">
+                            {createdAt}
+                        </p>
+
+                        <button
+                            onClick={submitInterviewSession}
+                            className="cursor-pointer text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 pt-2 flex gap-1 transition-all duration-300"
+                        >
+                            Start Interview
+                        </button>
+                    </div>
                 )}
 
                 {type === "profile" && (
-                    <div className="flex flex-col sm:flex-row gap-2 pt-2">
-                        <Link
-                            to={`/main/feedback/${interviewHistoryId}`}
-                            className="text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 flex gap-1 transition-all duration-300"
-                        >
-                            View Feedback
-                        </Link>
+                    <div>
+                        <p className="text-base leading-[120%] text-neutral-600 dark:text-neutral-300">
+                            {startedAt}
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-2 pt-2">
+                            <Link
+                                to={`/main/feedback/${interviewHistoryId}`}
+                                className="text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 flex gap-1 transition-all duration-300"
+                            >
+                                View Feedback
+                            </Link>
+                        </div>
                     </div>
                 )}
             </article>
