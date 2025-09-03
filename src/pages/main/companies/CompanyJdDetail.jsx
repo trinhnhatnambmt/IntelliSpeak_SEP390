@@ -1,3 +1,4 @@
+import { Image } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCompanyJdDetail } from "~/apis";
@@ -36,7 +37,7 @@ const CompanyJdDetail = () => {
             {/* Images */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 {images.map((img, idx) => (
-                    <img
+                    <Image
                         key={idx}
                         src={img}
                         alt={`JD page ${idx + 1}`}

@@ -8,6 +8,7 @@ import mockFeedback from "~/constants/mockdata";
 import SessionCard from "./SessionCard";
 import { useDispatch } from "react-redux";
 import { getUserProfileAPI } from "~/redux/user/userSlice";
+import { Image } from "antd";
 
 const Resume = () => {
     const { id } = useParams();
@@ -61,17 +62,11 @@ const Resume = () => {
                                     key={index}
                                     className="mb-4 animate-in fade-in duration-700 gradient-border"
                                 >
-                                    <a
-                                        href={url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        <img
-                                            src={url}
-                                            alt={`resume-page-${index + 1}`}
-                                            className="w-full h-auto object-contain rounded-2xl"
-                                        />
-                                    </a>
+                                    <Image
+                                        src={url}
+                                        alt={`resume-page-${index + 1}`}
+                                        className="w-full h-auto object-contain rounded-2xl"
+                                    />
                                 </div>
                             ))}
                     </div>

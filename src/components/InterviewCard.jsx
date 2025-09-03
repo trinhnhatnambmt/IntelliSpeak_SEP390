@@ -61,10 +61,20 @@ const InterviewCard = ({
                         <p className="text-base leading-[120%] text-neutral-600 dark:text-neutral-300">
                             {startedAt}
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-2 pt-2">
+                        <div className="flex items-center sm:flex-row gap-4 pt-2">
+                            <button
+                                onClick={() =>
+                                    navigate(
+                                        `/main/language/${interviewHistoryId}`
+                                    )
+                                }
+                                className="hover:underline cursor-pointer text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 pt-2 flex gap-1 transition-all duration-300"
+                            >
+                                Repeat Interview
+                            </button>
                             <Link
                                 to={`/main/feedback/${interviewHistoryId}`}
-                                className="text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 flex gap-1 transition-all duration-300"
+                                className="mt-2 hover:underline text-base font-medium text-blue-600 dark:text-blue-300 group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0 flex gap-1 transition-all duration-300"
                             >
                                 View Feedback
                             </Link>
